@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Project Webchat Socket.io</title>
+  </head>
+
+  <body>
+    <section>
+      <form class="form_nickname" action="">
+        <input class="nickname" data-testid="nickname-box" type="text" placeholder="Insira seu nickname"/>
+        <button class="send_nickname" data-testid="nickname-button" type="submit">Send</button>
+        <ul class="nicknames"></ul>
+      </form>
+    </section>
+
+    <section>
+      <form class="form" action="">
+        <ul class="messages"></ul>
+        <input class="messages__item" data-testid="message-box" />
+        <button class="send_message" data-testid="send-button" type="submit">Send</button>
+      </form>
+    </section>
+
+    <section>
+      <ul class="messages">
+        <%historicMessages.forEach(({nickname, message, timestamp}) => {%>
+          <li data-testid="message"><%= `${timestamp} - ${nickname}: ${message}` %></li>
+        <%})%>
+      </ul>
+    </section>
+
+  </body>
+
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+
+    const inputNickmame = document.querySelector('.nickname');
+    const sendNickname = document.querySelector('.send_nickname');
+    const inputMsg = document.querySelector('.messages__item');
+    const sendMsg = document.querySelector('.send_message');
+
+    const generateNewUser = Math.random()
+      .toString(16)
+      .substr(2, 8) + Math
+      .random()
+      .toString(16)
+      .substr(2, 8);
+
+    window.onload = () => {
+      const nickname = generateNewUser;
+      socket.emit('usersOnline', nickname);
+      sessionStorage.setItem('user', nickname);
+    };
+
+    socket.on('usersOnline', (usersOnline) => {
+      const ulNicknames = document.querySelector('.nicknames');
+      ulNicknames.innerText = '';
+
+      usersOnline.forEach(([nickname, socketID]) => {
+        const li = document.createElement('li');
+        li.innerText = nickname;
+        li.setAttribute('data-testid', 'online-user');
+        
+        if (socketID === socket.id) {
+          ulNicknames.prepend(li);
+        } else {
+          ulNicknames.appendChild(li);
+        }
+      });
+    });
+
+    sendNickname.addEventListener('click', (e) => {
+      e.preventDefault();
+
+      const nickname = inputNickmame.value;
+      sessionStorage.setItem('user', nickname);
+      
+      socket.emit('changeNickname', nickname);
+
+      inputNickmame.value = '';
+
+      return false;
+    });
+
+    sendMsg.addEventListener('click', (e) => {
+      e.preventDefault();
+      
+      const nickname = sessionStorage.getItem('user');
+      socket.emit('message', { nickname, chatMessage: inputMsg.value });
+
+      inputMsg.value = '';
+
+      return false;
+    });
+
+    socket.on('message', (msg) => {
+      const ul = document.querySelector('.messages');
+      const li = document.createElement('li');
+      
+      li.setAttribute('data-testid', 'message');
+      li.innerText = msg;
+      ul.appendChild(li);
+    });
+
+  </script>
+</html>
