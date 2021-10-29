@@ -17,7 +17,8 @@ const io = require('socket.io')(http, {
     methods: ['GET', 'POST'], 
   },
 });
-require('./src/sockets/chat')(io);
+require('./src/sockets/messages')(io);
+require('./src/sockets/users')(io);
 
 app.get('/', (_req, res) => {
   res.sendFile(`${__dirname}/src/views/chat.html`);
