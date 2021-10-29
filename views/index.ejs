@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script src="http://localhost:3000/socket.io/socket.io.js"></script>
+  </head>
+  <body>
+    <h1>Chat</h1>
+
+    <!-- <div>
+      <input id="text" type="text" data-testid="message-box"/>
+      <button id="submit" data-testid="send-button">Add</button>
+    </div> -->
+
+    <ul id="news">
+    </ul>
+
+    <div>
+      <input id="text" type="text" data-testid="message-box"/>
+      <button id="submit" data-testid="send-button">Add</button>
+    </div>
+
+    <script>
+      const socket = io('http://localhost:3000');
+
+      socket.on('nickId', (socketId) => {
+        sessionStorage.setItem('nickname', JSON.stringify(socketId));
+      });
+
+      const btn = document.getElementById('submit');
+      btn.addEventListener('click', () => {
+        const nickname = JSON.parse(sessionStorage.getItem('nickname'));
+        console.log(nickname);
+        const chatMessage = document.getElementById('text').value;
+        socket.emit('message', { nickname, chatMessage });
+      });
+
+      socket.on('message', (resp) => {
+        const li = document.createElement('li');
+        li.setAttribute('data-testid', 'message');
+        li.innerText = resp;
+        const messagesUl = document.querySelector('#news');
+        messagesUl.appendChild(li);
+      });
+
+    </script>
+  </body>
+</html>
