@@ -60,3 +60,17 @@ socket.on('usersOnline', (usersOnline) => {
   othersUsers.innerHTML = users.join('');
   console.log(usersOnline);
 });
+
+// socket.on('usersOnline', (usersOnline) => {
+//   const othersUsers = document.querySelector('.others-users');
+//    othersUsers.innerHTML = '';
+
+//   usersOnline
+//     .filter((user) => user !== userLocal)
+//     .forEach((user) => {
+//       const h3 = document.createElement('h3');
+//       h3.setAttribute('data-testid', 'online-user');
+//       h3.innerText = user;
+//       othersUsers.appendChild(h3);
+//     });
+// });
