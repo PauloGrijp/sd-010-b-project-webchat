@@ -36,7 +36,15 @@ const getAll = async (req, res) => {
 //     console.log(err.message);
 //   }
 // };
+const getAllUsers = async (req, res) => {
+  try {
+    const users = await modelMessages.getAllUsers();
+    return res.status(200).json({ users });
+  } catch (err) {
+    console.log(err.message);
+  }
+};
 
-module.exports = { getAll,
+module.exports = { getAll, getAllUsers,
   // , createMessage, updateMessage 
 };

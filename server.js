@@ -16,7 +16,7 @@ app.use(express.static(__dirname));
 console.log(__dirname);
 
 require('./socket/socket')(io);
-// const { getAll } = require('./controller/messages');
+const { getAllUsers } = require('./controller/messages');
 
 app.set('views', './views');
 
@@ -28,6 +28,7 @@ app.use(bodyParser.json());
 app.use(cors());
 
 // app.get('/', getAll);
+app.get('/user', getAllUsers);
 app.get('/', (req, res) => {
   res.sendFile(`${__dirname}/views/messagesList.html`);
   // res.sendFile(`${__dirname}/views/messagesList.ejs`);

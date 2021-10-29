@@ -1,4 +1,4 @@
-const socket = io();
+const io = io();
 const message = document.querySelector('#message');
 const messageBtnSend = document.querySelector('#msg-submit');
 const nicknameForm = document.querySelector('#nick-form');
@@ -16,7 +16,7 @@ const ramdomName = () => {
 };
 
 window.onload = () => {
-  socket.emit('start');
+  io.emit('start');
   
   const li = document.createElement('li');
   li.setAttribute('id', 'userName');
@@ -27,7 +27,7 @@ window.onload = () => {
   document.querySelector('#username-list').appendChild(li);
 
   const nickname = { newNick: document.querySelector('#userName').innerHTML };
-  socket.emit('nick', nickname);
+  io.emit('nick', nickname);
 };
 
 messageBtnSend.addEventListener('click', (event) => {
@@ -39,7 +39,7 @@ messageBtnSend.addEventListener('click', (event) => {
       date.getMonth()}-${date.getDate()} ${
         date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
 
-  socket.emit('message', { 
+  io.emit('message', { 
     nickname: document.querySelector('#userName').innerHTML, message: message.value, timestamp: currentDate });
 });
 
@@ -48,12 +48,12 @@ nicknameForm.addEventListener('submit', (event) => {
   const nick = document.querySelector('#nick');
   console.log('nick', nick, document.querySelector('#nick').value);
   const nickname = { oldNick: document.querySelector('#userName').innerHTML, newNick: nick.value };
-    socket.emit('nick', nickname);
+    io.emit('nick', nickname);
   
     document.querySelector('#userName').innerHTML = document.querySelector('#nick').value;
 });
 
-socket.on('startMessages', ((data) => {
+io.on('startMessages', ((data) => {
   console.log(data, 'allmessages');
   data.map((el) => {
     const li = document.createElement('li');
@@ -62,7 +62,7 @@ socket.on('startMessages', ((data) => {
   });
 }));
 
-socket.on('refreshMessages', ((data) => {
+io.on('refreshMessages', ((data) => {
     const li = document.createElement('li');
     li.setAttribute('data-testid', 'message');
     li.setAttribute('data-testid', 'online-user');
@@ -71,7 +71,7 @@ socket.on('refreshMessages', ((data) => {
     return document.querySelector('#messages-list').appendChild(li);
 }));
 
-socket.on('refreshNick', ((data) => {
+io.on('refreshNick', ((data) => {
   console.log(data, 'as informações');
   const filteredData = data.filter((el) => el.nickname !== document.querySelector('#userName'));
   if (filteredData.length <= 1) return;

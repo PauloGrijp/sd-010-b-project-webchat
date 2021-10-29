@@ -15,11 +15,12 @@ socket.on('start', async () => {
 });
 
 socket.on('nick', async (user) => {
-  const users = [];
-  users.push(user.newNick);
+  const users = await messagesModel.getAllUsers();
+  if (user.oldNick) { 
+    return messagesModel.updateUserNick(user.newNick, user.oldNick); 
+  }
+   await messagesModel.createUser(user.newNick);
   
-  console.log(users, 'users');
-  // if (user.oldNick) { users.splice(users.indexOf(user.oldNick), 1); }
   socket.emit('refreshNick', users);
 });
 });
