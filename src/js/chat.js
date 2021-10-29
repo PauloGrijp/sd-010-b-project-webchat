@@ -13,7 +13,9 @@ const generateNewUser = Math.random()
   .substr(2, 8);
 
 window.onload = () => {
-  socket.emit('usersOnline', generateNewUser);
+  const nickname = generateNewUser;
+  sessionStorage.setItem('user', nickname);
+  socket.emit('usersOnline', nickname);
 };
 
 socket.on('usersOnline', (usersOnline) => {
