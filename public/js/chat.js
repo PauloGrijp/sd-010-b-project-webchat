@@ -15,7 +15,7 @@ const createMessage = (message) => {
 
 const createUser = (user) => {
   const li = document.createElement('li');
-  li.classList = 'data-testid="message"';
+  li.classList = 'data-testid="online-user"';
   li.innerText = user;
   ulUsers.appendChild(li);
 };
@@ -36,13 +36,18 @@ btnMessage.addEventListener('click', (e) => {
   return false;
 });
 
-socket.on('newUser', ({ user }) => {
-  console.log(user);
-  createUser(user);
+socket.on('newConnection', (historic) => {
+  historic.forEach((e) => createMessage(e));
 });
 
-socket.on('historicMessage', (messages) => messages.forEach((e) => createMessage(e)));
+socket.on('newUser', ({ user }) => {
+  createUser(user);
+});
 
 socket.on('message', (message) => {
   createMessage(message);
 });
+
+// socket.on('newNickName', (nickname) => {
+
+// });
