@@ -1,7 +1,6 @@
 require('dotenv').config();
 const express = require('express');
 // const cors = require('cors');
-// const LanguageController = require('./controllers/LanguageController');
 
 const app = express();
 const http = require('http').createServer(app);
@@ -21,16 +20,25 @@ const userList = [];
 });
 // app.use(cors());
 
+const messagesController = require('./controllers/messagesController');
+
 app.get('/', (req, res) => {
   res.render(`${__dirname}/views/chat.ejs`);
+});
+
+app.get('/messages', async (req, res) => {
+  const messages = await messagesController.getAll();
+  res.status(200).json(messages);
 });
 
 app.use(express.static(`${__dirname}/views`));
 
 const dateNow = new Date().toLocaleString().replace(/\//g, '-');
+
 io.on('connection', (socket) => {
-  socket.on('message', (message) => {
-    const { chatMessage, nickname } = message;
+  socket.on('message', async ({ chatMessage, nickname }) => {
+    await messagesController.createMessage(chatMessage, nickname, dateNow);
+    // const { chatMessage, nickname } = message;
     io.emit('message', `${dateNow} - ${nickname} ${chatMessage}`);
   });
 
