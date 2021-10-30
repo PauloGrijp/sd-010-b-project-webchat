@@ -3,9 +3,10 @@ const registerMessageHandlers = require('./messageHandler');
 module.exports = (io) => {
   let onlineUsers = [];
   io.on('connection', (socket) => {
-    const newUser = { socketId: socket.id, nickname: socket.id.slice(0, 16) };
-    onlineUsers = [newUser, ...onlineUsers];
-    io.emit('user:connect', newUser, onlineUsers);
+    socket.on('user:connect', () => {
+      const newUser = { socketId: socket.id, nickname: socket.id.slice(0, 16) };
+      onlineUsers = [newUser, ...onlineUsers]; io.emit('user:connect', newUser, onlineUsers);
+    });
 
     registerMessageHandlers(io, socket);
 
