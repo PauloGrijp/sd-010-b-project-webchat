@@ -1,0 +1,75 @@
+<!-- REFERENCIA: https://github.com/tryber/sd-07-live-lectures/tree/lecture_32_3 -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WebChat</title>
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css"
+    />
+
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+
+  <body>
+    <section class="msger">
+      <header class="msger-header">
+        <div class="msger-header-title"><i class="fas fa-comment-alt"></i> Web Chat</div>
+        <div class="msger-header-options">
+          <span><i class="fas fa-cog"></i></span>
+        </div>
+      </header>
+
+      <div class="msger-container">
+        <article class="msger-users">
+          <div class="msger-form-nickname">
+            <input
+              id="input-nickname"
+              type="text"
+              data-testid="nickname-box"
+              class=""
+              placeholder="Enter nickname..."
+            />
+            <button
+              id="btn-nickname"
+              type="button"
+              data-testid="nickname-button"
+              class=""
+            >
+              Save
+            </button>
+          </div>
+          <ul id="list-users"></ul>
+        </article>
+        <main id="listMessages" class="msger-chat"></main>
+      </div>
+
+      <form class="msger-inputarea" id="formSendMessage">
+        <input
+          id="messageInput"
+          type="text"
+          data-testid="message-box"
+          class="msger-input"
+          placeholder="Enter your message..."
+        />
+        <button type="submit" data-testid="send-button" class="msger-send-btn">
+          Send
+        </button>
+      </form>
+    </section>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="./main.js" type="module"></script>
+  </body>
+</html>
