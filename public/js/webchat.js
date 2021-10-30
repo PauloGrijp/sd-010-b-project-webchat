@@ -3,6 +3,8 @@ const btnSendMessage = document.getElementById('send-message');
 const btnSaveNickname = document.getElementById('save-nickname');
 const list = document.querySelector('.list-users');
 
+socket.emit('user:connect');
+
 const appendUser = ({ socketId, nickname }) => {
   const li = document.createElement('li');
   li.classList.add('user');
