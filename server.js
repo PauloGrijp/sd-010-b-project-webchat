@@ -33,7 +33,6 @@ app.use(
 
 io.on('connection', (socket) => {
   const socketId = socket.id.substring(socket.id.length - 16);
-  console.log(socketId);
   socket.emit('nickId', socketId);
 
   socket.on('message', ({ nickname, chatMessage }) => {

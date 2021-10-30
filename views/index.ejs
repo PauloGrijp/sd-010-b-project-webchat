@@ -6,15 +6,19 @@
   <body>
     <h1>Chat</h1>
 
-    <!-- <div>
-      <input id="text" type="text" data-testid="message-box"/>
-      <button id="submit" data-testid="send-button">Add</button>
-    </div> -->
+    <p id="nickUser" data-testid="online-user"></p>
+
+    <div>
+      Escolha seu novo nick:
+      <input id="nickText" type="text" data-testid="nickname-box"/>
+      <button id="submitNick" data-testid="nickname-button">Add</button>
+    </div>
 
     <ul id="news">
     </ul>
 
     <div>
+      Envie uma mensagem:
       <input id="text" type="text" data-testid="message-box"/>
       <button id="submit" data-testid="send-button">Add</button>
     </div>
@@ -24,12 +28,14 @@
 
       socket.on('nickId', (socketId) => {
         sessionStorage.setItem('nickname', JSON.stringify(socketId));
+        const nickname = JSON.parse(sessionStorage.getItem('nickname'));
+        const nick = document.getElementById('nickUser')
+        nick.innerText = nickname;
       });
 
       const btn = document.getElementById('submit');
       btn.addEventListener('click', () => {
         const nickname = JSON.parse(sessionStorage.getItem('nickname'));
-        console.log(nickname);
         const chatMessage = document.getElementById('text').value;
         socket.emit('message', { nickname, chatMessage });
       });
@@ -42,6 +48,14 @@
         messagesUl.appendChild(li);
       });
 
+      const btnNick = document.getElementById('submitNick');
+      btnNick.addEventListener('click', () => {
+        const newNick = document.getElementById('nickText').value;
+        sessionStorage.setItem('nickname', JSON.stringify(newNick));
+        const nickname = JSON.parse(sessionStorage.getItem('nickname'));
+        const nick = document.getElementById('nickUser')
+        nick.innerText = nickname;
+      });
     </script>
   </body>
 </html>
