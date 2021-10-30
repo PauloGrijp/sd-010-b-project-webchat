@@ -15,9 +15,13 @@
     </form>
     <div>
       <h3>Usuários online</h3>
-      <ul id="names" class="names"></ul>
+      <ul id="names" class="names" data-testid="online-user"></ul>
     </div>
-    <ul id="messages" class="messages"></ul>
+    <ul id="messages" class="messages">
+      <% messages.forEach((message) => { %>
+        <li><%= `${message.timestamp} - ${message.nickname: ${message.message}` %></li>
+      <% }) %>
+    </ul>
     <form class="chatInput" action="">
       <input
         id="messageInput"
