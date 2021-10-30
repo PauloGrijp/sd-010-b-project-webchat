@@ -10,14 +10,14 @@ let nickname;
 
 const createMessage = (message) => {
   const li = document.createElement('li');
-  li.setAttribute = 'data-testid="message"';
+  li.setAttribute('data-testid', 'message');
   li.innerText = message;
   ulMessages.appendChild(li);
 };
 
 const createUser = (user) => {
   const li = document.createElement('li');
-  li.setAttribute = 'data-testid="online-user"';
+  li.setAttribute('data-testid', 'online-user');
   li.className = 'users';
   li.innerText = user;
   ulUsers.appendChild(li);
