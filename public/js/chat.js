@@ -1,21 +1,24 @@
 const socket = window.io();
 
 const ulMessages = document.querySelector('#list-message');
-const ulUsers = document.querySelector('#list-nickname');
 
 const btnNickName = document.querySelector('#btn-nickname');
 const btnMessage = document.querySelector('#btn-message');
 
+let clientName;
+
 const createMessage = (message) => {
   const li = document.createElement('li');
-  li.classList = 'data-testid="message"';
+  li.setAttribute = 'data-testid="message"';
   li.innerText = message;
   ulMessages.appendChild(li);
 };
 
 const createUser = (user) => {
+  const ulUsers = document.querySelector('#list-nickname');
   const li = document.createElement('li');
-  li.classList = 'data-testid="online-user"';
+  li.setAttribute = 'data-testid="online-user"';
+  li.className = 'users';
   li.innerText = user;
   ulUsers.appendChild(li);
 };
@@ -36,18 +39,23 @@ btnMessage.addEventListener('click', (e) => {
   return false;
 });
 
-socket.on('newConnection', (historic) => {
+socket.on('newConnection', ({ user, historic }) => {
   historic.forEach((e) => createMessage(e));
-});
-
-socket.on('newUser', ({ user }) => {
-  createUser(user);
+  clientName = user;
+  socket.emit('nickname', clientName);
 });
 
 socket.on('message', (message) => {
   createMessage(message);
 });
 
-// socket.on('newNickName', (nickname) => {
+socket.on('users', (users) => {
+  document.querySelectorAll('.users').forEach((e) => {
+    const ulUsers = document.querySelector('#list-nickname');
+    ulUsers.removeChild(e);
+  });
 
-// });
+  users.forEach((user) => {
+      createUser(user);
+  });
+});

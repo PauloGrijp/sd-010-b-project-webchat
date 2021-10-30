@@ -9,17 +9,22 @@ module.exports = (io) => io.on('connection', async (socket) => {
 
   users[socket.id] = socket.id.slice(0, 16);
 
-  socket.emit('newConnection', await historic);
+  socket.emit('newConnection', { user: users[socket.id], historic });
 
-  io.emit('newUser', { user: users[socket.id] });
+  // socket.emit('newUser', { user:  });
 
   socket.on('nickname', (nickname) => {
     users[socket.id] = nickname;
-    io.emit('newUser', nickname);
+    io.emit('users', Object.values(users));
   });
 
   socket.on('message', async (message) => {
     const response = await structurMessage(message, users[socket.id]);
     io.emit('message', response);
+  });
+
+  socket.on('disconnect', () => {
+    delete users[socket.id];
+    io.emit('users', Object.values(users));
   });
 });
