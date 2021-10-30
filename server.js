@@ -56,7 +56,7 @@ io.on('connection', async (socket) => {
   });
   socket.on('disconnect', () => {
     delete onlineUsers[socket.id];
-    console.log(onlineUsers);
+    io.emit('updateIdNicknameArray', Object.values(onlineUsers));
   });
 });
 

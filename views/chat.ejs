@@ -16,7 +16,6 @@
   </form>
   <h3>Usuários</h3>
   <ul id="online-users">
-    <li id="online-user"></li>
   </ul>
   <h3>Mensagens</h3>
   <ul id="messages">
@@ -65,28 +64,36 @@
     const nicknameButton = document.getElementById('nickname-button');
       nicknameButton.addEventListener('click', () => {
         const nicknameInputEl = document.getElementById('nickname-box');
-        sessionStorage.setItem('nickname', nicknameInputEl.value);
+        const nickname = nicknameInputEl.value
+        sessionStorage.setItem('nickname', nickname);
         nicknameInputEl.value = '';
-        const nicknameElement = document.getElementById('online-user');
-        nicknameElement.innerText = sessionStorage.getItem('nickname');
+        // const nicknameElement = document.getElementById('online-user');
+        // nicknameElement.innerText = sessionStorage.getItem('nickname');
+        socket.emit('updateIdNicknameArray', {[socket.id]: nickname});
     })
 
     socket.on('updateIdNicknameArray', (onlineUsers) => {
-      const clientLi = document.getElementById('online-user');
+      const usersUl = document.getElementById("online-users");
+      usersUl.innerHTML = '';
+      const clientLi = document.createElement('li');
+      clientLi.setAttribute('id', 'online-user');
+      clientLi.setAttribute('data-testid', 'online-user')
       const nickname = sessionStorage.getItem('nickname');
       clientLi.innerText = nickname;
-      const usersUl = document.getElementById("online-users")
+      usersUl.appendChild(clientLi);
       console.log(onlineUsers);
       onlineUsers.forEach((user) => {
         if(user !== nickname){
+          console.log(user);
           const userLi = document.createElement('li');
+          userLi.setAttribute('data-testid', 'online-user')
           userLi.innerText = user;
           usersUl.appendChild(userLi);
         }
       })
     });
 
-    window.onbeforeunload = function(event) {
+    window.onbeforeunload = () => {
       socket.disconnect();
     };
 
