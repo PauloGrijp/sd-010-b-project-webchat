@@ -33,12 +33,20 @@ form button {
   width: 9%;
 }
 
+.randomNickname {
+  background-color: white;
+  list-style-type: none;
+  margin: 10px;
+  padding: 0;
+  width: 90%;}
+
 
 .messages {
   background-color: white;
   list-style-type: none;
-  margin: 0;
+  margin: 10px;
   padding: 0;
+  width: 90%;
 }
 
 .messages li {

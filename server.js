@@ -12,12 +12,16 @@ const io = require('socket.io')(server, {
   },
 });
 
-app.use(express.static(`${__dirname}/public`));
+app.set('view engine', 'ejs');
+app.set('views', './views');
+
+app.use(express.static(`${__dirname}/views`));
 
 require('./sockets/chat')(io);
 
 app.get('/', (_req, res) => {
-  res.sendFile(`${__dirname}/public/chat.html`);
+  // res.sendFile(`${__dirname}/public/chat.html`);
+  res.status(200).render('index');
 });
 
 const { PORT = 3000 } = process.env;
