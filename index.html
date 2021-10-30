@@ -5,64 +5,64 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trybe Socket.io</title>
-    <style></style>
-    <!-- script fundamental para rodar o socket -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.4/socket.io.js">
+    <title>WebCHATO</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.4/socket.io.js"></script>
 
-    </script>
-    <script>
-        // pegando o que o backend envia!
-        // Conexão do front end com backEnd ' E nosso io mas não chama io porque da conflito!!'
-        const socket = io();
-    </script>
+
 </head>
 
 <body>
-    <ul id="mensagens"></ul>
+    <h2 data-testid="online-user" id='nickHash'></h2>
+
+
 
     <form action="">
-        <label for="nickname">nickname</label>
-        <input id="nickname" autocomplete="off" />
         <label for="mensagemInput">Mensagem</label>
-        <input id="mensagemInput" autocomplete="off" />
-        <button data-testid="send-button">send</button>
+        <input id="mensagemInput" data-testid="message-box"></input>
+        <button data-testid="send-button">Send-Mensage</button>
     </form>
-    <script>
-        // const socket = io();
-        const form = document.querySelector('form')
-        const inputMensage = document.querySelector('#mensagemInput')
-        const nickname = document.querySelector('#nickname')
-        form.addEventListener('submit', (event) => {
-            // pagina não deve ser atualizada com rpevent default
-            event.preventDefault()
-            sessionStorage.setItem('nickname', JSON.stringify(nickname.value));
-            socket.emit('message',
-                `${JSON.parse(sessionStorage.getItem('nickname'))} : ${inputMensage.value}`);
-            nickname.value = ''
-            inputMensage.value = ''
-            return false
-        })
-        // Esse metodo acessa a minha ul e depois cria um li dentro dela!!
-        const createMessage = (message) => {
-            const messagesUl = document.querySelector('#mensagens');
-            const li = document.createElement('li');
-            li.innerText = `${message}`;
-            messagesUl.appendChild(li);
-        };
 
-        // Este e o front escutando o back!
-
-        // Quando o socket é on ele está aguardando mensagem!
-        // quando é emit ele está emitindo mensagem mas para quem? neste caso aqui do front para o back!
-        socket.on('message', (message) => {
-            createMessage(message)
-        })
-        socket.on('newConnection', ({
-            message
-        }) => createMessage(message))
-    </script>
+    <ul id="mensagens"></ul>
 
 </body>
+
+<script>
+    // a função io por padrao roda no localhost mas caso queira alterar e só parar o parametro
+    // Ajuda de diegho para relembrar topicos relacionados a Dom/Queries
+    const createUser = (newNick) => {
+        const userH2 = document.querySelector('#nickHash')
+        userH2.innerText = newNick
+    }
+    const socket = io()
+    socket.on('login', (newAletorieNick) => {
+        createUser(newAletorieNick)
+    })
+
+    const form = document.querySelector('form')
+    const inputMensage = document.querySelector('#mensagemInput')
+
+    form.addEventListener('submit', (event) => {
+        // pagina não deve ser atualizada com rpevent default
+        event.preventDefault()
+        // Emitindo!
+        socket.emit('message', {
+            chatMessage: inputMensage.value
+        })
+        return false
+    })
+
+
+    const createMessage = (message) => {
+        const messagesUl = document.querySelector('#mensagens');
+        const li = document.createElement('li');
+        li.setAttribute('data-testid', "message")
+        li.innerText = `${message}`;
+        messagesUl.appendChild(li);
+    };
+
+    socket.on('message', (message) => {
+        createMessage(message)
+    })
+</script>
 
 </html>

@@ -16,29 +16,24 @@ const io = require('socket.io')(http, {
 // Iniciando conexão!!
 app.use(cors());
 
+const generateString = require('./utils');
+
 // Quando o socket é on ele está aguardando mensagem!
 // quando é emit ele está emitindo mensagem mas para quem? neste caso aqui do back para o front!
 io.on('connection', (socket) => {
-    // enviando pro front que usuario se conectou
-    console.log('Alguém se conection');
-    // Enviando a mensagem da desconexão lembre-se que nome da funçao é disconnect
-    // Quando vamos no fron end essa string ' disconnect significa que lá quem envia um disconnect 
+    // Aqui consigo ver quem se conectou!!!
+    socket.emit('login', generateString(16));
     socket.on('disconnect', () => {
         console.log('Alguém se desconectou');
     });
     socket.on('message', (ChatMsgAndNickName) => {
       const { chatMessage, nickname } = ChatMsgAndNickName;
-
       // DD-MM-yyyy HH:mm:ss ${nickname} ${chatMessage}
+      // https://momentjs.com/
       const data = moment().format('DD-MM-YYYY h:mm:ss a');
       const sendMensage = `$ ${data} - ${nickname} -  ${chatMessage}`;
-    io.emit('message', sendMensage);
+      io.emit('message', sendMensage);
     });
-
-    // Estava conflitando!!!
-    // socket.emit('message', ' Seja bem vindo ao chat!! Este back emitindo pro front!');
-
-    socket.broadcast.emit('newConnection', { message: 'Eba urro front alguém se conectou' });
 });
 // Rota get que faz a importação do html
 // lembrando que por aqui voce pode receber um login por exemplo através de req.body!! e valida-lo!
