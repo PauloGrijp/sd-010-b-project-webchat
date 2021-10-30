@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Web Chat</title>
+  <script src="http://localhost:3001/socket.io/socket.io.js"></script>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <form id="chat">
+    <input id="username" type="text" name="username" placeholder="Digite seu usuário" id="">
+    
+      <div class="messages">
+        <ul id=news></ul> 
+      </div>
+    
+    <input id="message" type="text" name="message" placeholder="digite sua mensagem" id="">
+    <button type="submit">Enviar</button>
+    </form>
+
+    <script type="text/javascript">
+    let socket = io('http://localhost:3001')
+
+
+    const renderMessage = ({currentDate, nickName, chatMessage}) => {
+      
+      const li = document.createElement('li');
+      let messageDocument = document.querySelector('.messages')
+      
+      const text = document.createTextNode(
+        `${currentDate}, ${nickName}: ${chatMessage}`,
+        );
+        
+      messageDocument.appendChild(text);
+        li.append(text);
+        document.getElementById('news').appendChild(li);
+
+    };
+
+    // socket.on('previousMessages', function(data){
+    // data.forEach(element => {
+    //   renderMessage(element)
+    // });
+    // })
+
+    socket.on('message', async function({currentDate, nickName, chatMessage}){
+      console.log('on: ', {currentDate, nickName, chatMessage})
+      renderMessage({currentDate, nickName, chatMessage})
+    })    
+
+    // verficar quando o chat tem o submit
+    const btn = document.getElementById('chat');
+    btn.addEventListener('submit', (event)=> {
+      event.preventDefault();
+
+        
+    let inputNickName = document.getElementById('username')
+    let nickName = inputNickName.value;
+    
+    let inputMessage = document.getElementById('message')
+    let message = inputMessage.value;
+    
+      if (nickName.length && message.length) {
+        let chatMessage = {
+          // date: date,
+          nickName: nickName,
+          chatMessage: message,
+        };
+
+        renderMessage(chatMessage)
+        
+        // enviando um objeto
+        // socket.emit('message', {chatMessage})
+      }
+
+      inputMessage.value = "";
+
+    });
+    </script>  
+</body>
+</html>
