@@ -16,10 +16,16 @@
 
 
 
-    <form action="">
-        <label for="mensagemInput">Mensagem</label>
+    <form id="mensageInputForm" action="">
+        <label for="mensagemInput">Mensage</label>
         <input id="mensagemInput" data-testid="message-box"></input>
         <button data-testid="send-button">Send-Mensage</button>
+    </form>
+
+    <form id="changeNickName" action="">
+        <label for="nickBox">Input your nickname</label>
+        <input id="nickBox" data-testid="nickname-box"></input>
+        <button data-testid="nickname-button">Change-Nick</button>
     </form>
 
     <ul id="mensagens"></ul>
@@ -38,15 +44,27 @@
         createUser(newAletorieNick)
     })
 
-    const form = document.querySelector('form')
+    const formMensage = document.querySelector('#mensageInputForm')
     const inputMensage = document.querySelector('#mensagemInput')
+    const formNickname = document.querySelector('#changeNickName')
+    const inputNickname = document.querySelector('#nickBox')
+    const hash = document.querySelector('#nickHash')
 
-    form.addEventListener('submit', (event) => {
+    formNickname.addEventListener('click', (event) => {
+        event.preventDefault();
+        hash.innerText = inputNickname.value
+        inputNickname.value = ''
+
+    })
+
+
+    formMensage.addEventListener('submit', (event) => {
         // pagina não deve ser atualizada com rpevent default
         event.preventDefault()
         // Emitindo!
         socket.emit('message', {
-            chatMessage: inputMensage.value
+            chatMessage: inputMensage.value,
+            nickname: document.querySelector('#nickHash').innerText
         })
         return false
     })
