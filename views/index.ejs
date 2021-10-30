@@ -17,7 +17,13 @@
             <button type="submit" id="save-nickname" data-testid="nickname-button" class="btn-submit">Salvar</button>
           </div>
         </div>
-        <div class="messages"></div>
+        <div class="messages">
+          <% messages.forEach((message)=> { %>
+            <div class="message" data-testid="message">
+              <%= message %>
+            </div>
+          <% }); %>
+        </div>
       </div>
       <div class="entry">
         <input type="text" data-testid="message-box" name="message-box" id="message-box" class="input"
