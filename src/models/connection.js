@@ -1,5 +1,5 @@
-const { MongoClient } = require('mongodb');
 require('dotenv').config();
+const { MongoClient } = require('mongodb');
 
 let schema = null;
 
@@ -20,7 +20,5 @@ async function connection() {
       process.exit(1);
     });
 }
-
-// initial commit
 
 module.exports = connection;
