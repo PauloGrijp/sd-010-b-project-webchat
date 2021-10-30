@@ -52,7 +52,7 @@ body {
 
 
 .container-messages {
-  background-color: rgb(255, 255, 255);
+  background-color: white;
   height: 95%;
   overflow: auto;
   width: 75%;
