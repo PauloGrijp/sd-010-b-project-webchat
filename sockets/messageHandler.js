@@ -1,3 +1,5 @@
+const { create } = require('../models/Messages');
+
 module.exports = (io, socket) => {
   const formatMessage = (message) => {
     const { chatMessage, nickname } = message;
