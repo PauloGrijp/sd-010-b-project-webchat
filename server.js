@@ -49,9 +49,9 @@ io.on('connection', async (socket) => {
     io.emit('message', completeMessage);
   });
   socket.on('updateIdNicknameArray', (idNicknameObj) => {
-    onlineUsers[Object.keys(idNicknameObj)[0]] = Object.values(idNicknameObj)[0];
-    console.log('objeto users:');
-    console.log(onlineUsers);
+    const objKeys = Object.keys(idNicknameObj)[0];
+    const objValues = Object.values(idNicknameObj)[0];
+    onlineUsers[objKeys] = objValues;
     io.emit('updateIdNicknameArray', Object.values(onlineUsers));
   });
   socket.on('disconnect', () => {
@@ -64,9 +64,3 @@ app.get('/', async (req, res) => {
   const dataDb = await getAllMessages();
   await res.status(200).render('chat', { dataDb }); 
 });
-
-// io.on('disconnect', (socket) => {
-//   socket.on('disconnect', (reason) => {
-//     console.log(reason);
-//   });
-// });
