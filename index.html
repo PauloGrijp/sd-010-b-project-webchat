@@ -4,12 +4,17 @@
     <title>Socket.IO - trybe</title>
     <link rel="stylesheet" href="./css/chat.css">
   </head>
-  <body>
-    <h1>TryB-X Webchat</h1>
-    <ol id="usuario"></ol>
-    <input id="name" autocomplete="off" />
-    <button>Mudar Nickname</button>
 
+  <body>
+
+    <h1>TryB-X Webchat</h1>
+    <h3>Seja bem vindo ao TryB-X Webchat, voce esta conectado como</h3>
+    <h4 id="usuario" data-testid="online-user"></h4>
+
+    <form class="nickForm" action="">
+      <input id="nickInput" autocomplete="off" data-testid="nickname-box" />
+      <button data-testid="nickname-button">Mudar Nickname</button>
+    </form>
     <div>
       --------------------------------------------
       <h5>Usuarios conectados</h5>
@@ -17,10 +22,14 @@
       --------------------------------------------
     </div>
     <ul id="messages"></ul>
-    <form action="">
-      <input id="messageInput" autocomplete="off" /><button>Send</button>
+
+    <form class="messageForm" action="">
+      <input id="messageInput" autocomplete="off" data-testid="message-box"/>
+      <button data-testid="send-button">Send</button>
     </form>
+
     <script src="/socket.io/socket.io.js"></script>
     <script src='./js/chat.js'></script>
+
   </body>
 </html>
