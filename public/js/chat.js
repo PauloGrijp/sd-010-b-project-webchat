@@ -31,8 +31,9 @@ const createMessage = (message) => {
 
 const createUsuario = (message) => {
   const usuario = document.querySelector('#usuario');
-  usuario.setAttribute(idTest, 'online-user');
   usuario.innerText = message;
+  const usuarioLi = document.querySelector('#nickUsuario');
+  usuarioLi.innerText = message;
 };
 
 const changeNick = (message) => {

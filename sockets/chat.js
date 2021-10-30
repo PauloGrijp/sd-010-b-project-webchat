@@ -21,7 +21,7 @@ const randomString = (length) => {
     nickname = nickname.substr(0, length);
     return nickname;
 };
-  
+
 module.exports = (io) => io.on('connection', (socket) => {
   let newNickname = randomString(16);
   socket.emit('login', newNickname);
