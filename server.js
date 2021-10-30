@@ -6,28 +6,22 @@ const app = express();
 const http = require('http').createServer(app);
 
 const PORT = process.env.PORT || 3000;
-app.use(express.urlencoded({ extended: true }));
-
 const io = require('socket.io')(http, {
   cors: {
     origin: `https://localhost:${PORT}`,
     method: ['GET', 'POST'],
   },
 });
+require('./sockets/webchat')(io);
 
-app.use(cors());
+const webchatController = require('./controllers/webchatController');
 
 app.set('view engine', 'ejs');
-
 app.set('views', './views');
-
+app.use(express.urlencoded({ extended: true }));
+app.use(cors());
 app.use(express.static('public'));
-
-app.get('/', (req, res) => {
-  res.status(200).render('index');
-});
-
-require('./sockets/webchat')(io);
+app.use(webchatController);
 
 http.listen(PORT, () => {
   console.log(`listening on ${PORT}`);
