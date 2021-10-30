@@ -1,11 +1,12 @@
 const socket = window.io();
 
 const ulMessages = document.querySelector('#list-message');
+const ulUsers = document.querySelector('#list-nickname');
 
 const btnNickName = document.querySelector('#btn-nickname');
 const btnMessage = document.querySelector('#btn-message');
 
-let clientName;
+let nickname;
 
 const createMessage = (message) => {
   const li = document.createElement('li');
@@ -15,7 +16,6 @@ const createMessage = (message) => {
 };
 
 const createUser = (user) => {
-  const ulUsers = document.querySelector('#list-nickname');
   const li = document.createElement('li');
   li.setAttribute = 'data-testid="online-user"';
   li.className = 'users';
@@ -25,24 +25,25 @@ const createUser = (user) => {
 
 btnNickName.addEventListener('click', (e) => {
   e.preventDefault();
-  const nickname = document.querySelector('#input-nickname');
-  socket.emit('nickname', nickname.value);
-  nickname.value = '';
+  const client = document.querySelector('#input-nickname');
+  nickname = client.value;
+  socket.emit('nickname', client.value);
+  client.value = '';
   return false;
 });
 
 btnMessage.addEventListener('click', (e) => {
   e.preventDefault();
   const message = document.querySelector('#input-message');
-  socket.emit('message', message.value);
+  socket.emit('message', { chatMessage: message.value, nickname });
   message.value = '';
   return false;
 });
 
 socket.on('newConnection', ({ user, historic }) => {
   historic.forEach((e) => createMessage(e));
-  clientName = user;
-  socket.emit('nickname', clientName);
+  nickname = user;
+  socket.emit('nickname', user);
 });
 
 socket.on('message', (message) => {
@@ -51,7 +52,6 @@ socket.on('message', (message) => {
 
 socket.on('users', (users) => {
   document.querySelectorAll('.users').forEach((e) => {
-    const ulUsers = document.querySelector('#list-nickname');
     ulUsers.removeChild(e);
   });
 

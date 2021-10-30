@@ -11,15 +11,14 @@ module.exports = (io) => io.on('connection', async (socket) => {
 
   socket.emit('newConnection', { user: users[socket.id], historic });
 
-  // socket.emit('newUser', { user:  });
-
   socket.on('nickname', (nickname) => {
     users[socket.id] = nickname;
     io.emit('users', Object.values(users));
   });
 
-  socket.on('message', async (message) => {
-    const response = await structurMessage(message, users[socket.id]);
+  socket.on('message', async ({ chatMessage, nickname }) => {
+    console.log(nickname);
+    const response = await structurMessage(chatMessage, nickname);
     io.emit('message', response);
   });
 
