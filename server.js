@@ -37,15 +37,26 @@ app.use(
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+const onlineUsers = {};
+
 io.on('connection', async (socket) => {
   io.emit('setIdNickname');
   socket.on('message', async (data) => {
     const { chatMessage, nickname } = data;
     const timestamp = getDate();
-    // dataDb.messages.push({ chatMessage, nickname, timestamp });
     await postMessage({ chatMessage, nickname, timestamp });
     const completeMessage = `${timestamp} - ${nickname}: ${chatMessage}`;
     io.emit('message', completeMessage);
+  });
+  socket.on('updateIdNicknameArray', (idNicknameObj) => {
+    onlineUsers[Object.keys(idNicknameObj)[0]] = Object.values(idNicknameObj)[0];
+    console.log('objeto users:');
+    console.log(onlineUsers);
+    io.emit('updateIdNicknameArray', Object.values(onlineUsers));
+  });
+  socket.on('disconnect', () => {
+    delete onlineUsers[socket.id];
+    console.log(onlineUsers);
   });
 });
 
@@ -54,13 +65,8 @@ app.get('/', async (req, res) => {
   await res.status(200).render('chat', { dataDb }); 
 });
 
-// app.post('/', (req, res) => {
-//   const { chatMessage } = req.body;
-//   if (!chatMessage) {
-//     return res.status(422).json({ message: 'Missing title or message' });
-//   }
-//   // dataDb.messages.push(message);
-//   console.log('chatMessage');
-//   // io.emit('message', { message });
-//   return res.status(200).json({ message: 'Message sent' });
+// io.on('disconnect', (socket) => {
+//   socket.on('disconnect', (reason) => {
+//     console.log(reason);
+//   });
 // });

@@ -14,8 +14,10 @@
     <input type="text" id="nickname-box" name="nickname" data-testid="nickname-box">
     <button type="submit" id="nickname-button" data-testid="nickname-button">Salvar</button>
   </form>
-  <h5 id="nicknameElement" data-testid="online-user"></h5>
   <h3>Usuários</h3>
+  <ul id="online-users">
+    <li id="online-user"></li>
+  </ul>
   <h3>Mensagens</h3>
   <ul id="messages">
     <%dataDb.forEach((message)=>{%><li data-testid="message"><%= `${message.timestamp} - ${message.nickname}: ${message.chatMessage}` %></li><%})%>
@@ -34,8 +36,10 @@
       if(!sessionNickname){
         sessionStorage.setItem('nickname', socket.id.slice(4));
       }
-      const nicknameElement = document.getElementById('nicknameElement');
-      nicknameElement.innerText = sessionStorage.getItem('nickname');
+      const nickname = sessionStorage.getItem('nickname');
+      socket.emit('updateIdNicknameArray', {[socket.id]: nickname})
+      // const nicknameElement = document.getElementById('nicknameElement');
+      // nicknameElement.innerText = nickname;
     })
 
     socket.on('message', (data) => {
@@ -63,9 +67,28 @@
         const nicknameInputEl = document.getElementById('nickname-box');
         sessionStorage.setItem('nickname', nicknameInputEl.value);
         nicknameInputEl.value = '';
-        const nicknameElement = document.getElementById('nicknameElement');
+        const nicknameElement = document.getElementById('online-user');
         nicknameElement.innerText = sessionStorage.getItem('nickname');
     })
+
+    socket.on('updateIdNicknameArray', (onlineUsers) => {
+      const clientLi = document.getElementById('online-user');
+      const nickname = sessionStorage.getItem('nickname');
+      clientLi.innerText = nickname;
+      const usersUl = document.getElementById("online-users")
+      console.log(onlineUsers);
+      onlineUsers.forEach((user) => {
+        if(user !== nickname){
+          const userLi = document.createElement('li');
+          userLi.innerText = user;
+          usersUl.appendChild(userLi);
+        }
+      })
+    });
+
+    window.onbeforeunload = function(event) {
+      socket.disconnect();
+    };
 
   </script>
 </body>
