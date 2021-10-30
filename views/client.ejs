@@ -87,24 +87,67 @@
   <script>
     const socket = io();
     const form = document.querySelector('#form');
+    const formNickname = document.querySelector('#form-aside');
     const chatMessage = document.querySelector('#input-message');
     const nickname = document.querySelector('#name');
-    const formNickname = document.querySelector('#form-aside');
+    let idUser = '';
+    let arrayUsers = '';
 
-    const createUser = () => {
+    const newNickName = () => {
       const randomNickName = generateNickName(16)
       const formatNickname = nickname.value ? nickname.value : randomNickName;
       sessionStorage.setItem('nickname', formatNickname);
       return formatNickname;
     }
 
-    const renderUser = (user) => {
+    const renderUser = (arrayUsersOn) => {
       const ul = document.querySelector('#users-online');
-      const li = document.createElement('li');
-      li.innerText = user
-      li.setAttribute('data-testid', 'online-user')
-      ul.appendChild(li);
+      const allRenderedUsers = document.querySelector(`${idUser}`);
+
+
+      arrayUsersOn.forEach(({
+        nickname,
+        idSocket
+      }) => {
+        const li = document.createElement('li');
+        li.setAttribute('data-testid', 'online-user');
+        li.setAttribute('id', `${idSocket}`);
+        li.className = 'users'
+        li.innerText = nickname;
+        ul.appendChild(li);
+      });
     }
+
+    const renderMessageLi = (fullMessage) => {
+      const ul = document.querySelector('#messages');
+      const li = document.createElement('li');
+      li.setAttribute('data-testid', 'message')
+      li.innerText = fullMessage;
+      ul.appendChild(li);
+    };
+
+    /*
+      Função para gerar nickName randomizado
+      FONTE: https://www.ti-enxame.com/pt/javascript/gere-stringcaracteres-aleatorios-em-javascript/967048592/
+    */
+    const dec2hex = (dec) => {
+      return ('0' + dec.toString(16)).substr(-2)
+    }
+    const generateNickName = (len) => {
+      var arr = new Uint8Array((len || 40) / 2)
+      window.crypto.getRandomValues(arr)
+      return Array.from(arr, dec2hex).join('')
+    }
+
+
+    // FORMS -------------------------------------------------------------------------------
+    formNickname.addEventListener('submit', (e) => {
+      e.preventDefault();
+      editUserRender();
+
+      // socket.emit('newUser', nickname.value);
+      nickname.value = '';
+    });
 
     form.addEventListener('submit', (e) => {
       e.preventDefault();
@@ -119,40 +162,20 @@
       return false;
     });
 
-    formNickname.addEventListener('submit', (e) => {
-      e.preventDefault();
-      createUser()
-      socket.emit('newUser', createUser());
-      nickname.value = '';
+    // eventos ------------------------------------------------
+    socket.emit('firstLoading', newNickName());
+
+    // socket.on('getSocketId', (id) => {
+    //   idUser = id;
+    // });
+
+    socket.on('firstLoading', (arrayUsersOn, id) => {
+      // console.log(id, 'OOJOKOKIOKOK')
+      idUser = id;
+      arrayUsers = arrayUsersOn;
+      renderUser(arrayUsers);
     });
 
-    /*
-    Função para gerar nickName randomizado
-    FONTE: https://www.ti-enxame.com/pt/javascript/gere-stringcaracteres-aleatorios-em-javascript/967048592/
-    */
-    const dec2hex = (dec) => {
-      return ('0' + dec.toString(16)).substr(-2)
-    }
-    const generateNickName = (len) => {
-      var arr = new Uint8Array((len || 40) / 2)
-      window.crypto.getRandomValues(arr)
-      return Array.from(arr, dec2hex).join('')
-    }
-
-
-
-    const renderMessageLi = (fullMessage) => {
-      const ul = document.querySelector('#messages');
-      const li = document.createElement('li');
-      li.setAttribute('data-testid', 'message')
-      li.innerText = fullMessage;
-      ul.appendChild(li);
-    };
-
-
-    socket.emit('newUser', createUser());
-
-    socket.on('newUser', (user) => renderUser(user));
     socket.on('message', (fullMessage) => renderMessageLi(fullMessage))
   </script>
 

@@ -28,29 +28,28 @@ app.get('/', (req, res) => {
 });
 
 // const allcustomerMessages = [];
-// const UsersOn = [];
+const arrayUsersOn = [];
 
 io.on('connection', (socket) => {
   console.log(`${socket.id} usuario conectado`);
   
-  // socket.on('disconnect', () => {
-    //   console.log('user disconnected');
-    // });
-    socket.on('newUser', (user) => {
-      console.log(user);
-      io.emit('newUser', user);
-    });
-    
-    socket.on('message', ({ chatMessage, nickname }) => {
-    // // persistência de usuário 
-    // UsersOn.push({ nickname, idSocket: socket.id });
+  socket.on('disconnect', () => {
+    arrayUsersOn.length = null;
+    console.log('user  disconnected');
+  });
 
-    // // persistência de mensagem
-    // allcustomerMessages.push({ idSocket: socket.id, nickname, chatMessage });
+  socket.on('firstLoading', (user) => {
+    // persistência de usuário 
+    arrayUsersOn.push({ nickname: user, idSocket: socket.id });
+    io.emit('firstLoading', arrayUsersOn, socket.id);
+  });
     
+  socket.on('message', ({ chatMessage, nickname }) => {
     const date = getTheCurrentDate();
     const fullMessage = formatMessage(date, chatMessage, nickname);
     io.emit('message', fullMessage);
+    // // persistência de mensagem
+    // allcustomerMessages.push({ idSocket: socket.id, nickname, chatMessage });
   });
 });
 
