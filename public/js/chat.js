@@ -55,7 +55,10 @@ socket.on('users', (users) => {
     ulUsers.removeChild(e);
   });
 
+  createUser(nickname);
   users.forEach((user) => {
+    if (user !== nickname) {
       createUser(user);
+    }
   });
 });

@@ -17,13 +17,13 @@ module.exports = (io) => io.on('connection', async (socket) => {
   });
 
   socket.on('message', async ({ chatMessage, nickname }) => {
-    console.log(nickname);
     const response = await structurMessage(chatMessage, nickname);
     io.emit('message', response);
   });
 
   socket.on('disconnect', () => {
     delete users[socket.id];
+    console.log(users);
     io.emit('users', Object.values(users));
   });
 });
