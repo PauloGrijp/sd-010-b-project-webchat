@@ -24,8 +24,9 @@ socket.on('user:connect', (serverPayload, onlineUsers) => {
 
 btnSendMessage.addEventListener('click', () => {
   const messageBox = document.getElementById('message-box');
-  // const chatMessage = messageBox.value;
-  // socket.emit('message', { chatMessage, nickname });
+  const chatMessage = messageBox.value;
+  const nickname = document.querySelector(`li[data-socketid="${socket.id}"]`).innerText;
+  socket.emit('message', { chatMessage, nickname });
   messageBox.value = '';
   return false;
 });
