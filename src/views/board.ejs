@@ -62,7 +62,11 @@
 </head>
 
 <body>
-  <ul id="messages"></ul>
+  <ul id="messages">
+    <% messages.forEach((mensagem) => {%>
+      <li><%=mensagem%></li>
+    <%})%>
+  </ul>
 
   <form id="form" action="">
     <input id="input" autocomplete="off" /><button>Send</button>

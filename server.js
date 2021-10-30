@@ -10,6 +10,8 @@ const { nickGenerator } = require('./src/functions/nickGenerator');
 const pathViews = path.join(__dirname, 'src/views');
 const port = process.env.PORT || 3000;
 
+const messages = [];
+
 app.set('view engine', 'ejs');
 app.set('views', pathViews);
 app.use(
@@ -20,7 +22,7 @@ app.use(
   }),
 );
 app.get('/', (req, res) => {
-  res.render('board');
+  res.render('board', { messages });
 });
 
 io.on('connection', (socket) => {
@@ -29,12 +31,11 @@ io.on('connection', (socket) => {
 
   socket.on('send', (msg) => {
     const timeMsg = moment().local(true).format('DD-MM-yyyy hh:mm:ss A');
-    console.log(timeMsg);
-
     const chatMessage = `${timeMsg} - ${nick}: ${msg}`;
 
+    messages.push(chatMessage);
+
     io.emit('send', chatMessage);
-    console.log(`Eu sou o : ${nick} Id: ${socket.id}`);
   });
 
   socket.on('disconnect', () => {
