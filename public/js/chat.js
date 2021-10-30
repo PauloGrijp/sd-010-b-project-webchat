@@ -22,7 +22,7 @@ formUser.addEventListener('submit', (event) => {
 
   userLocal = newNick;
   socket.emit('renameUser', newNick);
-  localStorage.setItem('userSeted', newNick);
+  sessionStorage.setItem('userSeted', newNick);
   document.querySelector(ID).innerHTML = newNick;
   target.querySelector('#nickname-box').value = '';
 });
@@ -38,7 +38,7 @@ socket.on('message', (message) => {
 });
 
 socket.on('setName', (user) => {
-  const userSeted = localStorage.getItem('userSeted');
+  const userSeted = sessionStorage.getItem('userSeted');
 
   if (!userSeted) {
     userLocal = user;
