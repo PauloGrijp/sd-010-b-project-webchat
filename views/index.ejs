@@ -47,7 +47,6 @@
 
     formNickName.addEventListener('submit', (e) => {
       e.preventDefault();
-      
       nick = inputNickName.value;
       socket.emit('send-nickname', inputNickName.value);
       inputNickName.value = '';
