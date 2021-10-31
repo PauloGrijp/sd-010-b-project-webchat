@@ -5,7 +5,7 @@
     <link rel="stylesheet" href="./css/chat.css" />
   </head>
   <body>
-    <p id="nickname" data-testid="online-user"></p>
+    <p id="nickname"></p>
     <form id="nicknameForm" action="">
       <input
         id="nicknameInput"
@@ -15,7 +15,7 @@
     </form>
     <div>
       <h3>Usuários online</h3>
-      <ul id="names" class="names" data-testid="online-user"></ul>
+      <ul id="names" class="names"></ul>
     </div>
     <ul id="messages" class="messages">
       <% messages.forEach((message) => { %>

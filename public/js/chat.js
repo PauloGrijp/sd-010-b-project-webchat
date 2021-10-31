@@ -41,9 +41,15 @@ const createMessage = (message) => {
   messagesUl.appendChild(li);
 };
 
-const createList = (users) => {
+const createUsersList = (users) => {
   const namesUl = document.querySelector('#names');
   namesUl.innerText = '';
+  const liFisrt = document.createElement('li');
+  liFisrt.innerText = nickname;
+  liFisrt.setAttribute('data-testid', 'online-user');
+  namesUl.appendChild(liFisrt);
+  users.splice(users.indexOf(nickname), 1);
+
   users.forEach((user) => {
     const li = document.createElement('li');
     li.innerText = user;
@@ -55,5 +61,9 @@ socket.on('message', (message) => {
   createMessage(message);
 });
 
-socket.on('nicknameChanged', (message) => createMessage(message));
-socket.on('generateList', (users) => createList(users));
+socket.on('generateList', (users) => createUsersList(users));
+
+window.onbeforeunload = () => {
+  socket.emit('leftRoom', nickname);
+  socket.disconnect();
+};
