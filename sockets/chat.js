@@ -22,18 +22,30 @@ const randomString = (length) => {
     return nickname;
 };
 
+const onlineList = [];
+
 module.exports = (io) => io.on('connection', (socket) => {
   let newNickname = randomString(16);
-  socket.emit('login', newNickname);
-  socket.broadcast.emit('newlogin', { usuario: newNickname });
+  socket.emit('conectedAs', newNickname);
+  onlineList.push(newNickname);
+  io.emit('loginList', onlineList);
 
   socket.on('nick', (nick) => {
+    const index = onlineList.indexOf(newNickname);
     newNickname = nick;
-    io.emit('newNick', nick);
+    onlineList.splice(index, 1, newNickname);
+    socket.emit('conectedAs', newNickname);
+    io.emit('loginList', onlineList);
   });
 
+  socket.on('disconnect', () => {
+    const index = onlineList.indexOf(newNickname);
+    onlineList.splice(index, 1);
+    io.emit('loginList', onlineList);
+  });
+
+
   socket.on('message', ({ nickname = newNickname, chatMessage }) => {
-    console.log(`${nickname} - Mensagem ${chatMessage}`, chatMessage);
     io.emit('message', `${data()} ${hora()} - ${nickname}: ${chatMessage}`);
   });
 });

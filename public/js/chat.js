@@ -29,22 +29,37 @@ const createMessage = (message) => {
   messagesUl.appendChild(li);
 };
 
-const createUsuario = (message) => {
-  const usuario = document.querySelector('#usuario');
-  usuario.innerText = message;
-  const usuarioLi = document.querySelector('#nickUsuario');
-  usuarioLi.innerText = message;
-};
+let thisUser
 
-const changeNick = (message) => {
-  const messagesUl = document.querySelector('#usuarios');
+const createUsuario = (newNickname) => {
+  const usuario = document.querySelector('#usuario');
+  thisUser = newNickname
+  usuario.innerText = thisUser;
+};
+//   <li id="nickUsuario" data-testid="nickname-box"></li>
+
+const makeUserLi = (paiElement,name) => {
+
   const li = document.createElement('li');
   li.setAttribute(idTest, 'online-user');
-  li.innerText = message;
-  messagesUl.appendChild(li);
+  li.innerText = name;
+  paiElement.appendChild(li);
+
+}
+const changeNick = (list) => {
+  const listaUsuarios = document.querySelector('#usuarios');
+  listaUsuarios.innerHTML = '';
+
+  makeUserLi(listaUsuarios, thisUser)
+
+  list.forEach(user => {
+    if (user !== thisUser) {
+      makeUserLi(listaUsuarios, user)
+    }
+  });
 };
 
-socket.on('login', (mensagem) => createUsuario(mensagem));
-socket.on('newlogin', ({ usuario }) => changeNick(usuario));
-socket.on('newNick', (usuario) => changeNick(usuario));
+socket.on('conectedAs', (newNickname) => createUsuario(newNickname));
+socket.on('loginList', (list) => changeNick(list));
+
 socket.on('message', (message) => createMessage(message));
