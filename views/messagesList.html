@@ -73,7 +73,7 @@ messageBtnSend.addEventListener('click', (event) => {
         date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
 
   socket.emit('message', { 
-    nickname: document.querySelector('#userName').innerHTML, message: message.value, timestamp: currentDate });
+    nickname: document.querySelector('#userName').innerHTML, chatMessage: message.value, timestamp: currentDate });
 });
 
 nicknameForm.addEventListener('submit', (event) => {
@@ -95,26 +95,42 @@ socket.on('startMessages', ((data) => {
   });
 }));
 
-socket.on('refreshMessages', ((data) => {
+// socket.on('refreshMessages', ((data) => {
+socket.on('message', ((data) => {
+  console.log(data, 'datta')
     const li = document.createElement('li');
     li.setAttribute('data-testid', 'message');
-    li.setAttribute('data-testid', 'online-user');
 
     li.innerHTML = data;
     return document.querySelector('#messages-list').appendChild(li);
 }));
 
 socket.on('refreshNick', ((data) => {
-  console.log(data, 'as informações');
-  const filteredData = data.filter((el) => el.nickname !== document.querySelector('#userName'));
+  const filteredData = data.filter((el) => el !== document.querySelector('#userName').innerHTML);
+  console.log(filteredData, 'as informações');
   if (filteredData.length <= 1) return;
-  filteredData.map(({ nickname }) => {
+  filteredData.map((el) => {
     const li = document.createElement('li');
     li.setAttribute('data-testid', 'online-user');
-    li.innerHTML = nickname;
+    li.setAttribute('id', el);
+    li.innerHTML = el;
     return document.querySelector('#username-list').appendChild(li);
   });
+  // const filteredData = data.filter((el) => el !== document.querySelector('#userName').innerHTML);
+  // console.log(filteredData, 'as informações');
+  // if (filteredData.length <= 1) return;
+  // filteredData.map((el) => {
+  //   const li = document.createElement('li');
+  //   li.setAttribute('data-testid', 'online-user');
+  //   li.innerHTML = el;
+  //   return document.querySelector('#username-list').appendChild(li);
+  // });
 }));
+
+socket.on('refreshOneNick', ((data) => {
+   document.querySelector(`#${data.oldNick}`).innerHTML =  data.newNick;
+  console.log( 'filtered data', `#${data.oldNick}`)
+}))
     </script>
 
 </body>

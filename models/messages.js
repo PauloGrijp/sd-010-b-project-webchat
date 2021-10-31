@@ -18,7 +18,7 @@ const updateUserNick = async (nick, oldNick) => {
   const messages = db.collection('users')
   .updateOne({ nickname: oldNick }, { $set: { nickname: nick } });
   await db.collection('messages')
-    .updateOne({ nickname: nick }, { $set: { nickname: oldNick } });
+    .updateOne({ nickname: oldNick }, { $set: { nickname: nick } });
   return messages;
 };
 
