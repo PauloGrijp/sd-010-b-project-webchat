@@ -12,7 +12,7 @@ const io = require('socket.io')(http, {
     methods: ['GET', 'POST'],
   },
 });
-const { getFullDateNow, getFullTimeNow } = require('./utils');
+const { getFullDateNow, getFullTimeNow, randomNickname } = require('./utils');
 
 app.set('view engine', 'ejs');
 
@@ -35,7 +35,9 @@ app.use('/', express.static(`${__dirname}views`));
 // io.sockets.on() ; ***initial connection from a client.
 
 io.on('connection', (socket) => {
-  console.log('Usuário conectado.');
+  console.log('Usuário(a) conectado(a).');
+  const userNickname = randomNickname(16);
+  socket.emit('userNickname', userNickname);
   socket.on('message', ({ chatMessage, nickname }) => {
     const msg = `${getFullDateNow()} ${getFullTimeNow()} - ${nickname}: ${chatMessage}`;
     io.emit('message', msg);
