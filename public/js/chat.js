@@ -1,16 +1,17 @@
 const socket = window.io();
 
 let nickname = 'USER';
+const testid = 'data-testid';
 
 const formMessage = document.querySelector('#chatInput');
 const formNickname = document.querySelector('#nicknameForm');
 const inputMessage = document.querySelector('#messageInput');
 const inputNickname = document.querySelector('#nicknameInput');
-const nicknamePage = document.querySelector('#nickname');
+// const nicknamePage = document.querySelector('#nickname');
 
 socket.on('start', (randomNickname) => {
   nickname += `${randomNickname}`;
-  nicknamePage.innerText = nickname;
+  // nicknamePage.innerText = nickname;
   sessionStorage.setItem('nickname', nickname);
   socket.emit('newConnection', nickname);
 });
@@ -20,7 +21,7 @@ formNickname.addEventListener('submit', (e) => {
   const oldNickname = nickname;
   nickname = inputNickname.value;
   sessionStorage.setItem('nickname', nickname);
-  nicknamePage.innerText = nickname;
+  // nicknamePage.innerText = nickname;
   socket.emit('changeNickname', { oldNickname, nickname });
   inputNickname.value = '';
   return false;
@@ -37,7 +38,7 @@ const createMessage = (message) => {
   const messagesUl = document.querySelector('#messages');
   const li = document.createElement('li');
   li.innerText = message;
-  li.setAttribute('data-testid', 'message');
+  li.setAttribute(testid, 'message');
   messagesUl.appendChild(li);
 };
 
@@ -46,13 +47,14 @@ const createUsersList = (users) => {
   namesUl.innerText = '';
   const liFisrt = document.createElement('li');
   liFisrt.innerText = nickname;
-  liFisrt.setAttribute('data-testid', 'online-user');
+  liFisrt.setAttribute(testid, 'online-user');
   namesUl.appendChild(liFisrt);
   users.splice(users.indexOf(nickname), 1);
 
   users.forEach((user) => {
     const li = document.createElement('li');
     li.innerText = user;
+    liFisrt.setAttribute(testid, 'online-user');
     namesUl.appendChild(li);
   });
 };

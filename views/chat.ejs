@@ -5,7 +5,7 @@
     <link rel="stylesheet" href="./css/chat.css" />
   </head>
   <body>
-    <p id="nickname"></p>
+    <!-- <p id="nickname"></p> -->
     <form id="nicknameForm" action="">
       <input
         id="nicknameInput"
@@ -26,11 +26,10 @@
     </ul>
     <form id="chatInput" class="chatInput" action="/" method="POST">
       <input
-        id="messageInput"
-        name="message"
-        autocomplete="off"
-        data-testid="message-box"
-      /><button type="submit" data-testid="send-button">Send</button>
+      id="messageInput"
+      autocomplete="off"
+      data-testid="message-box"
+      /><button data-testid="send-button">Send</button>
     </form>
     <script src="/socket.io/socket.io.js"></script>
     <script src="./js/chat.js"></script>
