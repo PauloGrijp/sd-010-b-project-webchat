@@ -31,8 +31,8 @@ module.exports = (io) => io.on('connection', (socket) => {
   io.emit('loginList', onlineList);
 
   socket.on('nick', (nick) => {
+    onlineList.splice(onlineList.indexOf(newNickname), 1, nick);
     newNickname = nick;
-    onlineList.splice(onlineList.indexOf(newNickname), 1, newNickname);
     socket.emit('conectedAs', newNickname);
     io.emit('loginList', onlineList);
   });
