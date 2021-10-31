@@ -16,7 +16,7 @@ const io = require('socket.io')(server, {
   },
 });
 
-const messageController = require('./controlles/messageController');
+const messageController = require('./controllers/messageController');
 
 app.set('view engine', 'ejs');
 app.set('views', './views');

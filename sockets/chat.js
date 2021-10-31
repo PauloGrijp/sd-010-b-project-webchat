@@ -1,16 +1,29 @@
 const date = require('../useful/date');
+const { addingMessage } = require('../models/messageModel');
+const getAllDB = require('../models/messageModel');
 
 const currentDate = date();
 
-module.exports = (io) => io.on('connection', (socket) => {
-  // socket.broadcast.emit('serverMessage', `${socket.id} acabou de se conectar :D`);
-  // socket.emit('serverMessage', 'Olá, seja bem vindo ao nosso chat público!');
-  console.log(`Cliente ID${socket.id} se conectou`);
-  socket.on('message', ({ chatMessage, nickname }) => {
-    io.emit('message', `${currentDate} - ${nickname}: ${chatMessage}`);
+const userArray = [];
 
-    socket.on('disconnect', () => {
-      socket.broadcast.emit('serverMessage', `Xiii! ${socket.id} acabou de se desconectar! :(`);
-    });
+const getAllMessages = async (io) => {
+  const allMessageFromDB = await getAllDB.getAll();
+  console.log(allMessageFromDB);
+  allMessageFromDB.map((message) => io
+    .emit('message', `${currentDate} - ${message.nickname}: ${message.message}`));
+};
+
+module.exports = (io) => io.on('connection', async (socket) => {
+  await getAllMessages(io);
+  socket.on('message', async ({ chatMessage, nickname }) => {
+    userArray.push({ chatMessage, nickname, currentDate });
+    io.emit('online', userArray);
+    await addingMessage(chatMessage, nickname, currentDate);
+    io.emit('message', `${currentDate} - ${nickname}: ${chatMessage}`);
   });
-});
+  
+   socket.on('online', (userId) => {
+    socket.emit('Olá, seja bem vindo ao nosso chat público!');
+    socket.emit('online', userId);
+   });
+ });
