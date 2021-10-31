@@ -29,32 +29,31 @@ const createMessage = (message) => {
   messagesUl.appendChild(li);
 };
 
-let thisUser
+let thisUser;
 
 const createUsuario = (newNickname) => {
   const usuario = document.querySelector('#usuario');
-  thisUser = newNickname
+  thisUser = newNickname;
   usuario.innerText = thisUser;
 };
 //   <li id="nickUsuario" data-testid="nickname-box"></li>
 
-const makeUserLi = (paiElement,name) => {
-
+const makeUserLi = (paiElement, name) => {
   const li = document.createElement('li');
   li.setAttribute(idTest, 'online-user');
   li.innerText = name;
   paiElement.appendChild(li);
+};
 
-}
 const changeNick = (list) => {
   const listaUsuarios = document.querySelector('#usuarios');
   listaUsuarios.innerHTML = '';
 
-  makeUserLi(listaUsuarios, thisUser)
+  makeUserLi(listaUsuarios, thisUser);
 
-  list.forEach(user => {
+  list.forEach((user) => {
     if (user !== thisUser) {
-      makeUserLi(listaUsuarios, user)
+      makeUserLi(listaUsuarios, user);
     }
   });
 };

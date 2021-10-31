@@ -31,19 +31,16 @@ module.exports = (io) => io.on('connection', (socket) => {
   io.emit('loginList', onlineList);
 
   socket.on('nick', (nick) => {
-    const index = onlineList.indexOf(newNickname);
     newNickname = nick;
-    onlineList.splice(index, 1, newNickname);
+    onlineList.splice(onlineList.indexOf(newNickname), 1, newNickname);
     socket.emit('conectedAs', newNickname);
     io.emit('loginList', onlineList);
   });
 
   socket.on('disconnect', () => {
-    const index = onlineList.indexOf(newNickname);
-    onlineList.splice(index, 1);
+    onlineList.splice(onlineList.indexOf(newNickname), 1);
     io.emit('loginList', onlineList);
   });
-
 
   socket.on('message', ({ nickname = newNickname, chatMessage }) => {
     io.emit('message', `${data()} ${hora()} - ${nickname}: ${chatMessage}`);
