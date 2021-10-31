@@ -1,5 +1,6 @@
 const { dateTimeFormat } = require('../helpers/dateTimeFormat');
 const { messageFormat } = require('../helpers/messageFormat');
+const messageController = require('../controllers/messageController');
 
 const users = [];
 
@@ -12,11 +13,10 @@ module.exports = (io) =>
     });
     socket.on('message', ({ chatMessage, nickname }) => {
       // console.log(`Mensagem ${message}`);
+      messageController.create({ message: chatMessage, nickname });
 
-      io.emit(
-        'message',
-        messageFormat({ chatMessage, date: dateTimeFormat(new Date()), nickname }),
-      );
+      io.emit('message',
+        messageFormat({ chatMessage, date: dateTimeFormat(new Date()), nickname }));
     });
     socket.on('changeNickname', ({ oldNickname, nickname }) => {
       // console.log(`Mensagem ${message}`);

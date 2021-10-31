@@ -2,7 +2,7 @@ const socket = window.io();
 
 let nickname = 'USER';
 
-const formMessage = document.querySelector('.chatInput');
+const formMessage = document.querySelector('#chatInput');
 const formNickname = document.querySelector('#nicknameForm');
 const inputMessage = document.querySelector('#messageInput');
 const inputNickname = document.querySelector('#nicknameInput');
@@ -51,6 +51,9 @@ const createList = (users) => {
   });
 };
 
-socket.on('message', (message) => createMessage(message));
+socket.on('message', (message) => {
+  createMessage(message);
+});
+
 socket.on('nicknameChanged', (message) => createMessage(message));
 socket.on('generateList', (users) => createList(users));

@@ -19,15 +19,18 @@ const io = require('socket.io')(http, {
     methods: ['GET', 'POST'], // Métodos aceitos pela url
   },
 });
+const messageController = require('./controllers/messageController');
 
 app.use(express.static(`${__dirname}/public`));
 
 require('./sockets/chat')(io);
 
-app.get('/', (req, res) => {
-  res.render(`${__dirname}/views/chat`);
-  // res.status(200).render('chat');
-});
+// app.get('/', (req, res) => {
+//   res.render(`${__dirname}/views/chat`);
+//   // res.status(200).render('chat');
+// });
+app.get('/', messageController.getAll);
+app.post('/', messageController.create);
 
 http.listen(PORT, () => {
   console.log(`Servidor ouvindo na porta ${PORT}`);
