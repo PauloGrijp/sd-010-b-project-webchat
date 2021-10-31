@@ -5,8 +5,8 @@
   </head>
   <body>
       <form class="create-nick-form" id="nick-form" >
-        <input placeholder="Insira seu nickname" id="nick" type="text"/>
-        <button type="submit">Salvar</button>
+        <input placeholder="Insira seu nickname" data-testid="nickname-box" id="nickname-box" type="text"/>
+        <button type="submit" data-testid="nickname-button">Salvar</button>
       </form>
 
     <section class="sec-nick-list">
@@ -78,12 +78,12 @@ messageBtnSend.addEventListener('click', (event) => {
 
 nicknameForm.addEventListener('submit', (event) => {
   event.preventDefault();
-  const nick = document.querySelector('#nick');
-  console.log('nick', nick, document.querySelector('#nick').value);
+  const nick = document.querySelector('#nickname-box');
+  console.log('nick', nick, document.querySelector('#nickname-box').value);
   const nickname = { oldNick: document.querySelector('#userName').innerHTML, newNick: nick.value };
     socket.emit('nick', nickname);
   
-    document.querySelector('#userName').innerHTML = document.querySelector('#nick').value;
+    document.querySelector('#userName').innerHTML = document.querySelector('#nickname-box').value;
 });
 
 socket.on('startMessages', ((data) => {
