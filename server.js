@@ -1,4 +1,5 @@
 require('dotenv').config();
+
 const app = require('express')();
 const http = require('http').createServer(app);
 const io = require('socket.io')(http);
@@ -8,7 +9,6 @@ const moment = require('moment');
 
 const pathViews = path.join(__dirname, 'src/views');
 const port = process.env.PORT || 3000;
-
 const messages = [];
 
 app.set('view engine', 'ejs');
@@ -30,14 +30,13 @@ io.on('connection', (socket) => {
   socket.on('message', ({ chatMessage, nickname }) => {
     const timeMsg = moment().local(true).format('DD-MM-yyyy hh:mm:ss A');
     const userMessage = `${timeMsg} - ${nickname}: ${chatMessage}`;
-    // console.log(obj);
+
     messages.push(userMessage);
 
     io.emit('message', { userMessage, nickname });
   });
 
-  socket.on('disconnect', () => {
- });
+  socket.on('disconnect', () => {});
 });
 
 http.listen(port, () => {
