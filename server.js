@@ -15,7 +15,7 @@ const io = require('socket.io')(server, {
     methods: ['GET', 'POST'], // Métodos aceitos pela url
   } });
 
-  const chat = require('./models/chat');
+  // const chat = require('./models/chat');
 
   const users = [];
 
@@ -34,6 +34,7 @@ const io = require('socket.io')(server, {
     socket.on('changeNickname', (nickObj) => {
       const indexUser = users.findIndex((nick) => nick === nickObj.nickname);
       users[indexUser] = nickObj.newNick;
+      // console.log(users)
       randomNick = nickObj.newNick;
       io.emit('nickname', users);
     });
