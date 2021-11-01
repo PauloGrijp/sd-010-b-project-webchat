@@ -1,0 +1,89 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font: 13px Helvetica, Arial;
+}
+
+#messageForm {
+  background: #000;
+  padding: 3px;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+}
+
+#messageForm input {
+  border: 0;
+  padding: 10px;
+  width: 90%;
+  margin-right: 0.5%;
+}
+
+#messageForm button {
+  width: 9%;
+  background: darkcyan;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+}
+
+#messages {
+  width: 100vw;
+  height: 100vh;
+  border: 1px solid darkgreen;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+#messages li {
+  padding: 5px 10px;
+}
+
+#messages li:nth-child(odd) {
+  background: #eee;
+}
+
+.main {
+  display:flex;
+}
+
+.usersList {
+  width: 20%;
+}
+
+.usersList > h2 {
+  margin-left: 20px;
+}
+
+.users li {
+  margin-left: 20px;
+  margin-top: 10px;
+}
+
+#nicknameForm {
+  display:flex;
+  justify-content: space-between;
+  background: #000;
+  padding: 3px;
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+#nicknameForm button {
+  background: darkcyan;
+  border: none;
+  padding: 5px;
+  cursor: pointer;
+}
+
+#nicknameForm input {
+  border: 0;
+  padding: 5px;
+  width: 100%;
+  margin-right: 0.5%;
+}
