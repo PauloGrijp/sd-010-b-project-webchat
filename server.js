@@ -1,45 +1,24 @@
 require('dotenv').config();
 const express = require('express');
+
+const app = express();
 const cors = require('cors');
-const bodyParser = require('body-parser');
-const path = require('path');
+const http = require('http').createServer(app);
 
-const controllers = require('./controllers');
-const middlewares = require('./middlewares');
+const { PORT = 3000 } = process.env;
 
-const { PORT = 3000, SOCKET_PORT = 4555 } = process.env;
-
-const socketIoServer = require('http').createServer();
-
-const MSGS = [];
-
-const io = require('socket.io')(socketIoServer, {
+const io = require('socket.io')(http, {
   cors: {
     origin: `http://localhost:${PORT}`,
     methods: ['GET', 'POST'],
   },
 });
 
-const app = express();
+require('./socket/chatServer')(io);
 
-app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views'));
+app.use(cors());
+app.use('/', express.static(`${__dirname}/public`));
 
-app.use(
-  cors({
-    origin: `http://localhost:${PORT}`,
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: ['Authorization'],
-  }),
-);
-
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-
-app.use(middlewares.error);
-
-app.listen(PORT, () => {
+http.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
 });
-
-socketIoServer.listen(SOCKET_PORT);
