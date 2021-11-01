@@ -5,7 +5,6 @@ const io = require('socket.io')(http);
 const path = require('path');
 const cors = require('cors');
 const moment = require('moment');
-const { nickGenerator } = require('./src/functions/nickGenerator');
 
 const pathViews = path.join(__dirname, 'src/views');
 const port = process.env.PORT || 3000;
@@ -27,19 +26,17 @@ app.get('/', (req, res) => {
 
 io.on('connection', (socket) => {
   console.log(`Usuário conectado, ID: ${socket.id}`);
-  const nickname = nickGenerator();
 
-  socket.on('message', (msg) => {
+  socket.on('message', ({ chatMessage, nickname }) => {
     const timeMsg = moment().local(true).format('DD-MM-yyyy hh:mm:ss A');
-    const chatMessage = `${timeMsg} - ${nickname}: ${msg}`;
+    const userMessage = `${timeMsg} - ${nickname}: ${chatMessage}`;
+    // console.log(obj);
+    messages.push(userMessage);
 
-    messages.push(chatMessage);
-
-    io.emit('message', { chatMessage, nickname });
+    io.emit('message', { userMessage, nickname });
   });
 
   socket.on('disconnect', () => {
-    socket.removeAllListeners();
  });
 });
 

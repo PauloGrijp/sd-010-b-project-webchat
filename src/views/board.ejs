@@ -62,6 +62,8 @@
 </head>
 
 <body>
+  <p id="name-user"></p>
+
   <ul id="messages" data-testid="message-box">
     <% messages.forEach((mensagem) => {%>
       <li data-testid="message"><%=mensagem%></li>
@@ -77,21 +79,44 @@
   <script>
     const socket = io();
 
+    const nickGenerator = () => {
+      let id = '';
+      const string = 'abcdefghijklmnopqrstuvwyxz';
+      string.split('').forEach(() => {
+        if (id.length !== 16) {
+          id += string[Math.floor(Math.random() * (string.length - 1))];
+        }
+      });
+      return id;
+    };
+
+    let nickname = '';
+
+    window.onload = () => {
+      const nameuser = document.getElementById('name-user');
+
+      nickname = nickGenerator();
+
+      nameuser.innerHTML = nickname;
+    };
+
     const messages = document.getElementById('messages');
-    const form = document.getElementById('form');
     const input = document.getElementById('input');
+    const form = document.getElementById('form');
+
 
     form.addEventListener('submit', (event) => {
+      const nameuser = document.getElementById('name-user').innerText;
       event.preventDefault();
       if (input.value) {
-        socket.emit('message', input.value);
+        socket.emit('message', { chatMessage: input.value, nickname: nameuser });
         input.value = '';
       }
     });
 
-    socket.on('message', ({ chatMessage }) => {
+    socket.on('message', ( { userMessage }) => {
       const item = document.createElement('li');
-      item.textContent = chatMessage;
+      item.textContent = userMessage;
       messages.appendChild(item);
       window.scrollTo(0, document.body.scrollHeight);
     });
