@@ -54,7 +54,7 @@ const addUsersOnline = (nickname, socket) => {
 };
 
 // Ajuda da colega Letícia Galvão
-const usersOnline = (socket, nickname) => {
+const usersOnline = (IO, socket, nickname) => {
     // socket.emit('olineUsers', nickname);
     io.emit('olineUsers', { nickname, id: socket.id });
 
