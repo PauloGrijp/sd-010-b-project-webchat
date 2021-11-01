@@ -44,30 +44,16 @@
         messagesUl.appendChild(li);
       }
 
-      
-      function randomString(length) {
-      let result = '';
-      const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-      const charactersLength = characters.length;
-      for (let i = 0; i < length; i += 1) {
-      result += characters.charAt(Math.floor(Math.random() 
-      * charactersLength));
-      }
-      return result;
-}
-
-
-      randomNickName.innerText = randomString(16);
       const chosenNickName = document.querySelector('#chosenNickName');
       chosenNickName.addEventListener('click', (e)=> {
         e.preventDefault();
       randomNickName.innerText = nick.value;
       nick.value = '';
       } )
-      console.log(randomNickName.innerText);
 
 
       socket.on('message', (dateNameMsg) => createMessage(dateNameMsg));
+      socket.on('random', (random) =>  randomNickName.innerText = random);
     </script>
 
 
