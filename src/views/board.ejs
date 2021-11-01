@@ -89,9 +89,9 @@
       }
     });
 
-    socket.on('send', (msg) => {
+    socket.on('send', ({ chatMessage }) => {
       const item = document.createElement('li');
-      item.textContent = msg;
+      item.textContent = chatMessage;
       messages.appendChild(item);
       window.scrollTo(0, document.body.scrollHeight);
     });

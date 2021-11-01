@@ -27,15 +27,15 @@ app.get('/', (req, res) => {
 
 io.on('connection', (socket) => {
   console.log(`Usuário conectado, ID: ${socket.id}`);
-  const nick = nickGenerator();
+  const nickname = nickGenerator();
 
   socket.on('send', (msg) => {
     const timeMsg = moment().local(true).format('DD-MM-yyyy hh:mm:ss A');
-    const chatMessage = `${timeMsg} - ${nick}: ${msg}`;
+    const chatMessage = `${timeMsg} - ${nickname}: ${msg}`;
 
     messages.push(chatMessage);
 
-    io.emit('send', chatMessage);
+    io.emit('send', { chatMessage, nickname });
   });
 
   socket.on('disconnect', () => {
