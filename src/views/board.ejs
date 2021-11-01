@@ -62,14 +62,15 @@
 </head>
 
 <body>
-  <ul id="messages">
+  <ul id="messages" data-testid="message-box">
     <% messages.forEach((mensagem) => {%>
-      <li><%=mensagem%></li>
+      <li data-testid="message"><%=mensagem%></li>
     <%})%>
   </ul>
 
   <form id="form" action="">
-    <input id="input" autocomplete="off" /><button>Send</button>
+    <input id="input" autocomplete="off" />
+    <button data-testid="send-button">Send</button>
   </form>
 
   <script src="/socket.io/socket.io.js"></script>
