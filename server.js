@@ -23,13 +23,13 @@ const io = require('socket.io')(http, {
       origin: 'http://localhost:3000', // url aceita pelo cors
       methods: ['GET', 'POST'], // Métodos aceitos pela url
     } });
-  
+
   io.on('connection', (socket) => {
     console.log(`Usuário conectado. ID: ${socket.id} `);
 
     socket.on('disconnect', () => console.log('Alguém se desconectou'));
 
-    socket.on('message', ({ nickname, chatMessage }) => { 
+    socket.on('message', ({ nickname, chatMessage }) => {
     const dateNameMsg = `${todayDate()} ${nickname} ${chatMessage}`;
     console
     .log(`Alguém enviou a mensagem: ${dateNameMsg}`);

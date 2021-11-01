@@ -6,23 +6,32 @@
   </head>
   <body>
     <ul id="messages"></ul>
-    <form action=''>
-      <input id="nickName" placeholder="NickName" autocomplete='off'/>
-      <input id="inputForm" placeholder="Insert your message" autocomplete='off'/>
-      <button id="bttn">Send</button>
+
+    <p class="randomNickName" data-testid="online-user" autocomplete='off'></p>
+    <form class="nickNameForm" action=''>
+      <input id="nickName" data-testid="nickname-box" placeholder="NickName" autocomplete='off'/>
+      <button id="chosenNickName" data-testid="nickname-button">Salvar NickName</button>
     </form>
+    
+    <form class="messageForm" action=''>
+      <input id="inputForm" data-testid="message-box" placeholder="Insert your message" autocomplete='off'/>
+      <button id="bttn" data-testid="send-button">Send</button>
+    </form>
+
+
     <script>
       const socket = io();
-      const form = document.querySelector('form');
+      const form = document.querySelector('.messageForm');
       const inputMsg = document.querySelector('#inputForm');
       const nick = document.querySelector('#nickName');
+      const randomNickName = document.querySelector('.randomNickName');
       form.addEventListener('submit', (e) => {
         e.preventDefault();
-        const nickname =  nick.value;
+        const nickname =  randomNickName.innerText;
+        console.log(nickname);
         const chatMessage = inputMsg.value;
         socket.emit('message', { nickname, chatMessage });
         inputMsg.value = '';
-        nick.value = ''
         return false;
       });
 
@@ -30,11 +39,37 @@
       const createMessage = (dateNameMsg) => {
         const messagesUl = document.querySelector('#messages');
         const li = document.createElement('li');
+        li.setAttribute("data-testid", "message")
         li.innerText = dateNameMsg;
         messagesUl.appendChild(li);
       }
 
+      
+      function randomString(length) {
+      let result = '';
+      const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+      const charactersLength = characters.length;
+      for (let i = 0; i < length; i += 1) {
+      result += characters.charAt(Math.floor(Math.random() 
+      * charactersLength));
+      }
+      return result;
+}
+
+
+      randomNickName.innerText = randomString(16);
+      const chosenNickName = document.querySelector('#chosenNickName');
+      chosenNickName.addEventListener('click', (e)=> {
+        e.preventDefault();
+      randomNickName.innerText = nick.value;
+      nick.value = '';
+      } )
+      console.log(randomNickName.innerText);
+
+
       socket.on('message', (dateNameMsg) => createMessage(dateNameMsg));
     </script>
+
+
   </body>
 </html>
