@@ -48,15 +48,22 @@ const makeUserLi = (paiElement, name) => {
 const changeNick = (list) => {
   const listaUsuarios = document.querySelector('#usuarios');
   listaUsuarios.innerHTML = '';
-
   makeUserLi(listaUsuarios, thisUser);
-
   list.forEach((user) => {
     if (user !== thisUser) {
       makeUserLi(listaUsuarios, user);
     }
   });
 };
+
+const historico = async () => {
+  const resp = await (await fetch('http://localhost:3000/all')).json();
+  resp.message.forEach(({ message }) => {
+    createMessage(message);
+  });
+};
+
+historico();
 
 socket.on('conectedAs', (newNickname) => createUsuario(newNickname));
 socket.on('loginList', (list) => changeNick(list));

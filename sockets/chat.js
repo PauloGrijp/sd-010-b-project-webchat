@@ -1,3 +1,5 @@
+const { putMessage } = require('../models/messageModels');
+
 // Renato - https://github.com/tryber/sd-010-b-project-webchat/pull/66/files
 const data = () => {
   const date = new Date();
@@ -24,11 +26,18 @@ const randomString = (length) => {
 
 const onlineList = [];
 
-module.exports = (io) => io.on('connection', (socket) => {
+const dbString = (nickname, chatMessage) => {
+  const messages = `${data()} ${hora()} - ${nickname}: ${chatMessage}`;
+  putMessage(messages);
+  return [messages];
+};
+
+module.exports = (io) => io.on('connection', async (socket) => {
   let newNickname = randomString(16);
   socket.emit('conectedAs', newNickname);
   onlineList.push(newNickname);
   io.emit('loginList', onlineList);
+  // socket.emit('message', dbmessages());
 
   socket.on('nick', (nick) => {
     onlineList.splice(onlineList.indexOf(newNickname), 1, nick);
@@ -43,6 +52,6 @@ module.exports = (io) => io.on('connection', (socket) => {
   });
 
   socket.on('message', ({ nickname = newNickname, chatMessage }) => {
-    io.emit('message', `${data()} ${hora()} - ${nickname}: ${chatMessage}`);
+    io.emit('message', dbString(nickname, chatMessage));
   });
 });
