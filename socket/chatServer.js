@@ -1,5 +1,7 @@
 const socketIo = require('socket.io');
 const generateName = require('nicknames');
+const chatModel = require('../models/chatModel');
+
 const actualDate = new Date().toLocaleString().replace(/\//g, '-');
 
 const users = [];
@@ -12,7 +14,8 @@ const setUserName = (io, socket, nickname) => {
   io.emit('connected', { users, actualUser: nickname });
 };
 
-const setMessage = (io, socket ) => {
-  const { message, nickname } = socket;
-
-}
+const setMessage = async (io, socket) => {
+  const { sendMessage, nickname } = socket;
+  const message = await chatModel.createMessage(sendMessage, nickname, actualDate);
+  io.emit('message', JSON.stringify(message));
+};
