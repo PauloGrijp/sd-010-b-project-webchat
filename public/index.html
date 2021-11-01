@@ -9,13 +9,15 @@
   </head>
   <body>
     <div id="message-container">
-      <form id="form">
+      <form id="form-nick">
         <input type="text" data-testid="nickname-box" id="nick-input" autocomplete="off" placeholder="change nickname" />
         <button id="nick-button" data-testid="nickname-button">Save</button>
-        <div id="chat">
-          <ul id="messages"></ul>
-  
-        </div>
+      </form>
+
+      <form id="form">
+       <div id="chat">
+        <ul id="messages"></ul>  
+      </div>
         <ul id="nicknameList"></ul>
         <input type="text" data-testid="message-box" id="input" autocomplete="off" placeholder="type your message" />
         <button type="submit" data-testid="send-button">Send Message</button>
