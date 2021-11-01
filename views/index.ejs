@@ -9,26 +9,42 @@
 </head>
 <body>
     <form >
-        <p data-testid="online-user" class="randoNickname"></p>
+        <!-- <p data-testid="online-user" class="randoNickname"><%=  %></p> -->
         <input type="text" id="nickname" data-testid="nickname-box" placeholder="NickName">
         <button type="button" data-testid="nickname-button" class="saveNickname">Save</button>
         <input data-testid="message-box" type="text" id="chatMessage" value="" placeholder="Type your message...">
         <ul id="messages"></ul>
         <button data-testid="send-button" id="chat" type="submit">Send</button>
     </form>
+    <div>
+        <h3>Lista Usuários</h3>
+        <ul class="users"></ul>
+    </div>
     
 </body>
 <script>
     const socket = io();
 
     const formChat = document.getElementById('chat');
-    let nickname = '';
+    let nickname = '<%= nickName %>';
+
+    // Cria a lista de users online 
+        const createLi = (nickname, id) => {
+        const ulUsers = document.querySelector('.users');
+        const li = document.createElement('li');
+        li.setAttribute('data-testid', 'online-user');
+        li.setAttribute('class', 'online');
+        li.setAttribute('id', id);
+        li.innerText = nickname;
+        ulUsers.appendChild(li);
+        };
+        socket.on('olineUsers', ({ nickname, id }) => createLi(nickname, id));
+
     
     formChat.addEventListener('click', (event) => {
         event.preventDefault();
         
         const chatMessage = document.getElementById('chatMessage').value;
-        console.log(nickname, chatMessage);
         
         if(chatMessage.length) {
             const sendMessage = {
@@ -36,10 +52,12 @@
                 nickname,
             }
             socket.emit('message', sendMessage);
+            // enviando mensagem e o nickname para o server
         }
 
     });
 
+    // Cria um lista com as mensagens
     const createMessage = (message) => {
         const ulMensages = document.querySelector('#messages');
         const li = document.createElement('li');
@@ -47,34 +65,42 @@
         li.innerText = message;
         ulMensages.appendChild(li);
     }
-
     
-    // https://www.webtutorial.com.br/funcao-para-gerar-uma-string-aleatoria-random-com-caracteres-especificos-em-javascript/
-    function geraStringAleatoria(tamanho) {
-        var stringAleatoria = '';
-        var caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
-        for (var i = 0; i < tamanho; i++) {
-            stringAleatoria += caracteres.charAt(Math.floor(Math.random() * caracteres.length));
-        }
-        return stringAleatoria;
-    }
-    
+    // chama função de nickname aleatorio e salva na tag e na variavel nickname
     const randoNickname = document.querySelector('.randoNickname');
-    const randonNicknameRandom = geraStringAleatoria(16);
-    randoNickname.innerHTML = randonNicknameRandom;
-    nickname = randonNicknameRandom;
+    //const randonNicknameRandom = '<%= nickName %>';
+    /* randoNickname.innerHTML = randonNicknameRandom;
+    nickname = randonNicknameRandom; */
     
 
     const saveNickNane = document.querySelector('.saveNickname');
 
+    // Salva o nickname tanto na sessuinStorage quanto nas mensagens e atualiza a variavel nickname
     saveNickNane.addEventListener('click', () => {
         const nickName = document.getElementById('nickname').value;
-        randoNickname.innerHTML = nickName;
-        nickname = nickName;
-        sessionStorage.setItem('nickname', nickName);
+        const liOnlineUsers = document.querySelector('.online');
+        console.log(liOnlineUsers);
+        // andoNickname.innerHTML = nickName;
+        nickname = nickName; 
+        liOnlineUsers.innerHTML = nickName;
+        socket.emit('updateNickname', nickname);
     });
     
+    const updateNickName = (nickname, id) => {
+        const liOnlineUsers = document.getElementById(id);
+        console.log(liOnlineUsers);
+        liOnlineUsers.innerHTML = nickname;
+    };
+
+    const offUsers = (id) => {
+        const ulUsers = document.querySelector('.users');
+        const liOnlineUsers = document.getElementById(id);
+        ulUsers.removeChild(liOnlineUsers);
+    };
+
     socket.on('message', (message) => createMessage(message));
+    socket.on('updateNickname', ({nickname, id}) => updateNickName(nickname, id));
+    socket.on('offUsers', (id) => offUsers(id));
     
 </script>
 </html>
