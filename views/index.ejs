@@ -22,22 +22,24 @@
 </head>
 <body>
   <div class="root">
-    <section>Usuários</section>
+    <section id="user-container"></section>
     <section>
       <div id="container-menssage"></div>
       <form id="form-convesation" action="">
-        <input id="inputMessage" type="text" placeholder="Digite uma nova menssagem aqui" /><button>Enviar</button>
+        <input data-testid="message-box" id="inputMessage" type="text" placeholder="Digite uma nova menssagem aqui" /><button data-testid="send-button">Enviar</button>
       </form>
     </section>
     <section>
       <form id="nickname" action="">
-        <input id="input-nickname" type="text" placeholder="Insira seu nickname" /><button>Salvar</button>
+        <input data-testid="nickname-box" id="input-nickname" type="text" placeholder="Insira seu nickname" /><button data-testid="nickname-button">Salvar</button>
       </form>
     </section>
   </div>
   <script src="/socket.io/socket.io.js"></script>
   <script>
     const socket = io();
+    const users = [];
+
     let nick = '';
 
     const formConversations = document.querySelector('#form-convesation');
@@ -67,10 +69,26 @@
       const containerMessage = document.querySelector('#container-menssage');
       const spanMessage = document.createElement('span');
 
+      spanMessage.setAttribute('data-testid', 'message')
+
       spanMessage.innerText = message;
       containerMessage.appendChild(spanMessage);
     }
 
+    const newUser = (user) => {
+      const userContainer = document.querySelector('#user-container');
+      const spanUser = document.createElement('span');
+
+      spanUser.setAttribute('data-testid', 'online-user');
+
+      spanUser.innerText = user;
+      userContainer.appendChild(spanUser);
+    }
+
+    socket.on('newConnection', (message) => {
+      createMessage(message.chatMessage);
+      newUser(message.nickname);
+    });
     socket.on('welcome', (message) => createMessage(message));
     socket.on('message', (message) => createMessage(message));
   </script>

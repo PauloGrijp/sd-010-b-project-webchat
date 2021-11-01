@@ -2,8 +2,12 @@ const date = new Date();
 const formatDate = date.toLocaleString().replace(/\//g, '-');
 const clients = {};
 
+const nick = Math.random().toString(16).substr(2, 8) + Math.random().toString(16).substr(2, 8);
+
 module.exports = (io) => {
   io.on('connection', (socket) => {
+    socket.emit('newConnection', { nickname: nick, chatMessage: `${nick} acabou de entrar...` });
+
     socket.on('send-nickname', (nickname) => {
       clients[socket.id] = nickname;
       socket.emit('welcome', `${formatDate} Sala: Você estrou!`);
@@ -16,7 +20,6 @@ module.exports = (io) => {
 
     socket.on('message', (msg) => {
       const messageToConvey = `${formatDate} ${msg.nickname}: ${msg.chatMessage}`;
-      
       io.emit('message', messageToConvey);
     });
   });
