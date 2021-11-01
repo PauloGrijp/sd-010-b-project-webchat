@@ -84,12 +84,12 @@
     form.addEventListener('submit', (event) => {
       event.preventDefault();
       if (input.value) {
-        socket.emit('send', input.value);
+        socket.emit('message', input.value);
         input.value = '';
       }
     });
 
-    socket.on('send', ({ chatMessage }) => {
+    socket.on('message', ({ chatMessage }) => {
       const item = document.createElement('li');
       item.textContent = chatMessage;
       messages.appendChild(item);

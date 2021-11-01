@@ -29,13 +29,13 @@ io.on('connection', (socket) => {
   console.log(`Usuário conectado, ID: ${socket.id}`);
   const nickname = nickGenerator();
 
-  socket.on('send', (msg) => {
+  socket.on('message', (msg) => {
     const timeMsg = moment().local(true).format('DD-MM-yyyy hh:mm:ss A');
     const chatMessage = `${timeMsg} - ${nickname}: ${msg}`;
 
     messages.push(chatMessage);
 
-    io.emit('send', { chatMessage, nickname });
+    io.emit('message', { chatMessage, nickname });
   });
 
   socket.on('disconnect', () => {
