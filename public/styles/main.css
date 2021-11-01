@@ -1,0 +1,19 @@
+body {
+  margin: 0;
+  padding: 0;
+}
+
+.webchat__footer {
+  background-color: rgb(233, 0, 0);
+  bottom: 0;
+  height: 60px;
+  position: absolute;
+  width: 100vw;
+}
+
+.webchat__footer__form {
+  align-items: center;
+  display: flex;
+  height: 100%;
+}
+

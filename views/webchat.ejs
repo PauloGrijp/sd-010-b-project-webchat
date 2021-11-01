@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Webchat</title>
+    <link rel="stylesheet" href="/styles/main.css">
+  </head>
+  <% const userIcon = '⭐' %>
+  <body>
+    <main id="messages_container">
+    </main>
+    <footer class="webchat__footer">
+      <form class="webchat__footer__form">
+        <h4><%= userIcon %></h4>
+        <input name="nickname" type="text" id="nickname_input" placeholder="Apelido" />
+        <input name="chat-message" type="text" id="chat-message_input" placeholder="Menssagem..." />
+        <button id="send_button" type="button">Enviar</button>
+      </form>
+    </footer>
+  </body>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+
+    const nickname = document.getElementById('nickname_input');
+    const chatMessage = document.getElementById('chat-message_input');
+    const sendButton = document.getElementById('send_button');
+    const messagesContainer = document.getElementById('messages_container');
+
+    sendButton.addEventListener('click', () => {
+      if (nickname.value && chatMessage.value) {
+        const message = {
+          nickname: nickname.value,
+          chatMessage: chatMessage.value,
+        };
+
+        socket.emit('message', message);
+        chatMessage.value = '';
+        chatMessage.focus();
+      }
+    });
+
+    chatMessage.addEventListener('keypress', (event) => {
+      if (event.keyCode === 13) {
+        sendButton.click();
+      }
+    })
+
+    const renderMessage = (text) => {
+      const message = document.createElement('div');
+      message.innerHTML = text;
+      messagesContainer.appendChild(message);
+    };
+    
+    socket.on('message', (message) => {
+      renderMessage(message);
+    });
+  </script>
+</html>
