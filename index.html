@@ -12,7 +12,8 @@
 </head>
 
 <body>
-    <h2 data-testid="online-user" id='nickHash'></h2>
+    <h2 id='nickHash'></h2>
+    <ul id="OnlineUsers">Users Online</ul>
 
 
 
@@ -30,33 +31,33 @@
 
     <ul id="mensagens"></ul>
 
+
 </body>
 
 <script>
+    // Array que renderizará os usuarios online!
+
     // a função io por padrao roda no localhost mas caso queira alterar e só parar o parametro
     // Ajuda de diegho para relembrar topicos relacionados a Dom/Queries
-    const createUser = (newNick) => {
-        const userH2 = document.querySelector('#nickHash')
-        userH2.innerText = newNick
-    }
     const socket = io()
-    socket.on('login', (newAletorieNick) => {
-        createUser(newAletorieNick)
-    })
+    // Manipulação no dom!
 
     const formMensage = document.querySelector('#mensageInputForm')
     const inputMensage = document.querySelector('#mensagemInput')
     const formNickname = document.querySelector('#changeNickName')
     const inputNickname = document.querySelector('#nickBox')
     const hash = document.querySelector('#nickHash')
+    const ulUsers = document.querySelector('#OnlineUsers')
+    let nickname;
 
-    formNickname.addEventListener('click', (event) => {
+    formNickname.addEventListener('submit', (event) => {
         event.preventDefault();
         hash.innerText = inputNickname.value
+        nickname = inputNickname.value
+        socket.emit('newNickname', nickname)
         inputNickname.value = ''
 
     })
-
 
     formMensage.addEventListener('submit', (event) => {
         // pagina não deve ser atualizada com rpevent default
@@ -64,11 +65,46 @@
         // Emitindo!
         socket.emit('message', {
             chatMessage: inputMensage.value,
-            nickname: document.querySelector('#nickHash').innerText
+            nickname: nickname
         })
         return false
     })
 
+
+    const createUser = (newNick) => {
+        const userH2 = document.querySelector('#nickHash')
+        console.log(newNick)
+        userH2.innerText = newNick
+    }
+
+    socket.on('login', (newAletorieNick) => {
+        console.log(newAletorieNick)
+        nickname = newAletorieNick
+        createUser(nickname)
+    })
+
+
+    const createLiUser = (user, ulUsers) => {
+        const li = document.createElement('li')
+        console.log(user, ' estou na li')
+        li.setAttribute('data-testid', 'online-user')
+        li.setAttribute('id', 'user-online')
+        li.innerText = user
+        ulUsers.appendChild(li)
+    }
+
+    // Estou recendo todos usuarios do backEnd
+    socket.on('usersOnline', (usersOnline) => {
+        const ulUsers = document.querySelector('#OnlineUsers')
+        ulUsers.innerHTML = ''
+        const index = usersOnline.indexOf(nickname);
+        usersOnline.splice(index, 1);
+        console.log(nickname, 'nickname')
+        usersOnline.unshift(nickname)
+        usersOnline.forEach((user) => {
+            createLiUser(user, ulUsers)
+        })
+    })
 
     const createMessage = (message) => {
         const messagesUl = document.querySelector('#mensagens');

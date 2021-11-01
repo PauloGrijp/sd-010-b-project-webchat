@@ -2,6 +2,8 @@ const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01234567
 
         // Gerando a HASH!
         // https://www.programiz.com/javascript/examples/generate-random-strings
+        // O método charAt() retorna o caractere especificado a partir de uma string.
+        // https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Global_Objects/String/charAt
 
 const generateString = (length) => {
   let result = ' ';
