@@ -30,7 +30,8 @@ form.addEventListener('submit', (e) => {
   return false;
 });
 
-const createMessage = ({ message }) => {
+const createMessage = (message) => {
+  console.log(message);
   const messagesUl = document.querySelector('.messages');
   const li = document.createElement('li');
   li.setAttribute('data-testid', 'message');
@@ -53,9 +54,11 @@ socket.on('nickname', (nickname) => {
   console.log(nickname);
 });
 
-socket.on('online', (onlineUser) => {
-console.log('onlineA', onlineUser);
-});
+// socket.on('online', (onlineUser) => {
+// console.log('onlineA', onlineUser);
+// });
 
-socket.on('message', (message) => createMessage({
-  message }));
+socket.on('message', (message) => createMessage(message));
+  socket.on('messageList', (messageList) => {
+    messageList.map((message) => createMessage(message));
+  });
