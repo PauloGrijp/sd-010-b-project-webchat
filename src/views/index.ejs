@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Web chat</title>
+  <link rel="stylesheet" href="./stylesheet.css" type="text/css">
+
+</head>
+
+<body>
+  <div class="container1">
+    <div class="container--box box1">
+      <div>
+        <input type="text" id="name-input" data-testid="nickname-box"/>
+        <button id="save-btn" data-testid="nickname-button">Salvar</button>
+      </div>
+
+      <div>
+        <ul class="online-users">
+          <h2>Usuários On-line</h2>
+          <li id="name-user" data-testid="online-user"></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="container--box box2">
+      <ul id="messages" data-testid="message-box">
+      </ul>
+    </div>
+  </div>
+
+  <div class="container2">
+    <form id="form" action="">
+      <input id="input" autocomplete="off" data-testid="message-box"/>
+      <button id="send-btn" data-testid="send-button">Send</button>
+    </form>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+
+    const nickGenerator = () => {
+      let id = '';
+      const string = 'abcdefghijklmnopqrstuvwyxz';
+      string.split('').forEach(() => {
+        if (id.length !== 16) {
+          id += string[Math.floor(Math.random() * (string.length - 1))];
+        }
+      });
+      return id;
+    };
+
+    let nickname = '';
+
+    const changedNickname = document.getElementById('name-input');
+    const saveButton = document.getElementById('save-btn');
+    const messages = document.getElementById('messages');
+    const input = document.getElementById('input');
+    const form = document.getElementById('form');
+
+    form.addEventListener('submit', (event) => {
+      const nameuser = document.getElementById('name-user').innerText;
+
+      event.preventDefault();
+      if (input.value) {
+        socket.emit('message', { chatMessage: input.value, nickname: nameuser });
+        input.value = '';
+      }
+    });
+
+    saveButton.addEventListener('click', () => {
+      const newName = changedNickname.value;
+      const nameuser = document.getElementById('name-user');
+
+      nameuser.innerText = newName;
+    });
+
+    socket.on('message', ({ userMessage }) => {
+      const item = document.createElement('li');
+      item.textContent = userMessage;
+      messages.appendChild(item);
+      window.scrollTo(0, document.body.scrollHeight);
+    });
+
+    window.onload = () => {
+      const nameuser = document.getElementById('name-user');
+
+      nameuser.innerHTML = nickGenerator();
+    };
+
+  </script>
+</body>
+
+</html>
