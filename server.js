@@ -1,2 +1,44 @@
-// Faça seu código aqui
-// iniciando projeto
+const express = require('express');
+
+const app = express();
+const http = require('http').createServer(app);
+
+const io = require('socket.io')(http, {
+  cors: {
+    origin: 'http://localhost:3000',
+    methods: ['GET', 'POST'],
+  },
+});
+
+const { createMessage, getAllMessages } = require('./controllers/chatController');
+
+app.use(express.static(`${__dirname}/views`));
+
+app.get('/', (req, res) => {
+  res.render(`${__dirname}/views`);
+});
+
+let userList = [];
+
+io.on('connection', async (socket) => {
+  socket.on('userOnline', async ({ nickname }) => {
+    userList = userList.filter(({ id }) => id !== socket.id);
+    userList.push({ nickname, id: socket.id });
+    io.emit('userOnline', userList);
+    return userList;
+  });
+
+  socket.on('message', async (message) => {
+    const { chatMessage, nickname } = message;
+    const dateNow = new Date().toLocaleString().replace(/\//g, '-');
+    createMessage({ dateNow, nickname, chatMessage });
+    io.emit('message', `${dateNow} - ${nickname} ${chatMessage}`);
+  });
+
+  const getAllMessage = await getAllMessages();
+  socket.emit('allMessage', getAllMessage);
+});
+
+http.listen(3000, () => {
+  console.log('rodando na porta 3000');
+});
