@@ -1,7 +1,5 @@
 require('dotenv').config();
 const express = require('express');
-const { webchatController } = require('./controller');
-const { sendMessage } = require('./models');
 
 const app = express();
 const http = require('http').createServer(app);
@@ -16,6 +14,8 @@ const io = require('socket.io')(http, {
 });
 
 const { getFullDateNow, getFullTimeNow, randomNickname } = require('./utils');
+const { webchatController } = require('./controller');
+const { sendMessage } = require('./models');
 
 app.set('view engine', 'ejs');
 
@@ -65,6 +65,7 @@ io.on('connection', (socket) => {
   });
 });
 
+// Recebi o auxílio de: Renato Graça, Letícia Galvão e Eder Paiva para finalizar o projeto
 app.get('/', webchatController);
 
 http.listen(port, () => {
