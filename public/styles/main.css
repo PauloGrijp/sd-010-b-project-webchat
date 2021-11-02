@@ -3,15 +3,23 @@ body {
   padding: 0;
 }
 
-.webchat__footer {
+.users__container {
+  background-color: blue;
+  height: 100vh;
+  position: fixed;
+  right: 0;
+  width: 16%;
+}
+
+.actions__container {
   background-color: rgb(233, 0, 0);
   bottom: 0;
-  height: 60px;
-  position: absolute;
+  height: 12%;
+  position: fixed;
   width: 100vw;
 }
 
-.webchat__footer__form {
+.actions__container__form {
   align-items: center;
   display: flex;
   height: 100%;

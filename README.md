@@ -270,7 +270,7 @@ Caso prefira testar um requisito por vez pode executar o teste da seguinte forma
 
 - O front-end deve ter uma caixa de texto através da qual seja possível enviar mensagens para o _chat_:
   - A caixa de texto deve conter o `data-testid="message-box"`;
-  - O botão de enviar mensagem deve conter o `data-testid="send-button"`.
+  - O botão de enviar mensagem deve conter o `data-testid="submit-button"`.
 
 - As mensagens devem ser renderizadas na tela;
   - Cada mensagem deve conter o `data-testid="message"`.

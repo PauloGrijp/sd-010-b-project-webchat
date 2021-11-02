@@ -23,17 +23,6 @@ app.get('/', (_req, res) => {
 // Map the public directory | BASED ON https://stackoverflow.com/questions/18629327/adding-css-file-to-ejs
 app.use(express.static(`${__dirname}/public`));
 
-const { setMoment } = require('./scripts/date');
-
-io.on('connection', (socket) => {
-  console.log(`User connected with socket ID: ${socket.id}`);
-
-  socket.on('message', (message) => {
-    io.emit(
-      'message',
-      `${setMoment()} - <strong>${message.nickname}</strong>: ${message.chatMessage}`,
-    );
-  });
-});
+require('./sockets/webchat')(io);
 
 http.listen(PORT, () => console.log(`Running at port ${PORT}!`)); 
