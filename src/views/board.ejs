@@ -97,9 +97,12 @@
       </div>
 
       <div>
-        <ul class="online-users">
+        <ul id="online-users" class="online-users">
           <h2>Usuários On-line</h2>
           <li id="name-user" data-testid="online-user"></li>
+          <% onlineUsers.forEach((user) => {%>
+            <li><%=user.user%></li>
+          <%})%>
         </ul>
       </div>
     </div>
@@ -138,7 +141,9 @@
     let nickname = '';
 
     const changedNickname = document.getElementById('name-input');
+    const onlineList = document.getElementById('online-users');
     const saveButton = document.getElementById('save-btn');
+    const nameuser = document.getElementById('name-user');
     const messages = document.getElementById('messages');
     const input = document.getElementById('input');
     const form = document.getElementById('form');
@@ -160,15 +165,17 @@
       nameuser.innerText = newName;
     });
 
-    socket.on('message', ( { userMessage }) => {
+    socket.on('message', ({ userMessage }) => {
       const item = document.createElement('li');
       item.textContent = userMessage;
       messages.appendChild(item);
       window.scrollTo(0, document.body.scrollHeight);
     });
 
+    // renderizar o nickname do usuario na lista "onlineList" com o appendChild
+    // e o conteudo deve ser o nome do usuario
+
     window.onload = () => {
-      const nameuser = document.getElementById('name-user');
 
       nameuser.innerHTML = nickGenerator();
     };

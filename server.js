@@ -9,6 +9,7 @@ const moment = require('moment');
 
 const pathViews = path.join(__dirname, 'src/views');
 const port = process.env.PORT || 3000;
+const onlineUsers = [];
 const messages = [];
 
 app.set('view engine', 'ejs');
@@ -21,11 +22,19 @@ app.use(
   }),
 );
 app.get('/', (req, res) => {
-  res.render('board', { messages });
+  res.render('board', { messages, onlineUsers });
 });
 
 io.on('connection', (socket) => {
-  console.log(`Usuário conectado, ID: ${socket.id}`);
+  // console.log(`Usuário conectado, ID: ${socket.id}`);
+
+  socket.emit('online', onlineUsers);
+
+  onlineUsers.push(socket.id);
+
+  // requisito 4
+
+  // Precisa pegar o nickname que foi gerado lá no front end
 
   socket.on('message', ({ chatMessage, nickname }) => {
     const timeMsg = moment().local(true).format('DD-MM-yyyy hh:mm:ss A');
