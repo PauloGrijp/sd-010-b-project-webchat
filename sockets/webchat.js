@@ -2,11 +2,11 @@ const { setMoment } = require('../scripts/date');
 
 let users = [];
 
-const connect = (socket, io) => {
-  socket.on('newUser', (username) => {
+const connectUser = (socket, io) => {
+  socket.on('connectUser', (nickname) => {
     console.log(`Connect user with sockedt ID: ${socket.id}`);
 
-    users.push({ id: socket.id, username });
+    users.push({ id: socket.id, username: nickname });
 
     io.emit('onlineUsers', users);
   });
@@ -46,7 +46,7 @@ const disconnect = (socket, io) => {
 
 const connection = (io) => {
   io.on('connection', (socket) => {
-    connect(socket, io);
+    connectUser(socket, io);
     sendMessage(socket, io);
     setNickname(socket, io);
     disconnect(socket, io);

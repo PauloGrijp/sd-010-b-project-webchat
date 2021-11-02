@@ -9,13 +9,23 @@ const messagesContainer = document.getElementById('messages__container');
 const usersContainer = document.getElementById('users__container');
 
 socket.on('onlineUsers', (users) => {
-  users.forEach(({ username }) => {
-    const user = document.createElement('div');
+  const usersCards = document.querySelectorAll('.user');
 
-    user.setAttribute('data-testid', 'online-user');
-    user.classList.add('user');
-    user.textContent = username;
-    usersContainer.appendChild(user);
+  for (let index = 0; index < usersCards.length; index += 1) {
+    usersContainer.removeChild(usersCards[index]);
+  }
+
+  const userNow = users.filter((user) => user.username === nickname);
+  const orderedUsers = users.filter((user) => user.username !== nickname);
+
+  orderedUsers.unshift(userNow[0]);
+
+  orderedUsers.forEach((user) => {
+    const userCard = document.createElement('div');
+    userCard.setAttribute('data-testid', 'online-user');
+    userCard.classList.add('user');
+    userCard.textContent = user.username;
+    usersContainer.appendChild(userCard);
   });
 });
 
@@ -52,7 +62,7 @@ socket.on('message', (message) => {
 
 nicknameButton.addEventListener('click', () => {
   nickname = nicknameBox.value;
-  socket.emit('changeUser', nickname);
+  socket.emit('setNickname', nickname);
 });
 
 const generateRandomNickname = () => (
@@ -63,5 +73,5 @@ const generateRandomNickname = () => (
 window.onload = () => {
   nickname = generateRandomNickname();
 
-  socket.emit('newUser', nickname);
+  socket.emit('connectUser', nickname);
 };
