@@ -8,21 +8,30 @@
 
 <body>
   <main>
+    <div>
+      <form id="nickname-input" action="">
+        <input id="nickname" data-testid="nickname-box" autocomplete="off" placeholder="nickname" value="" />
+        <button type="submit" data-testid="nickname-button">SAVE</button>
+      </form>
+    </div>
+
     <section class="usuariosOnline">
       <div>Usuários online</div>
-      <ul class="new-online-user"></ul>
-      <ul class="randomNickname" data-testid="online-user"></ul>
-    </section>
-    <section class=chat>
-      <ul class="messages"></ul>
+        <div>
+          <ul id="online-users-list"></ul>
+        </div>
     </section>
 
-    <form action="" >
-      <input id="nickname" data-testid="nickname-box" autocomplete="off" placeholder="nickname"/>
-      <button type="button" data-testid="nickname-button">SAVE</button>
-      <input data-testid="message-box" id="messageInput" autocomplete="off" placeholder="enter the message" />
+    <section class=chat>
+      <div>Mensagens</div>
+      <ul class="messages"></ul>
+    </section>
+    <div>    
+    <form id="message-input-form" action="">
+      <input type="text" data-testid="message-box" id="messageInput" autocomplete="off" placeholder="enter the message" />
       <button type="submit" data-testid="send-button">SEND</button>
-      </form>
+    </form>
+    </div>
   </main>
 
       <script src="/socket.io/socket.io.js"></script>

@@ -4,7 +4,6 @@ const connection = require('./connection');
 const getAll = async () => {
   const db = await connection();
   const messagesFromDb = await db.collection('messages').find().toArray();
-  // console.log('fromDB', messagesFromDb);
   return messagesFromDb;
 };
 
