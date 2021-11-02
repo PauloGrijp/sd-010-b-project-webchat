@@ -28,6 +28,6 @@ app.set('view engine', 'ejs');
 
 app.set('views', path.join(__dirname, 'public/views'));
 
-const PORT = process.env.PORT || 3001;
+const PORT = 3000;
 
 httpServer.listen(PORT, () => console.log(`Ouvindo a porta ${PORT}`));
