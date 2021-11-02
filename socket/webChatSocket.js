@@ -1,4 +1,5 @@
 const moment = require('moment'); //  https://momentjs.com/
+const webChatModel = require('../models/webChatModel');
 
 const usersOnline = [];
 const timestamp = moment().format('DD-MM-yyyy HH:mm:ss');
@@ -18,6 +19,7 @@ const webChatIO = (io) => {
 
     socket.on('message', async ({ chatMessage, nickname }) => {
       io.emit('message', `${timestamp} - ${nickname}: ${chatMessage}`);
+      await webChatModel.addMessage({ message: chatMessage, nickname, timestamp });
     });
   });
 };
