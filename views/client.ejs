@@ -10,7 +10,7 @@
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     }
 
-    #form {
+    #form-message {
       background: rgba(0, 0, 0, 0.15);
       padding: 0.25rem;
       position: fixed;
@@ -35,7 +35,7 @@
       outline: none;
     }
 
-    #form>button {
+    #form-message>button {
       background: #333;
       border: none;
       padding: 0 1rem;
@@ -59,10 +59,6 @@
       background: #efefef;
     }
   </style>
-
-
-  <script src="/socket.io/socket.io.js"></script>
-  <!-- <script src="/util/createMessageLi.js"></script> -->
 </head>
 
 <body>
@@ -73,113 +69,23 @@
       <button type='text' id="nickname-button" data-testid="nickname-button">Entrar</button>
     </form>
 
-    <ul id="users-online"></ul>
+    <ul id="users-online">
+      <% users.forEach( (nicks) => { %>
+      <li><%= nicks%></li>
+      <%})%>
+    </ul>
   </aside>
 
   <ul id="messages"></ul>
   <!-- form correspondente as mensagens  -->
-  <form id="form" action="">
+  <form id="form-message" action="">
     <input id="input-message" autocomplete="off" data-testid="message-box" /><button
       data-testid="send-button">Enviar</button>
   </form>
 
 
-  <script>
-    const socket = io();
-    const form = document.querySelector('#form');
-    const formNickname = document.querySelector('#form-aside');
-    const chatMessage = document.querySelector('#input-message');
-    const nickname = document.querySelector('#name');
-    let idUser = '';
-    let arrayUsers = '';
-
-    const newNickName = () => {
-      const randomNickName = generateNickName(16)
-      const formatNickname = nickname.value ? nickname.value : randomNickName;
-      sessionStorage.setItem('nickname', formatNickname);
-      return formatNickname;
-    }
-
-    const renderUser = (arrayUsersOn) => {
-      const ul = document.querySelector('#users-online');
-      const allRenderedUsers = document.querySelector(`${idUser}`);
-
-
-      arrayUsersOn.forEach(({
-        nickname,
-        idSocket
-      }) => {
-        const li = document.createElement('li');
-        li.setAttribute('data-testid', 'online-user');
-        li.setAttribute('id', `${idSocket}`);
-        li.className = 'users'
-        li.innerText = nickname;
-        ul.appendChild(li);
-      });
-    }
-
-    const renderMessageLi = (fullMessage) => {
-      const ul = document.querySelector('#messages');
-      const li = document.createElement('li');
-      li.setAttribute('data-testid', 'message')
-      li.innerText = fullMessage;
-      ul.appendChild(li);
-    };
-
-    /*
-      Função para gerar nickName randomizado
-      FONTE: https://www.ti-enxame.com/pt/javascript/gere-stringcaracteres-aleatorios-em-javascript/967048592/
-    */
-    const dec2hex = (dec) => {
-      return ('0' + dec.toString(16)).substr(-2)
-    }
-    const generateNickName = (len) => {
-      var arr = new Uint8Array((len || 40) / 2)
-      window.crypto.getRandomValues(arr)
-      return Array.from(arr, dec2hex).join('')
-    }
-
-
-    // FORMS -------------------------------------------------------------------------------
-    formNickname.addEventListener('submit', (e) => {
-      e.preventDefault();
-      editUserRender();
-
-      // socket.emit('newUser', nickname.value);
-      nickname.value = '';
-    });
-
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const nickNameSaved = sessionStorage.getItem('nickname')
-
-      socket.emit('message', {
-        chatMessage: chatMessage.value,
-        nickname: nickNameSaved
-      });
-
-      chatMessage.value = '';
-      return false;
-    });
-
-    // eventos ------------------------------------------------
-    socket.emit('firstLoading', newNickName());
-
-    // socket.on('getSocketId', (id) => {
-    //   idUser = id;
-    // });
-
-    socket.on('firstLoading', (arrayUsersOn, id) => {
-      // console.log(id, 'OOJOKOKIOKOK')
-      idUser = id;
-      arrayUsers = arrayUsersOn;
-      renderUser(arrayUsers);
-    });
-
-    socket.on('message', (fullMessage) => renderMessageLi(fullMessage))
-  </script>
-
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="./js/index.js"></script>
 </body>
-
 
 </html>
