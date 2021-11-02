@@ -117,6 +117,18 @@
     socket.on('message', (message) => {
         createMessage(message)
     })
+
+    // Renato Graça Vulgo Renatinho do Rodo
+    // const sendMensage = `$ ${data} - ${nickname} -  ${chatMessage}`;
+    const getAllmessages = async () => {
+        const messages = await fetch('http://localhost:3000/messages')
+        const messageJson = await messages.json();
+        return messageJson.forEach((message) => {
+
+            createMessage(` ${message.timestamp} - ${message.nickname} -  ${message.message}`);
+        })
+    }
+    getAllmessages()
 </script>
 
 </html>
