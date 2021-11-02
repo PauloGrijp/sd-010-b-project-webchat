@@ -3,33 +3,26 @@ const socket = window.io();
 const sendBtn = document.querySelector('.send');
 const nicknameBtn = document.querySelector('.btn_nickname');
 const clientName = document.querySelector('.name');
+
 let nickname;
 
-const createNickname = (tamanho) => {
-  let stringAleatoria = '';
-  const caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
-  for (let i = 0; i < tamanho; i += 1) {
-  stringAleatoria += caracteres.charAt(Math.floor(Math.random() * caracteres.length));
-  }
-  return stringAleatoria;
-}; 
-
-const createMessage = () => {
+const createLi = () => {
   const li = document.createElement('li');
   li.className = 'semStyle';
-  li.setAttribute('data-testid', 'message');
   return li;
 };
 
-const UserNickname = createNickname(16);
-clientName.innerHTML = UserNickname;
-nickname = UserNickname;
+socket.on('userName', (userName) => {
+  clientName.innerHTML = userName;
+  nickname = userName;
+});
 
 nicknameBtn.addEventListener('click', () => {
-  const inputNewNickname = document.querySelector('.nickname').value;
-  clientName.innerHTML = inputNewNickname;
-  nickname = inputNewNickname;
+  const inputNewNickname = document.querySelector('.nickname');
+  clientName.innerHTML = inputNewNickname.value;
+  nickname = inputNewNickname.value;
   inputNewNickname.value = '';
+  socket.emit('alterName', nickname);
 });
 
 const saveMessages = (body) => {
@@ -43,8 +36,7 @@ const saveMessages = (body) => {
   };
 };
 
-sendBtn.addEventListener('click', (event) => {
-  event.preventDefault();
+sendBtn.addEventListener('click', () => {
   const inputMessage = document.querySelector('.msgtxt');
   const message = { message: inputMessage.value, nickname };
   saveMessages(message);
@@ -54,9 +46,24 @@ sendBtn.addEventListener('click', (event) => {
 
 socket.on('message', (message) => {
   const boxMessage = document.querySelector('.chat');
-  const li = createMessage();
+  const li = createLi();
+  li.setAttribute('data-testid', 'message');
   li.innerHTML = message;
   sessionStorage.setItem('message', message);
   console.log(message);
   boxMessage.appendChild(li);
+});
+
+socket.on('usersOn', (users) => {
+  const boxUsers = document.querySelector('.users');
+  boxUsers.innerHTML = '';
+  users.splice(users.indexOf(nickname), 1);
+  users.unshift(nickname);
+  console.log(users);
+  users.forEach((user) => {
+      const li = createLi();
+      li.setAttribute('data-testid', 'online-user');
+      li.innerHTML = user;
+      boxUsers.appendChild(li);
+  });
 });

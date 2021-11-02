@@ -9,19 +9,21 @@
 </head>
 <body>
   <h1 id="title">Hello my friends</h1>
-  <!-- <form action="sendMessage" method="post" class="formMessage"> -->
     <div class="chat">
       <%messages.forEach(({ nickname, message, timestamp }) => {%>
         <li class="semStyle" data-testid="message"><%=`${timestamp} - ${nickname}: ${message}`%></li>
       <%})%>
     </div>
+    <input type="text" data-testid="message-box" class="msgtxt">
+    <button data-testid="send-button" class="send" type="submit">SEND</button>
     <div>
-      <label for="nickname">Nickname: <span data-testid="online-user" class="name"></span></label> <br>
+      <label for="nickname">Nickname: <span data-testid="user" class="name"></span></label> <br>
       <input data-testid="nickname-box" type="text" id="nickname" class="nickname">
       <button data-testid="nickname-button" class="btn_nickname">CHANGE</button>
     </div>
-    <input type="text" data-testid="message-box" class="msgtxt">
-    <button data-testid="send-button" class="send" type="submit">SEND</button>
+    <div class="users">
+      <h5>Pessoas Conectadas</h5>
+    </div>
 </body>
 <script src="/socket.io/socket.io.js"></script>
 <script src="javaScript/index.js"></script>
