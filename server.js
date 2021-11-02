@@ -56,7 +56,8 @@ io.on('connection', (socket) => {
 app.get('/', (req, res) => res.sendFile(`${__dirname}/index.html`));
 
 // Fetch no front end dessa rota
-app.get('/messages', async (req, res) => res.status(200).json(await userMessagesController.getAllMessages())); 
+app.get('/messages', async (req, res) => res.status(200)
+.json(await userMessagesController.getAllMessages())); 
 
 http.listen(3000, () => {
   console.log('Servidor ouvindo na porta 3000');
