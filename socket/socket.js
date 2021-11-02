@@ -10,4 +10,8 @@ module.exports = (io) => io.on('connection', async (socket) => {
   socket.on('message', ({ chatMessage, nickname }) => {
     io.emit('message', `${moment().format('DD-MM-YYYY HH:mm:ss')} ${nickname}: ${chatMessage}`);
   });
+
+  socket.on('update-nickname', (nick) => {
+    client[socket.id] = nick;
+  });
 });

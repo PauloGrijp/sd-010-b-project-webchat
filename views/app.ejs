@@ -12,14 +12,14 @@
       justify-content: space-between;
     }
 
-    #message-box {
+    #message-container {
       border: 1px solid black;
       display: flex;
       flex-direction: column;
       height: 90vh;
     }
 
-    #user-container {
+    #user-box {
       display: flex;
       flex-direction: column;
     }
@@ -27,17 +27,17 @@
 </head>
 <body>
   <div class="root">
-    <section id="user-container"></section>
+    <section id="user-box"></section>
 
     <section>
-      <div id="message-box"></div>
+      <div id="message-container"></div>
       <form id="form-message">
-        <input data-testid="" id="input-message" type="text" placeholder="Digite uma nova menssagem aqui" /><button data-testid="send-button">Enviar</button>
+        <input data-testid="message-box" id="input-message" type="text" placeholder="Digite uma nova menssagem aqui" /><button data-testid="send-button">Enviar</button>
       </form>
     </section>
 
     <section>
-      <form id="nickname">
+      <form id="form-nickname">
         <input data-testid="nickname-box" id="input-nickname" type="text" placeholder="Insira seu nickname" /><button data-testid="nickname-button">Salvar</button>
       </form>
     </section>
@@ -51,8 +51,12 @@
 
     const dom = {
       formMessage: document.querySelector('#form-message'),
+      formNickname: document.querySelector('#form-nickname'),
       inputMessage: document.querySelector('#input-message'),
-      messageBox: document.querySelector('#message-box'),
+      inputNickname: document.querySelector('#input-nickname'),
+      messageContainer: document.querySelector('#message-container'),
+      userBox: document.querySelector('#user-box'),
+      spanUser: document.querySelector(`#user-${clientNick}`),
     };
 
     dom.formMessage.addEventListener('submit', (e) => {
@@ -62,13 +66,31 @@
       dom.inputMessage.value = '';
     });
 
-    socket.on('new-user', (nick) => clientNick = nick);
+    dom.formNickname.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      clientNick = dom.inputNickname.value;
+
+      socket.emit('update-nickname', dom.inputNickname.value);
+      dom.inputNickname.value = '';
+    });
+
+    socket.on('new-user', (nick) => {
+      clientNick = nick
+
+      const spanNickname = document.createElement('span');
+      spanNickname.innerText = clientNick;
+      spanNickname.setAttribute('data-testid', 'online-user');
+
+      dom.userBox.appendChild(spanNickname);
+    });
 
     socket.on('message', (msg) => {
       const span = document.createElement('span');
       span.innerText = msg;
+      span.setAttribute('data-testid', 'message');
 
-      dom.messageBox.appendChild(span);
+      dom.messageContainer.appendChild(span);
     });
   </script>
 </body>
