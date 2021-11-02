@@ -15,7 +15,11 @@
       <button data-testid="send-button">Send</button>
     </form>
     <ul id="userOnlineList">Users On-line:</ul>
-    <ul id="messages">chat:</ul>
+    <ul id="messages">chat:
+      <% messages.forEach(message => { %>
+        <li data-testid= "message"> <%=message.msg %> </li>
+      <% }) %>
+    </ul>
     <script src="/socket.io/socket.io.js"></script>
     <script>
     

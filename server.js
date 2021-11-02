@@ -1,5 +1,7 @@
 require('dotenv').config();
 const express = require('express');
+const { webchatController } = require('./controller');
+const { sendMessage } = require('./models');
 
 const app = express();
 const http = require('http').createServer(app);
@@ -51,8 +53,9 @@ io.on('connection', (socket) => {
   io.emit('usersList', usersList);
   });
 
-  socket.on('message', ({ chatMessage, nickname }) => {
+  socket.on('message', async ({ chatMessage, nickname }) => {
     const msg = `${getFullDateNow()} ${getFullTimeNow()} - ${nickname}: ${chatMessage}`;
+    await sendMessage(msg);
     io.emit('message', msg);
   });
 
@@ -62,9 +65,7 @@ io.on('connection', (socket) => {
   });
 });
 
-app.get('/', (req, res) => {
-  res.render('index');
-});
+app.get('/', webchatController);
 
 http.listen(port, () => {
   console.log(`Servidor ouvindo na porta ${port}`);
