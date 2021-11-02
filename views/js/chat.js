@@ -16,8 +16,8 @@ const DATA_TEST_ID = 'data-testid';
 
 const messageInputForm = document.querySelector('#message-input-form');
 const inputMessage = document.querySelector('#messageInput');
-const inputNickname = document.querySelector('#nickname');
-const nicknameInput = document.querySelector('#nickname-input');
+const inputNickname = document.querySelector('#input-nickname');
+const nicknameInputForm = document.querySelector('#nickname-input-form');
 // const elementNickname = document.querySelector('.randomNickname');
 const randomCaracteres = generateNickName(16);
   
@@ -27,24 +27,20 @@ const randomCaracteres = generateNickName(16);
     // inputNickname.value = newNickName; // input nickname); 
   }
 
-  nicknameInput.addEventListener('submit', (e) => {
+  nicknameInputForm.addEventListener('submit', (e) => {
     e.preventDefault();
-    console.log('estou funcionando');
     sessionStorage.setItem('nickname', inputNickname.value);
     socket.emit('updateNickname', inputNickname.value);
     inputNickname.value = '';
-
     return false;
   });
 
 messageInputForm.addEventListener('submit', (e) => {
   e.preventDefault();
-  socket.emit('message', { chatMessage: inputMessage.value, nickname: inputNickname.value });
-  sessionStorage.setItem('nickname', inputNickname.value);  
-  socket.emit('updateNickname', inputNickname.value);
+  const nickname = sessionStorage.getItem('nickname');  
+  socket.emit('message', { chatMessage: inputMessage.value, nickname });
+  // socket.emit('updateNickname', inputNickname.value);
   inputMessage.value = '';
-  console.log('input', inputMessage.value);
-
   return false;
 });
 
