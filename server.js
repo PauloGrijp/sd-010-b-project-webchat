@@ -15,6 +15,7 @@ const io = require('socket.io')(http, {
 });
 
 app.use(cors());
+app.use(express.static(__dirname));
 
 require('./sockets/chat')(io);
 
