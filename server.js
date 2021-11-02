@@ -1,7 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-// const path = require('path');
+const path = require('path');
 
 const app = express();
 
@@ -13,6 +13,9 @@ app.use(
     allowedHeaders: ['Authorization'],
   }),
 );
+
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
 
 const httpServer = require('http').createServer(app);
 
@@ -32,7 +35,7 @@ io.on('connection', (socket) => {
 
 app.get('/', (req, res) => {
   // res.sendFile(`${__dirname}/index.html`);
-  res.send('OI');
+  res.render('board');
 });
 
 httpServer.listen(PORT, () => {
