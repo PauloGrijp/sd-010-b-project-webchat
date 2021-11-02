@@ -16,6 +16,8 @@ const io = new Server(httpServer, {
   },
 });
 
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(express.static(`${__dirname}/public`));
 require('./socket/chat')(io);
 
@@ -24,7 +26,7 @@ app.set('views', 'views');
 
 app.use(cors());
 
-app.get('/', (req, res) => res.render('index.ejs'));
+app.get('/', async (req, res) => res.render('index.ejs'));
 
 httpServer.listen(port, () => {
   console.log(`Servidor rodando na porta ${port}`);

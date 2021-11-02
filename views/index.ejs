@@ -18,6 +18,11 @@
       flex-direction: column;
       height: 90vh;
     }
+
+    #user-container {
+      display: flex;
+      flex-direction: column;
+    }
   </style>
 </head>
 <body>
@@ -38,7 +43,6 @@
   <script src="/socket.io/socket.io.js"></script>
   <script>
     const socket = io();
-    const users = [];
 
     let nick = '';
 
@@ -79,18 +83,26 @@
       const userContainer = document.querySelector('#user-container');
       const spanUser = document.createElement('span');
 
-      spanUser.setAttribute('data-testid', 'online-user');
+      nick = user;
 
-      spanUser.innerText = user;
+      spanUser.setAttribute('data-testid', 'online-user');
+      spanUser.innerText = nick;
       userContainer.appendChild(spanUser);
     }
 
-    socket.on('newConnection', (message) => {
-      createMessage(message.chatMessage);
-      newUser(message.nickname);
+    socket.on('newUser', (nickname) => {
+      newUser(nickname);
     });
-    socket.on('welcome', (message) => createMessage(message));
-    socket.on('message', (message) => createMessage(message));
+
+    socket.on('newConnection', (data) => {
+      data.forEach(element => {
+        let message = `${element.timestamp} ${ element.nickname }: ${ element.message }`;
+        createMessage(message);
+        newUser(element.nickname);
+      });
+    });
+
+    socket.on('sendMessage', (message) => createMessage(message));
   </script>
 </body>
 </html>
