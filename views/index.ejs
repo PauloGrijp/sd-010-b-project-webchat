@@ -2,10 +2,10 @@
 <html>
   <head>
     <title>Document</title>
-    
+
   </head>
   <body>
-    <h2 data-testid="online-user" id='nicknameScreen'></h2>
+    <h2 id='nicknameScreen'></h2>
     <form id='userForm'>
       Nickname: <input type="text" id="userNickname" data-testid="nickname-box" />
       <button data-testid="nickname-button">salvar nickname</button>
@@ -14,41 +14,71 @@
       Mensagem: <input id="input" autocomplete="off" data-testid="message-box"/>
       <button data-testid="send-button">Send</button>
     </form>
-
-    <ul id="messages"></ul>
+    <ul id="userOnlineList">Users On-line:</ul>
+    <ul id="messages">chat:</ul>
     <script src="/socket.io/socket.io.js"></script>
     <script>
+    
       let socket = io();
-
       let messages = document.getElementById('messages');
       let form = document.getElementById('form');
-      let userForm= document.getElementById('userForm') 
+      let userForm = document.getElementById('userForm');
+      let userOnlineList = document.getElementById('userOnlineList')  
       let userNickname = document.getElementById('userNickname');
       let nicknameOnScreen = document.getElementById('nicknameScreen')
       let input = document.getElementById('input');
      
+      let thisUser = '';
       const createUser =  (newUserNick) =>{
+        thisUser = newUserNick
         nicknameOnScreen.innerText = newUserNick;
       }
 
-      userForm.addEventListener('click', (e) => {
+   
+      
+      userForm.addEventListener('submit', (e) => {
       e.preventDefault();
-      nicknameOnScreen.innerText = userNickname.value;
+      const newUserNick = userNickname.value
+      sessionStorage.setItem('nickname', newUserNick);
+      nicknameOnScreen.innerText = newUserNick;
+      socket.emit('newUserNick', newUserNick);
+      thisUser = newUserNick;
       userNickname.value= '';
       }
       )
-     
+
+      const insertUser = (nickname) => {
+        let item = document.createElement('li');
+        item.setAttribute('data-testid', "online-user")
+        item.innerHTML = nickname;
+        userOnlineList.appendChild(item);
+      };
+
+
       form.addEventListener('submit', (e) => {
       e.preventDefault();
       
         socket.emit('message', { chatMessage: input.value, nickname: nicknameOnScreen.innerText})
         input.value = '';
-      })
-
+      });
+      
       socket.on('userNickname', (userNickname) => {
-        createUser(userNickname)
-      })
+        createUser(userNickname);
+      });
 
+      const userAllList = (list) => {
+        userOnlineList.innerHTML='';
+
+        insertUser(thisUser);
+
+        list.forEach((user) => {
+          if(user!==thisUser){
+            insertUser(user)
+          }
+        });
+      }
+
+      socket.on('usersList',(list) => userAllList(list));
 
       socket.on('message', (msg) => {
         let item = document.createElement('li');
@@ -57,6 +87,7 @@
         messages.appendChild(item);
         window.scrollTo(0, document.body.scrollHeight);
       })
+    
     </script>
   </body>
 </html>

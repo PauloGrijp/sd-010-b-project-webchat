@@ -12,6 +12,7 @@ const io = require('socket.io')(http, {
     methods: ['GET', 'POST'],
   },
 });
+
 const { getFullDateNow, getFullTimeNow, randomNickname } = require('./utils');
 
 app.set('view engine', 'ejs');
@@ -34,13 +35,30 @@ app.use('/', express.static(`${__dirname}views`));
 // io.sockets.emit(); ***send to all connected clients (same as socket.emit)
 // io.sockets.on() ; ***initial connection from a client.
 
+const usersList = [];
 io.on('connection', (socket) => {
-  console.log('Usuário(a) conectado(a).');
-  const userNickname = randomNickname(16);
+  let userNickname = randomNickname(16);
   socket.emit('userNickname', userNickname);
+  
+  usersList.push(userNickname);
+  
+  io.emit('usersList', usersList);
+
+  socket.on('newUserNick', (nickname) => {
+  usersList.splice(usersList.indexOf(userNickname), 1, nickname);
+  userNickname = nickname;
+  // socket.emit('userNickname', userNickname); 
+  io.emit('usersList', usersList);
+  });
+
   socket.on('message', ({ chatMessage, nickname }) => {
     const msg = `${getFullDateNow()} ${getFullTimeNow()} - ${nickname}: ${chatMessage}`;
     io.emit('message', msg);
+  });
+
+  socket.on('disconnect', () => {
+    usersList.splice(usersList.indexOf(userNickname), 1);
+    io.emit('usersList', usersList);
   });
 });
 
