@@ -8,6 +8,11 @@ require('dotenv').config();
 const port = process.env.PORT || 3000;
 
 const app = express();
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static(`${__dirname}/public`));
+
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
   cors: {
@@ -16,17 +21,14 @@ const io = new Server(httpServer, {
   },
 });
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(express.static(`${__dirname}/public`));
-require('./socket/chat')(io);
+require('./socket/socket')(io);
 
 app.set('view engine', 'ejs');
 app.set('views', 'views');
 
 app.use(cors());
 
-app.get('/', async (req, res) => res.render('index.ejs'));
+app.get('/', async (req, res) => res.render('app.ejs'));
 
 httpServer.listen(port, () => {
   console.log(`Servidor rodando na porta ${port}`);

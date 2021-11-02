@@ -38,6 +38,7 @@ const messages = async (socket, io) => {
 
 module.exports = (io) => {
   io.on('connection', async (socket) => {
+    console.log(socket.id, 'estou logado');
     await newUser(socket);
     await updateNick(socket);
     await messages(socket, io);

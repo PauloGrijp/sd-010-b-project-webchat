@@ -44,65 +44,69 @@
   <script>
     const socket = io();
 
-    let nick = '';
+    // let nick = '';
 
-    const formConversations = document.querySelector('#form-convesation');
-    const inputMessage = document.querySelector('#inputMessage');
-    const formNickName = document.querySelector('#nickname');
-    const inputNickName = document.querySelector('#input-nickname');
+    // const formConversations = document.querySelector('#form-convesation');
+    // const inputMessage = document.querySelector('#inputMessage');
+    // const formNickName = document.querySelector('#nickname');
+    // const inputNickName = document.querySelector('#input-nickname');
 
-    formNickName.addEventListener('submit', (e) => {
-      e.preventDefault();
-      nick = inputNickName.value;
-      socket.emit('send-nickname', inputNickName.value);
-      inputNickName.value = '';
+    // formNickName.addEventListener('submit', (e) => {
+    //   e.preventDefault();
+    //   nick = inputNickName.value;
+    //   socket.emit('send-nickname', inputNickName.value);
+    //   inputNickName.value = '';
 
-      return false;
-    });
+    //   return false;
+    // });
 
-    formConversations.addEventListener('submit', (e) => {
-      e.preventDefault();
+    // formConversations.addEventListener('submit', (e) => {
+    //   e.preventDefault();
 
-      socket.emit('message', { chatMessage: inputMessage.value, nickname: nick });
-      inputMessage.value = '';
+    //   socket.emit('message', { chatMessage: inputMessage.value, nickname: nick });
+    //   inputMessage.value = '';
 
-      return false;
-    });
+    //   return false;
+    // });
 
-    const createMessage = (message) => {
-      const containerMessage = document.querySelector('#container-menssage');
-      const spanMessage = document.createElement('span');
+    // const createMessage = (message) => {
+    //   const containerMessage = document.querySelector('#container-menssage');
+    //   const spanMessage = document.createElement('span');
 
-      spanMessage.setAttribute('data-testid', 'message')
+    //   spanMessage.setAttribute('data-testid', 'message')
 
-      spanMessage.innerText = message;
-      containerMessage.appendChild(spanMessage);
-    }
+    //   spanMessage.innerText = message;
+    //   containerMessage.appendChild(spanMessage);
+    // }
 
-    const newUser = (user) => {
-      const userContainer = document.querySelector('#user-container');
-      const spanUser = document.createElement('span');
+    // const newUser = (user) => {
+    //   const userContainer = document.querySelector('#user-container');
+    //   const spanUser = document.createElement('span');
 
-      nick = user;
+    //   nick = user;
 
-      spanUser.setAttribute('data-testid', 'online-user');
-      spanUser.innerText = nick;
-      userContainer.appendChild(spanUser);
-    }
+    //   spanUser.setAttribute('data-testid', 'online-user');
+    //   spanUser.innerText = nick;
+    //   userContainer.appendChild(spanUser);
+    // }
 
-    socket.on('newUser', (nickname) => {
-      newUser(nickname);
-    });
+    // socket.on('newUser', (nickname) => {
+    //   newUser(nickname);
+    // });
 
-    socket.on('newConnection', (data) => {
-      data.forEach(element => {
-        let message = `${element.timestamp} ${ element.nickname }: ${ element.message }`;
-        createMessage(message);
-        newUser(element.nickname);
-      });
-    });
+    // socket.on('newConnection', (data) => {
+    //   data.forEach(element => {
+    //     let message = `${element.timestamp} ${ element.nickname }: ${ element.message }`;
+    //     createMessage(message);
+    //     newUser(element.nickname);
+    //   });
+    // });
 
-    socket.on('sendMessage', (message) => createMessage(message));
+    // socket.on('sendMessage', (message) => createMessage(message));
+
+    // socket.on('disconnect', () => {
+      
+    // });
   </script>
 </body>
 </html>
