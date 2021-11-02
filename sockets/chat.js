@@ -2,7 +2,7 @@ const { dateTimeFormat } = require('../helpers/dateTimeFormat');
 const { messageFormat } = require('../helpers/messageFormat');
 const messageController = require('../controllers/messageController');
 
-const users = [];
+let users = [];
 
 const newConnection = (io, nickname) => {
   users.push(nickname);
@@ -29,8 +29,10 @@ const changeNickname = (io, oldNickname, nickname) => {
 };
 
 const leftRoom = (io, nickname) => {
-  users.splice(users.indexOf(nickname), 1);
-  io.emit('generateList', users);
+  const index = users.indexOf(nickname);
+  users = [...users.slice(0, index), ...users.slice(index + 1)];
+  // users.splice(users.indexOf(nickname), 1);
+  // io.emit('generateList', users);
   io.emit('message', `${nickname} acabou de se desconectar! :(`);
 };
 
@@ -43,5 +45,8 @@ module.exports = (io) =>
     socket.on('changeNickname', ({ oldNickname, nickname }) =>
       changeNickname(io, oldNickname, nickname));
     socket.on('leftRoom', (nickname) => leftRoom(io, nickname));
-    socket.on('disconnect', () => {});
+    socket.on('disconnect', () => {
+      io.emit('generateList', users);
+      console.log(`${socket.id} se desconectou...`);
+    });
   });

@@ -45,16 +45,16 @@ const createMessage = (message) => {
 const createUsersList = (users) => {
   const namesUl = document.querySelector('#names');
   namesUl.innerText = '';
-  const liFisrt = document.createElement('li');
-  liFisrt.innerText = nickname;
-  liFisrt.setAttribute(testid, 'online-user');
-  namesUl.appendChild(liFisrt);
+  const liFirst = document.createElement('li');
+  liFirst.innerText = nickname;
+  liFirst.setAttribute(testid, 'online-user');
+  namesUl.appendChild(liFirst);
   users.splice(users.indexOf(nickname), 1);
 
   users.forEach((user) => {
     const li = document.createElement('li');
     li.innerText = user;
-    liFisrt.setAttribute(testid, 'online-user');
+    li.setAttribute(testid, 'online-user');
     namesUl.appendChild(li);
   });
 };
