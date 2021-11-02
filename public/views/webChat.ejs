@@ -7,20 +7,25 @@
   <title>Web Chat</title>
 </head>
 <body>
-  <h1 class="title">CHAT MESSENGER</h1>
-    <section class="nick">
-      <span id="user">Bem-vindo! Seu nickname é</span>
+  <h1>CHAT MESSENGER</h1>
+    <section>
+      <span id="user">Bem-vindo! Seu nickname é </span>
+      <div>
+        <input type="text" id="nickInput" data-testid="nickname-box" placeholder="Altere seu nickname" >
+        <button type="submit" id="nickBtn" data-testid="nickname-button">Alterar</button>
+      </div>
     </section>
-    <section class="allContent">
-      <ul id="msgContainer" class="msgContainer">
+    <section>
+      <ul id="usersContainer">Online:</ul>
+      <ul id="msgContainer">
         <% renderMessages.forEach((msg) => { %>
-          <li><%= msg %></li>
+          <li data-testid="message"><%= msg %></li>
         <% }) %>
       </ul>
     </section>
-    <section class="msgForm">
-      <input type="text"id="msgInput">
-      <button type="submit"id="msgBtn">Enviar</button>
+    <section>
+      <input type="text" id="msgInput" data-testid="message-box">
+      <button type="submit" id="msgBtn" data-testid="send-button">Enviar</button>
     </section>
     <script src="/socket.io/socket.io.js"></script>
     <script src="../js/webChat.js"></script>

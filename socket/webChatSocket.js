@@ -10,6 +10,12 @@ const webChatIO = (io) => {
 
     io.emit('connected', { nick: socket.id.slice(0, 16), users: usersOnline });
 
+    socket.on('updateNick', ({ newNick }) => {
+      const indexUser = usersOnline.findIndex((user) => user.nickname === userId);
+      usersOnline[indexUser].nickname = newNick;
+      io.emit('updatedUsers', { users: usersOnline });
+    });
+
     socket.on('message', async ({ chatMessage, nickname }) => {
       io.emit('message', `${timestamp} - ${nickname}: ${chatMessage}`);
     });
