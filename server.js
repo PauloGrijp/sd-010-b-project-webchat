@@ -15,10 +15,12 @@ const io = require('socket.io')(httpServer, {
   },
 });
 
+const webChatRouter = require('./routes/webChatRouter');
 const webChatIO = require('./socket/webChatSocket');
 
 webChatIO(io);
 
+app.use(webChatRouter);
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.set('view engine', 'ejs');
@@ -26,6 +28,6 @@ app.set('view engine', 'ejs');
 
 app.set('views', path.join(__dirname, 'public/views'));
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 
 httpServer.listen(PORT, () => console.log(`Ouvindo a porta ${PORT}`));
