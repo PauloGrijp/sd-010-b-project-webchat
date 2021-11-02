@@ -5,7 +5,7 @@ const usersOnline = [];
 const timestamp = moment().format('DD-MM-yyyy HH:mm:ss');
 
 const webChatIO = (io) => {
-  io.on('connection', async (socket) => {
+  io.on('connection', (socket) => {
     const userId = socket.id.slice(0, 16);
     usersOnline.push({ userId, nickname: userId });
 
@@ -20,6 +20,11 @@ const webChatIO = (io) => {
     socket.on('message', async ({ chatMessage, nickname }) => {
       io.emit('message', `${timestamp} - ${nickname}: ${chatMessage}`);
       await webChatModel.addMessage({ message: chatMessage, nickname, timestamp });
+    });
+
+    socket.on('disconnect', () => {
+      const indexUser = usersOnline.findIndex((user) => user.nickname === userId);
+      usersOnline.splice(indexUser, 1); io.emit('disconnectedUser', { users: usersOnline });
     });
   });
 };
