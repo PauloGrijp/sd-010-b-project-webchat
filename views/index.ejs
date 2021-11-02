@@ -5,9 +5,10 @@
     <title>Socket.IO - trybe</title>
   </head>
   <body>
+    <ul id="userId"></ul>
     <ul id="messages"></ul>
 
-    <p class="randomNickName" data-testid="online-user" autocomplete='off'></p>
+    <p class="randomNickName" autocomplete='off'></p>
     <form class="nickNameForm" action=''>
       <input id="nickName" data-testid="nickname-box" placeholder="NickName" autocomplete='off'/>
       <button id="chosenNickName" data-testid="nickname-button">Salvar NickName</button>
@@ -24,11 +25,11 @@
       const form = document.querySelector('.messageForm');
       const inputMsg = document.querySelector('#inputForm');
       const nick = document.querySelector('#nickName');
-      const randomNickName = document.querySelector('.randomNickName');
+      const randomNickName = document.querySelector('.randomNickName');     
+
       form.addEventListener('submit', (e) => {
         e.preventDefault();
         const nickname =  randomNickName.innerText;
-        console.log(nickname);
         const chatMessage = inputMsg.value;
         socket.emit('message', { nickname, chatMessage });
         inputMsg.value = '';
@@ -44,16 +45,43 @@
         messagesUl.appendChild(li);
       }
 
+      // renderizer os usuários online na tela;
+      // const lastUser = (lastUserAdded, userUl) => {
+      // const li = document.createElement('li');
+      // li.setAttribute("data-testid", "online-user" );
+      // li.innerText = lastUserAdded;
+      // userUl.appendChild(li);
+      //   }
+      // meus colegas Diegho, Renato e Carlos me ajudaram a montar esta função
+      const onlineUserList = (onlineUsers) => {
+      const userUl = document.querySelector('#userId');
+      userUl.innerHTML = '';
+      // if(user) lastUser(user, userUl);
+      // onlineUsers.forEach((lastUserAdded) => {
+      //   if (user !== lastUserAdded) {
+      //     lastUser(lastUserAdded, userUl);
+      //   }
+      // });
+      onlineUsers.forEach((user) => {
+        const li = document.createElement('li');
+        li.setAttribute("data-testid", "online-user" );
+        li.innerText = user;
+        console.log(user);
+        userUl.appendChild(li)
+        });
+      }
+
       const chosenNickName = document.querySelector('#chosenNickName');
       chosenNickName.addEventListener('click', (e)=> {
         e.preventDefault();
       randomNickName.innerText = nick.value;
+      socket.emit('newNickName', nick.value)
       nick.value = '';
       } )
 
-
       socket.on('message', (dateNameMsg) => createMessage(dateNameMsg));
       socket.on('random', (random) =>  randomNickName.innerText = random);
+      socket.on('onlineUser', (list) => onlineUserList(list));
     </script>
 
 
