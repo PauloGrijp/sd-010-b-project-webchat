@@ -11,6 +11,25 @@ const DATA_TEST_ID = 'data-testid';
 
 let myNickname = '';
 
+const usersList = ({ users, removeUsers = false }) => {
+  if (removeUsers) { myNickname = ''; }
+  usersContainer.innerHTML = '';
+  if (myNickname !== '') {
+    const myUserLi = document.createElement('li');
+    myUserLi.setAttribute(DATA_TEST_ID, 'online-user');
+    myUserLi.innerText = myNickname;
+    usersContainer.appendChild(myUserLi);
+  }
+  users.forEach((user) => {
+    if (user.nickname !== myNickname) {
+      const userLi = document.createElement('li');
+      userLi.setAttribute(DATA_TEST_ID, 'online-user');
+      userLi.innerText = user.nickname;
+      usersContainer.appendChild(userLi);
+    }
+  });
+};
+
 const createMyNick = ({ nick }) => {
   const myNick = () => (document.querySelector('#myNick'));
   if (!myNick()) {
@@ -36,23 +55,6 @@ nickBtn.addEventListener('click', (e) => {
   updateNick({ nick: nickInput.value });
 });
 
-const usersList = ({ users }) => {
-  if (myNickname !== '') {
-    const myUserLi = document.createElement('li');
-    myUserLi.setAttribute(DATA_TEST_ID, 'online-user');
-    myUserLi.innerText = myNickname;
-    usersContainer.appendChild(myUserLi);
-  }
-  users.forEach((user) => {
-    if (user.nickname !== myNickname) {
-      const userLi = document.createElement('li');
-      userLi.setAttribute(DATA_TEST_ID, 'online-user');
-      userLi.innerText = user.nickname;
-      usersContainer.appendChild(userLi);
-    }
-  });
-};
-
 msgBtn.addEventListener('click', (e) => {
   e.preventDefault();
   const chatMessage = msgInput.value;
@@ -67,6 +69,12 @@ const addMessage = (msg) => {
   msgContainer.appendChild(msgLi);
 };
 
+const removeNick = ({ users }) => {
+  myNickname = '';
+  usersList({ users, removeUsers: true });
+};
+
 socket.on('connected', ({ nick, users }) => { createMyNick({ nick }); usersList({ users }); });
 socket.on('updatedUsers', ({ users }) => usersList({ users }));
 socket.on('message', addMessage);
+socket.on('disconnectedUser', removeNick);
