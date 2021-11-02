@@ -29,7 +29,6 @@ const onlineList = [];
 const dbString = (nickname, chatMessage) => {
   const messages = `${data()} ${hora()} - ${nickname}: ${chatMessage}`;
   putMessage(messages);
-  return [messages];
 };
 
 module.exports = (io) => io.on('connection', async (socket) => {
@@ -52,6 +51,7 @@ module.exports = (io) => io.on('connection', async (socket) => {
   });
 
   socket.on('message', ({ nickname = newNickname, chatMessage }) => {
-    io.emit('message', dbString(nickname, chatMessage));
+    dbString(chatMessage, nickname);
+    io.emit('message', `${data()} ${hora()} - ${nickname}: ${chatMessage}`);
   });
 });
