@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const { createServer } = require('http');
 const { Server } = require('socket.io');
+const Model = require('./models/chatModel');
 
 require('dotenv').config();
 
@@ -28,7 +29,10 @@ app.set('views', 'views');
 
 app.use(cors());
 
-app.get('/', async (req, res) => res.render('app.ejs'));
+app.get('/', async (req, res) => {
+  const messages = await Model.getMessage();
+  return res.render('app.ejs', { oldMessages: messages });
+});
 
 httpServer.listen(port, () => {
   console.log(`Servidor rodando na porta ${port}`);

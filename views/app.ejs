@@ -30,7 +30,11 @@
     <section id="user-box"></section>
 
     <section>
-      <div id="message-container"></div>
+      <div id="message-container">
+        <% oldMessages.forEach(({ message }) => {%>
+          <span data-testid="message"><%= message %></span>
+        <%})%>
+      </div>
       <form id="form-message">
         <input data-testid="message-box" id="input-message" type="text" placeholder="Digite uma nova menssagem aqui" /><button data-testid="send-button">Enviar</button>
       </form>
@@ -76,7 +80,7 @@
     });
 
     socket.on('new-user', (nick) => {
-      clientNick = nick
+      clientNick = nick;
 
       const spanNickname = document.createElement('span');
       spanNickname.innerText = clientNick;
