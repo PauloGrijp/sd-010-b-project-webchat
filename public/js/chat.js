@@ -65,7 +65,7 @@ socket.on('message', (message) => {
 
 socket.on('generateList', (users) => createUsersList(users));
 
-window.onbeforeunload = () => {
-  socket.emit('leftRoom', nickname);
-  socket.disconnect();
-};
+// window.onbeforeunload = () => {
+//   socket.emit('leftRoom', nickname);
+//   socket.disconnect();
+// };
