@@ -5,18 +5,35 @@ const path = require('path');
 
 const http = require('http').createServer(app);
 
+require('dotenv').config();
+
 const io = require('socket.io')(http, {
-  origin: 'http://localhost:3000',
-  methods: ['GET', 'POST'],
+  cors: {
+    origin: 'http://localhost:3000',
+    methods: ['GET', 'POST'],
+  },
 });
 
+const verifyMessage = (message, nickName, idRandon, socketIo) => {
+  const date = new Date();
+  let name = '';
+  
+  if (!nickName) {
+    name = idRandon;
+  } else {
+    name = nickName;
+  }
+
+  const messageFormated = `${date.toLocaleString()} - ${name}: ${message}`;
+  return socketIo.emit('message', messageFormated);
+};
+
 io.on('connection', (socket) => {
-  console.log(socket.id);
+  const idRandon = socket.id.slice(0, 16);
+  socket.on('message', ({ message, nickName }) => verifyMessage(message, nickName, idRandon, io));
 });
 
 const { chatController } = require('./controllers/chatController');
-
-require('dotenv').config();
 
 app.use(express.json());
 

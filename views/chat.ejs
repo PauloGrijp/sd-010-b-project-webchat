@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -8,10 +8,38 @@
   <title>Document</title>
 </head>
 <body>
-  <h1>Minha view</h1>
+  <h1>Chat</h1>
+  <ul id="online-user"></ul>
+
+  <ul id="message"></ul>
+  <input id="input-nick-name" data-testid="nickname-box" placeholder="Digite seu Nick Name"/>
+  <input id="input-message" data-testid="message-box" placeholder="Digite sua mensagem"/>
+  <button id="button" data-testid="send-button">Enviar</button>
+  <button data-testid="nickname-button">Salvar Nick Name</button>
 
   <script>
     const client = window.io();
+    const button = document.querySelector('#button');
+    
+    button.addEventListener('click', () => {
+      const inputMessage = document.querySelector('#input-message');
+      const inputNickName = document.querySelector('#input-nick-name');
+      client.emit('message', {
+        message: inputMessage.value,
+        nickName: inputNickName.value
+      })
+      inputMessage.value = "";
+      inputNickName.value = "";
+    })
+    
+    client.on('message', (message) => {
+      const messageCard = document.querySelector('#message');
+      const li = document.createElement('li');
+      li.innerText = message;
+      li.setAttribute('data-testid', 'message');
+      messageCard.appendChild(li);
+    });
+
   </script>
 </body>
 </html>
