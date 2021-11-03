@@ -1,5 +1,5 @@
-// import * as io from 'socket.io-client';
-// eslint-disable-next-line no-undef
+import io from 'socket.io-client';
+
 const socket = io();
 let nickname = '';
 
