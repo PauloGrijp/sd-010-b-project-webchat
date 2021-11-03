@@ -1,4 +1,5 @@
 const { setMoment } = require('../scripts/date');
+const Webchat = require('../controllers/Webchat');
 
 let users = [];
 
@@ -13,10 +14,16 @@ const connectUser = (socket, io) => {
 };
 
 const sendMessage = (socket, io) => {
-  socket.on('message', ({ nickname, chatMessage }) => {
+  socket.on('message', async ({ nickname: name, chatMessage }) => {
     console.log(`Send message with sockedt ID: ${socket.id}`);
 
-    const message = `${setMoment()} - <strong>${nickname}:</strong> ${chatMessage}`;
+    const message = `${setMoment()} - <strong>${name}:</strong> ${chatMessage}`;
+
+    await Webchat.create({
+      message: chatMessage,
+      nickname: name,
+      timestamp: setMoment(),
+    });
 
     io.emit('message', message);
   });

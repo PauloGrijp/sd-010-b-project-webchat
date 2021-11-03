@@ -2,7 +2,9 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
-const PORT = 3000;
+require('dotenv').config();
+
+const PORT = process.env.PORT || 3000;
 const app = express();
 const http = require('http').createServer(app);
 
@@ -16,9 +18,9 @@ const io = require('socket.io')(http, {
   },
 });
 
-app.get('/', (_req, res) => {
-  res.render('webchat.ejs');
-});
+const Webchat = require('./controllers/Webchat');
+
+app.get('/', Webchat.getAll);
 
 // Map the public directory | BASED ON https://stackoverflow.com/questions/18629327/adding-css-file-to-ejs
 app.use(express.static(`${__dirname}/public`));

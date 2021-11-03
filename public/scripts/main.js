@@ -22,9 +22,10 @@ socket.on('onlineUsers', (users) => {
 
   orderedUsers.forEach((user) => {
     const userCard = document.createElement('div');
+
     userCard.setAttribute('data-testid', 'online-user');
     userCard.classList.add('user');
-    userCard.textContent = user.username;
+    userCard.textContent = `💬 ${user.username}`;
     usersContainer.appendChild(userCard);
   });
 });
@@ -63,6 +64,7 @@ socket.on('message', (message) => {
 nicknameButton.addEventListener('click', () => {
   nickname = nicknameBox.value;
   socket.emit('setNickname', nickname);
+  document.getElementById('nickname__info').innerText = `⭐ ${nickname}`;
 });
 
 const generateRandomNickname = () => (
@@ -74,4 +76,6 @@ window.onload = () => {
   nickname = generateRandomNickname();
 
   socket.emit('connectUser', nickname);
+
+  document.getElementById('nickname__info').innerText = `⭐ ${nickname}`;
 };

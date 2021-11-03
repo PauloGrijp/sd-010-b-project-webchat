@@ -4,16 +4,27 @@
     <link rel="stylesheet" href="/styles/main.css" />
   </head>
   <body>
-    <header></header>
+    <header class="header__container">
+      <img src="https://conteudo.imguol.com.br/78/2016/06/30/logo-bate-papo-uol-1467296899426_615x300.jpg" alt="logo">
+    </header>
     <aside id="users__container" class="users__container"></aside>
-    <main id="messages__container"></main>
+    <main id="messages__container" class="messages__container">
+      <% messages.forEach(({ timestamp, nickname, message }) => { %>
+        <div data-testid="message">
+          <%- `${timestamp} - <strong>${nickname}:</strong> ${message}`
+          %>
+        </div>
+      <%})%>
+    </main>
     <footer id="actions__container" class="actions__container">
+      <h3 id="nickname__info">⭐</h3>
       <form class="actions__container__form">
         <input id="nickname-box" data-testid="nickname-box" type="text" placeholder="Apelido" />
         <button id="nickname-button" data-testid="nickname-button" type="button">Salvar</button>
         <input id="message-box" data-testid="message-box" type="text" placeholder="Digite sua menssagem..." />
         <button id="send-button" data-testid="send-button" type="button">Enviar</button>
       </form>
+      <img src="https://www.clickssl.net/wp-content/uploads/2014/03/email-spamming-banner.jpg" alt="logo">
     </footer>
 
     <script src="/socket.io/socket.io.js"></script>
