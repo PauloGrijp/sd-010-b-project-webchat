@@ -58,5 +58,5 @@ const createMessage = (message) => {
     messageList.appendChild(messageItem);
 };
 
-socket.on('message', (message) => createMessage(message.chatMessage));
+socket.on('message', (message) => createMessage(message));
 socket.on('messages', (messages) => messages.forEach((message) => createMessage(message)));

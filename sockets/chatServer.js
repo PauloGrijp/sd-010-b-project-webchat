@@ -9,22 +9,23 @@ const getDateTime = () => {
 
 const saveMessage = (message) => (messages.push(message));
 const getMessages = () => (messages);
+let chatMessage = 'Server: a new user has just connected';
 
 module.exports = (io) => {
     io.on('connection', (socket) => {
-        socket.broadcast.emit('message', 'Server: a new user has just connected');
+        // socket.broadcast.emit('message', chatMessage);
         io.to(socket.id).emit('messages', getMessages());
         socket.on('message', (message) => {
             const dateTime = getDateTime();
-            const chatMessage = `${dateTime} - ${message.nickname}: ${message.chatMessage}`;
+            chatMessage = `${dateTime} - ${message.nickname}: ${message.chatMessage}`;
             saveMessage(chatMessage);
-            const { nickname } = message;
-            io.emit('message', { chatMessage, nickname });
+            io.emit('message', chatMessage);
         });
         socket.on('setup', ({ oldUserName, newUserName }) => {
+            chatMessage = `${oldUserName}'s nick has changed. Now it's ${newUserName}`;
             socket.broadcast.emit(
                 'message',
-                `User ${oldUserName} has changed his/her nickname. Now it's ${newUserName}`,
+                chatMessage,
             );
         });
     });
