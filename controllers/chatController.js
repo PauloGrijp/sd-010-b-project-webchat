@@ -14,5 +14,5 @@ const createMessageC = async (message) => {
 
 module.exports = {
   convertMessageC,
-  createMessageC
+  createMessageC,
 };
