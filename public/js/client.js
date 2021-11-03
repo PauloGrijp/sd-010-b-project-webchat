@@ -1,10 +1,13 @@
 const socket = window.io();
 
 const messageForm = document.querySelector('#messageForm');
+const customAttr = 'data-testid';
+
+const messageBox = document.querySelector('#messageBox');
+messageBox.focus();
 
 messageForm.addEventListener('submit', (e) => {
     e.preventDefault();
-    const messageBox = document.querySelector('#messageBox');
     socket.emit('userMessage', messageBox.value);
     messageBox.value = '';
     return false;
@@ -13,6 +16,7 @@ messageForm.addEventListener('submit', (e) => {
 const createMessage = (message) => {
     const messageList = document.querySelector('#messages');
     const messageItem = document.createElement('li');
+    messageItem.setAttribute(customAttr, 'message');
     messageItem.innerText = message;
     messageList.appendChild(messageItem);
 };
