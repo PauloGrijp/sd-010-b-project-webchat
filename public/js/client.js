@@ -5,9 +5,19 @@ const nickForm = document.querySelector('#nickForm');
 const customAttr = 'data-testid';
 const messageBox = document.querySelector('#messageBox');
 
+function createID(length) {
+    // credits by https://www.ti-enxame.com/pt/javascript/gere-stringcaracteres-aleatorios-em-javascript/967048592/
+    let text = '';
+    const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    for (let i = 0; i < length; i += 1) {
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
+    }
+    return text;
+  }
+
 const setUserName = (userName) => {
     const oldUserName = localStorage.getItem('userName');
-    let newUserName = !userName ? Math.random().toString(36) : userName;
+    let newUserName = !userName ? createID(16) : userName;
     if (oldUserName && !userName) {
         newUserName = oldUserName;
     }
@@ -16,7 +26,7 @@ const setUserName = (userName) => {
         socket.emit('setup', { oldUserName, newUserName });
     }
     const nickNameLabel = document.querySelector('#nickname');
-    nickNameLabel.innerText = `Current Nickname: ${newUserName}`;
+    nickNameLabel.innerText = `${newUserName}`;
     return newUserName;
 };
 
