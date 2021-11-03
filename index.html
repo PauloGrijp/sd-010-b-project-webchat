@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Amazing Super Chat</title>
+</head>
+<body>
+    <head>The Amazing Super Chat</head>
+    <div id="nickname">
+        <span>Current Nickname: </span>
+        <form action="" id="nickForm">
+            <input
+                type="text"
+                placeholder="Type your new Nickname"
+                id="change-nick-text"
+                data-testid="nickname-box"
+            >
+            <button data-testid="nickname-button" >Change Nickname</button>
+        </form>
+    </div>
+    <div>
+        <ul id="messages"></ul>
+    </div>
+    <div class="chatBox">
+        <form action="" id="messageForm">
+            <input
+                type="text"
+                placeholder="Type your message and click in the Send button"
+                data-testid="message-box"
+                id="messageBox">
+            <button data-testid="send-button">Send</button>
+        </form>
+    </div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="./js/client.js"></script>
+</body>
+</html>
