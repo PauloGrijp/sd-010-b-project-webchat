@@ -38,10 +38,10 @@ list-style: none;
 }
 
 .ok-btn , .send-btn {
-  	background-color: #272;
-  	border: 0;
-  	color: #ccc;
-  	cursor: pointer;
-  	font-size: 17px;
-  	padding: 5px 15px;
+  background-color: #272;
+  border: 0;
+  color: #ccc;
+  cursor: pointer;
+  font-size: 17px;
+  padding: 5px 15px;
 }
