@@ -13,7 +13,7 @@ const io = require('socket.io')(http, {
   },
 });
 
-const { getAllMessages, createMessage} = require('./src/controllers/chatControler');
+const { getAllMessages, createMessage } = require('./src/controllers/chatControler');
 
 let usersConnected = [];
 
