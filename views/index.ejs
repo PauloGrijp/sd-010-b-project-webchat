@@ -45,28 +45,14 @@
         messagesUl.appendChild(li);
       }
 
-      // renderizer os usuários online na tela;
-      // const lastUser = (lastUserAdded, userUl) => {
-      // const li = document.createElement('li');
-      // li.setAttribute("data-testid", "online-user" );
-      // li.innerText = lastUserAdded;
-      // userUl.appendChild(li);
-      //   }
-      // meus colegas Diegho, Renato e Carlos me ajudaram a montar esta função
+      // criar lista de usuários
       const onlineUserList = (onlineUsers) => {
       const userUl = document.querySelector('#userId');
       userUl.innerHTML = '';
-      // if(user) lastUser(user, userUl);
-      // onlineUsers.forEach((lastUserAdded) => {
-      //   if (user !== lastUserAdded) {
-      //     lastUser(lastUserAdded, userUl);
-      //   }
-      // });
       onlineUsers.forEach((user) => {
         const li = document.createElement('li');
         li.setAttribute("data-testid", "online-user" );
         li.innerText = user;
-        console.log(user);
         userUl.appendChild(li)
         });
       }
@@ -77,7 +63,21 @@
       randomNickName.innerText = nick.value;
       socket.emit('newNickName', nick.value)
       nick.value = '';
-      } )
+      } );
+
+      const getMessages = async () => {
+        const getMsg = await fetch('http://localhost:3000/messages');
+        console.log(getMsg, 'getMsg')
+        const msgJson = await getMsg.json();
+        console.log(msgJson, 'msgJson')
+        return msgJson.forEach((eachMsg)=>{
+          console.log(eachMsg, 'eachMsg');
+          createMessage(eachMsg.message)
+        })
+
+      }
+
+      getMessages();
 
       socket.on('message', (dateNameMsg) => createMessage(dateNameMsg));
       socket.on('random', (random) =>  randomNickName.innerText = random);

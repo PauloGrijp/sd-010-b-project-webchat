@@ -1,5 +1,8 @@
 const express = require('express');
 const cors = require('cors');
+require('dotenv').config();
+
+const port = process.env.PORT;
 
 const app = express();
 const http = require('http').createServer(app);
@@ -9,24 +12,24 @@ app.set('view engine', 'ejs');
 app.set('views', './views');
 
 // essa função foi fornecida pelo meu colega Renato;
-      const todayDate = () => {
-        const date = new Date();
-          const data = `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`;
-          const minutes = date.getMinutes();
-          const hourAndMinute = `${date.getHours()}:${minutes}:${date.getSeconds()}`; 
-          const today = `${data} ${hourAndMinute}`;
-          return today;
-      };
+  const todayDate = () => {
+    const date = new Date();
+      const data = `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`;
+      const minutes = date.getMinutes();
+      const hourAndMinute = `${date.getHours()}:${minutes}:${date.getSeconds()}`; 
+      const today = `${data} ${hourAndMinute}`;
+      return today;
+  };
 
-      function randomString(length) {
-        let result = '';
-        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        const charactersLength = characters.length;
-        for (let i = 0; i < length; i += 1) {
-        result += characters.charAt(Math.floor(Math.random() 
-        * charactersLength));
-        }
-        return result;
+  function randomString(length) {
+    let result = '';
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const charactersLength = characters.length;
+    for (let i = 0; i < length; i += 1) {
+    result += characters.charAt(Math.floor(Math.random() 
+    * charactersLength));
+    }
+    return result;
   }
   
   const onlineUsers = [];
@@ -35,6 +38,8 @@ app.set('views', './views');
     onlineUsers.push(random);
     return random;
   };
+
+  // https://stackoverflow.com/questions/8073673/how-can-i-add-new-array-elements-at-the-beginning-of-an-array-in-javascript
   const lastOnTop = (user) => {
     const arrayUsers = onlineUsers.slice(0, -1);
     arrayUsers.unshift(user);
@@ -43,10 +48,18 @@ app.set('views', './views');
 
   const io = require('socket.io')(http, {
     cors: {
-      origin: 'http://localhost:3000', // url aceita pelo cors
+      origin: `http://localhost:${3000}`, // url aceita pelo cors
       methods: ['GET', 'POST'], // Métodos aceitos pela url
     } });
-    
+    const { messageControl } = require('./controller/messageController');
+    const { saveMessages } = require('./models');
+
+    const createUser = async ({ nickname, chatMessage }) => {
+      const dateNameMsg = `${todayDate()} ${nickname} ${chatMessage}`;
+      await saveMessages(dateNameMsg);
+      return dateNameMsg;
+    };
+
      // meus colegas Diegho, Renato e Carlos me ajudaram a função onlineUsers.indexOf(user);
     io.on('connection', (socket) => {
     let user = newUser();
@@ -56,7 +69,7 @@ app.set('views', './views');
       onlineUsers.splice(onlineUsers.indexOf(user), 1);
       io.emit('onlineUser', onlineUsers);
     });
-    
+
     socket.emit('random', user);
     
     socket.emit('onlineUser', lastOnTop(user));
@@ -68,16 +81,19 @@ app.set('views', './views');
       io.emit('onlineUser', lastOnTop(user));
     });
 
-    socket.on('message', ({ nickname, chatMessage }) => {
-      const dateNameMsg = `${todayDate()} ${nickname} ${chatMessage}`;
-      io.emit('message', (dateNameMsg)); 
+    socket.on('message', async ({ nickname, chatMessage }) => {
+      const newUserAndMsg = await createUser({ nickname, chatMessage });
+      io.emit('message', newUserAndMsg);
     });
   });
 
-app.use('/', (req, res) => {
+app.get('/', (req, res) => {
   res.render('index.ejs');
 });
 
-http.listen(3000, () => {
-  console.log('Servidor ouvindo na porta 3000');
+// Renato, Jonathan e Eder me ajudaram a construir a rota e o retorno do controller.
+app.get('/messages', messageControl);
+
+http.listen(port, () => {
+  console.log(`Servidor ouvindo na porta ${port}`);
 });
