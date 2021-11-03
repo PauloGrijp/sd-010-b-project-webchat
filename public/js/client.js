@@ -35,7 +35,7 @@ messageForm.addEventListener('submit', (e) => {
     e.preventDefault();
     const nickname = localStorage.getItem('userName');
     const chatMessage = messageBox.value;
-    socket.emit('userMessage', { chatMessage, nickname });
+    socket.emit('message', { chatMessage, nickname });
     messageBox.value = '';
     return false;
 });
@@ -48,5 +48,5 @@ const createMessage = (message) => {
     messageList.appendChild(messageItem);
 };
 
-socket.on('message', (message) => createMessage(message));
+socket.on('message', (message) => createMessage(message.chatMessage));
 socket.on('messages', (messages) => messages.forEach((message) => createMessage(message)));

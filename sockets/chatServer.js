@@ -14,11 +14,12 @@ module.exports = (io) => {
     io.on('connection', (socket) => {
         socket.broadcast.emit('message', 'Server: a new user has just connected');
         io.to(socket.id).emit('messages', getMessages());
-        socket.on('userMessage', (message) => {
+        socket.on('message', (message) => {
             const dateTime = getDateTime();
-            const formattedMessage = `${dateTime} - ${message.nickname}: ${message.chatMessage}`;
-            saveMessage(formattedMessage);
-            io.emit('message', formattedMessage);
+            const chatMessage = `${dateTime} - ${message.nickname}: ${message.chatMessage}`;
+            saveMessage(chatMessage);
+            const { nickname } = message;
+            io.emit('message', { chatMessage, nickname });
         });
         socket.on('setup', ({ oldUserName, newUserName }) => {
             socket.broadcast.emit(
