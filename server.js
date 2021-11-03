@@ -3,6 +3,9 @@ const express = require('express');
 const app = express();
 const http = require('http').createServer(app);
 
+app.set('view engine', 'ejs');
+app.set('views', './views');
+
 const io = require('socket.io')(http, {
   cors: {
     origin: 'http://localhost:3000',
