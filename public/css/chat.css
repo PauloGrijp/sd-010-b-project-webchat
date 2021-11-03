@@ -28,13 +28,13 @@ list-style: none;
 }
 
 .nickname-input {
-  	border-color: #ccc;
-  	border-style: solid;
-  	border-width: 1px;
-  	font-size: 16px;
-  	padding: 5px;
-  	text-align: left;
-  	width: 75%;
+  border-color: #ccc;
+  border-style: solid;
+  border-width: 1px;
+  font-size: 16px;
+  padding: 5px;
+  text-align: left;
+  width: 75%;
 }
 
 .ok-btn , .send-btn {
