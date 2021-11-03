@@ -1,47 +1,47 @@
 * {
-	box-sizing: border-box;
-	margin: 0;
-	padding: 0;
+		box-sizing: border-box;
+		margin: 0;
+		padding: 0;
 }
 
 body {
-	font-family: sans-serif;
-	font-size: 16px;
-	background: #e6e9ff;
-	margin: 20px;
+		background: #8b8c94;
+		font-family: sans-serif;
+		font-size: 16px;
+		margin: 20px;
 }
 
 ul {
-	list-style: none;
+		list-style: none;
 }
 
 .nickname {
-  margin-bottom: 5px;
-  color: rgb(42, 62, 240);
+  	color: rgb(42, 62, 240);
+  	margin-bottom: 5px;
 }
 
 .nickname:after {
-  content: ' ,';
-	background-color: #272;
-	width: 5px solid #272;
-	border-radius: 50%;
+		background-color: #272;
+		border-radius: 50%;
+  	content: ' ,';
+		width: 5px solid #272;
 }
 
 .nickname-input {
-  border-color: #ccc;
-  border-style: solid;
-  border-width: 1px;
-  font-size: 16px;
-  padding: 5px;
-  text-align: left;
-  width: 75%;
+  	border-color: #ccc;
+  	border-style: solid;
+  	border-width: 1px;
+  	font-size: 16px;
+  	padding: 5px;
+  	text-align: left;
+  	width: 75%;
 }
 
 .ok-btn, .send-btn {
-	cursor: pointer;
-	padding: 5px 15px;
-	background-color: #272;
-	color: #ccc;
-	border: 0;
-	font-size: 17px;
+  	background-color: #272;
+  	border: 0;
+  	color: #ccc;
+  	cursor: pointer;
+  	font-size: 17px;
+  	padding: 5px 15px;
 }
