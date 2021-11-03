@@ -13,7 +13,11 @@
         <input type="text" id="nickname" data-testid="nickname-box" placeholder="NickName">
         <button type="button" data-testid="nickname-button" class="saveNickname">Save</button>
         <input data-testid="message-box" type="text" id="chatMessage" value="" placeholder="Type your message...">
-        <ul id="messages"></ul>
+        <ul id="messages">
+            <% messages.forEach(({ chatMessage, nickname, timestamp }) => { %>
+                <li data-testid="message"> <%= `${timestamp} - ${nickname}: ${chatMessage}`.replace(/\//g, '-') %></li>
+              <% }) %>  
+        </ul>
         <button data-testid="send-button" id="chat" type="submit">Send</button>
     </form>
     <div>

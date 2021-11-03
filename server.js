@@ -16,13 +16,13 @@ const { PORT } = process.env;
 let message = '';
 const users = [];
 
-// Função de hora atual
+/* // Função de hora atual ajuda do Renato Graça
 const horaCerta = () => {
     const date = new Date();
     const data = `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`;
     const hourAndMinute = `${date.getHours()}:${date.getMinutes()}`; 
     return `${data} ${hourAndMinute}`;
-    }; 
+};  */
 
 const io = require('socket.io')(http, {
     cors: {
@@ -30,6 +30,9 @@ const io = require('socket.io')(http, {
         methods: ['GET', 'POST'],
     },
 });
+const { saveNewMessage } = require('./models/message_model');
+const { getMessages } = require('./controller/message_controller');
+const horaCerta = require('./helpers/horaCerta');
 const geraStringAleatoria = require('./helpers/randomNickname');
 
 app.set('view engine', 'ejs');
@@ -47,6 +50,7 @@ app.set('views', './views');
 
 let nickName = ''; 
 
+// função que pega o usuario que tem o id selecionado e atualiza o nickname dele no array
 const addUsersOnline = (nickname, socket) => {
     const getId = users.findIndex((user) => user.id === socket.id);
     users[getId].nickname = nickname;
@@ -55,20 +59,21 @@ const addUsersOnline = (nickname, socket) => {
 
 // Ajuda da colega Letícia Galvão
 const usersOnline = (IO, socket, nickname) => {
-    // socket.emit('olineUsers', nickname);
+    // ele envia para todos os usuários e o front escuta essa ação para criar os os Li com as pessoas online
     io.emit('olineUsers', { nickname, id: socket.id });
 
+    // se o users for maior que um ele envia para o dono do socket e o nick dele vai para tela
     if (users.length > 0) {
         users.forEach((user) => {
             socket.emit('olineUsers', user); 
         });
     }
+    // atualiza o array adicionando o usuário no users
     users.push({ id: socket.id, nickname });
 };
 
 io.on('connection', (socket) => {
     nickName = geraStringAleatoria(16);
-    console.log(users);
     console.log(`Usuário conectado. ID: ${socket.id} `);
     usersOnline(io, socket, nickName);
     socket.on('updateNickname', (nickname) => {
@@ -78,18 +83,20 @@ io.on('connection', (socket) => {
     });
     socket.on('message', (data) => {
         message = ` ${horaCerta()} - ${data.nickname}: ${data.chatMessage}`;
+        saveNewMessage(data.chatMessage, data.nickname);
         io.emit('message', message);
     }); 
     socket.on('disconnect', () => {
         users.splice({ id: socket.id }, 1);
-        console.log(users);
         io.emit('offUsers', socket.id);
     });
 });
 
-app.use('/', (req, res) => {
-        res.render('index', { nickName, users });
+app.get('/', async (req, res) => {
+        res.render('index', { nickName, users, messages: await getMessages() });
 });
+
+ /* app.get('/', getMessages); */
 
 http.listen(3000, () => {
   console.log('Servidor ouvindo na porta 3000');
