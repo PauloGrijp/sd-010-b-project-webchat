@@ -7,7 +7,10 @@ const messageBox = document.querySelector('#messageBox');
 
 const setUserName = (userName) => {
     const oldUserName = localStorage.getItem('userName');
-    const newUserName = !userName ? Math.random().toString(36) : userName;
+    let newUserName = !userName ? Math.random().toString(36) : userName;
+    if (oldUserName && !userName) {
+        newUserName = oldUserName;
+    }
     localStorage.setItem('userName', newUserName);
     if (userName) {
         socket.emit('setup', { oldUserName, newUserName });
@@ -46,3 +49,4 @@ const createMessage = (message) => {
 };
 
 socket.on('message', (message) => createMessage(message));
+socket.on('messages', (messages) => messages.forEach((message) => createMessage(message)));
