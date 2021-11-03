@@ -1,15 +1,14 @@
 const socket = window.io();
 let nickname = Math.random().toString(16)
-.substring(2, 8) + Math.random().toString(16).substring(2, 8);
-
+.substring(2, 10) + Math.random().toString(16).substring(2, 10);
   const msgHistory = document.getElementById('msgHistory');
   const inputMessage = document.getElementById('message');
   const sendBtn = document.getElementById('sendBtn');
   const user = document.getElementById('user');
-  user.innerText = nickname;
   const datatestid = 'data-testid';
-  const inputNickname = document.getElementById('nickname');
+  const inputNickname = document.getElementById('nick');
   const alterNickBtn = document.getElementById('alterNick');
+  user.innerText = nickname;
 
 sendBtn.addEventListener('click', (e) => {
 e.preventDefault();
@@ -27,19 +26,21 @@ socket.on('message', (msg) => {
   msgHistory.appendChild(msgItem);
 });
 
-socket.emit('user', { nickname });
+socket.emit('userOnline', { nickname });
 
-socket.on('user', (userList) => {
+socket.on('userOnline', (userList) => {
   user.innerHTML = '';
   userList.forEach(({ nickname: nick, id }) => {
     const userItem = document.createElement('li');
     userItem.setAttribute(datatestid, 'online-user');
     userItem.innerText = nick;
-    if (id === socket.id) { user.prepend(userItem); } else user.appendChild(userItem);
+    if (id === socket.id) {
+      user.prepend(userItem);
+    } else { user.appendChild(userItem); }
   });
 });
 
-socket.on('messageAll', (msgList) => {
+socket.on('allMessage', (msgList) => {
   msgList.forEach(({ timestamp, message, nickname: nick }) => {
     const item = document.createElement('li');
     item.setAttribute(datatestid, 'message');

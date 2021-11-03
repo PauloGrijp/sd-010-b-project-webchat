@@ -1,5 +1,5 @@
 const express = require('express');
-
+// https://socket.io/docs/v4/server-initialization/#with-express
 const app = express();
 const http = require('http').createServer(app);
 
@@ -15,6 +15,7 @@ const io = require('socket.io')(http, {
 
 const { createMessage, getAllMessages } = require('./controllers/chatController');
 
+app.use(express.json());
 app.use(express.static(`${__dirname}/views`));
 
 app.get('/', (req, res) => {
