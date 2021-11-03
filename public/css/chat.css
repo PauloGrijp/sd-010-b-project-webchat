@@ -1,7 +1,7 @@
 * {
-		box-sizing: border-box;
-		margin: 0;
-		padding: 0;
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
 }
 
 body {
@@ -12,7 +12,7 @@ body {
 }
 
 ul {
-		list-style: none;
+	list-style: none;
 }
 
 .nickname {
@@ -37,7 +37,7 @@ ul {
   	width: 75%;
 }
 
-.ok-btn, .send-btn {
+.ok-btn , .send-btn {
   	background-color: #272;
   	border: 0;
   	color: #ccc;
