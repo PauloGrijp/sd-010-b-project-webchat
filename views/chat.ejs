@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebChat-Socket-IO</title>
+    <link href="/css/chat.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <div>
+      <div>
+        <form class="form-name">
+          <input type="text" name="nickname" id="nickname" class="input-nickname" data-testid="nickname-box">
+          <button class="ok-btn" data-testid="nickname-button">Criar</button>
+        </form>
+        <p>Usuários</p>
+        <ul class="nicknames"></ul>
+      </div>
+      <div>
+        <ul class="messages">
+          <% messages.forEach((message) => { %>
+          <li data-testid="message"><%= message %></li>
+          <%}) %>
+        </ul>
+      </div>
+    </div>
+    <div>
+      <form class="form-message">
+        <input type="text" id="message" class="message" data-testid="message-box" autocomplete="off">
+        <button class="send-btn" data-testid="send-button">Enviar</button>
+      </form>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      const socket = io();
+      let nickname;
+      let nameId;
+      const formMessage = document.querySelector('.form-message');
+      const sendMessage = document.querySelector('.message');
+      formMessage.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const mensage = {
+          chatMessage: sendMessage.value,
+          nickname,
+        };
+        socket.emit('message', mensage);
+        sendMessage.value = '';
+      });
+      socket.on('nameId', (nameInput) => {
+        nameId = nameInput;
+        nickname = nameInput;
+      });
+      const getMessage = (message) => {
+        const messageUl = document.querySelector('.messages');
+        const li = document.createElement('li');
+        li.innerText = message;
+        li.setAttribute('data-testid', 'message');
+        messageUl.appendChild(li);
+      };
+      socket.on('message', (message) => {
+        getMessage(message);
+      });
+      const formName = document.querySelector('.form-name');
+      const inputNickname = document.querySelector('.input-nickname');
+      formName.addEventListener('submit', (e) => {
+        e.preventDefault();
+        nickname = inputNickname.value;
+        socket.emit('newNickname', nickname);
+        inputNickname.value = '';
+        return false;
+      });
+      socket.on('onlineUsers', (onlineUsers) => {
+        const userData = { nameId, dbname: nickname };
+        const sortedOnlineUsers = onlineUsers.filter(
+          (user) => user.nameId !== nameId,
+        );
+        sortedOnlineUsers.unshift(userData);
+        const ul = document.querySelector('.nicknames');
+        while (ul.firstElementChild) {
+          ul.removeChild(ul.firstElementChild);
+        }
+        sortedOnlineUsers.forEach((user) => {
+          const li = document.createElement('li');
+          li.innerText = user.dbname;
+          li.setAttribute('data-testid', 'online-user');
+          li.classList.add('nickname');
+          ul.appendChild(li);
+        });
+      });
+    </script>
+  </body>
+</html>
