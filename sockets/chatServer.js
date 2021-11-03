@@ -1,4 +1,5 @@
-const messages = [];
+const messagesController = require('../controllers/messageController');
+
 const getDateTime = () => {
     const now = new Date();
     const AMPM = now.getHours() >= 12 ? 'PM' : 'AM'; 
@@ -7,18 +8,19 @@ const getDateTime = () => {
     return fullDateTime;
 };
 
-const saveMessage = (message) => (messages.push(message));
-const getMessages = () => (messages);
+const saveMessage = async (chatMessage, nickname, dateTime) => (
+    messagesController.insertMessage(chatMessage, nickname, dateTime));
+const getMessages = async () => (messagesController.getMessages());
 let chatMessage = 'Server: a new user has just connected';
 
 module.exports = (io) => {
-    io.on('connection', (socket) => {
-        // socket.broadcast.emit('message', chatMessage);
-        io.to(socket.id).emit('messages', getMessages());
-        socket.on('message', (message) => {
+    io.on('connection', async (socket) => {
+        const messages = await getMessages();
+        io.to(socket.id).emit('messages', messages);
+        socket.on('message', async (message) => {
             const dateTime = getDateTime();
             chatMessage = `${dateTime} - ${message.nickname}: ${message.chatMessage}`;
-            saveMessage(chatMessage);
+            await saveMessage(chatMessage, message.nickname, dateTime);
             io.emit('message', chatMessage);
         });
         socket.on('setup', ({ oldUserName, newUserName }) => {
