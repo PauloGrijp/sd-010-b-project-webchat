@@ -2,12 +2,11 @@ const { MongoClient } = require('mongodb');
 require('dotenv').config();
 
 let schema = null;
-const dbUrlLocal = 'mongodb://127.0.0.1:27017/webchat/';
 
 async function connection() {
   if (schema) return Promise.resolve(schema);
   return MongoClient
-    .connect(process.env.DB_URL || dbUrlLocal, {
+    .connect(process.env.DB_URL, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     })
