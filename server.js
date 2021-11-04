@@ -14,7 +14,9 @@ const io = require('socket.io')(http, {
   },
 });
 
-const verifyMessage = (message, nickName, idRandon, socketIo) => {
+const { saveMessageModel, getAllMessages } = require('./models/chatModel');
+
+const verifyMessage = async (message, nickName, idRandon, socketIo) => {
   const date = new Date();
   let name = '';
   
@@ -24,13 +26,28 @@ const verifyMessage = (message, nickName, idRandon, socketIo) => {
     name = nickName;
   }
 
+  const messageUser = {
+    message,
+    nickName: name,
+    timestamp: date.toLocaleString(),
+  };
+
   const messageFormated = `${date.toLocaleString()} - ${name}: ${message}`;
+
+  await saveMessageModel(messageUser);
   return socketIo.emit('message', messageFormated);
 };
 
-io.on('connection', (socket) => {
+const renderAllMessagesDb = async () => {
+  const result = await getAllMessages();
+  return result;
+};
+
+io.on('connection', async (socket) => {
   const idRandon = socket.id.slice(0, 16);
   socket.on('message', ({ message, nickName }) => verifyMessage(message, nickName, idRandon, io));
+  const resultMessage = await renderAllMessagesDb();
+  io.emit('html', resultMessage);
 });
 
 const { chatController } = require('./controllers/chatController');

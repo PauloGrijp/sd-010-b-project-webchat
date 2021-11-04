@@ -20,6 +20,7 @@
   <script>
     const client = window.io();
     const button = document.querySelector('#button');
+    const messageCard = document.querySelector('#message');
     
     button.addEventListener('click', () => {
       const inputMessage = document.querySelector('#input-message');
@@ -33,12 +34,19 @@
     })
     
     client.on('message', (message) => {
-      const messageCard = document.querySelector('#message');
       const li = document.createElement('li');
       li.innerText = message;
       li.setAttribute('data-testid', 'message');
       messageCard.appendChild(li);
     });
+
+    client.on('html', (message) => {
+      message.forEach(userMessage => {
+        const li = document.createElement('li');
+        li.innerText = `${userMessage.timestamp.toLocaleString()} - ${userMessage.nickName}: ${userMessage.message}`;
+        messageCard.appendChild(li);
+      })
+    })
 
   </script>
 </body>
