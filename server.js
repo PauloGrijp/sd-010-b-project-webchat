@@ -8,31 +8,30 @@ const http = require('http').createServer(app);
 require('dotenv').config();
 
 const io = require('socket.io')(http, {
-  cors: {
-    origin: 'http://localhost:3000',
+    origin: 'http://localhost:3000/',
     methods: ['GET', 'POST'],
-  },
 });
 
 const { saveMessageModel, getAllMessages } = require('./models/chatModel');
 
-const verifyMessage = async (message, nickName, idRandon, socketIo) => {
+const verifyMessage = async (chatMessage, nickname, idRandon, socketIo) => {
   const date = new Date();
-  let name = '';
+  let name;
   
-  if (!nickName) {
+  if (!nickname) {
     name = idRandon;
   } else {
-    name = nickName;
+    name = nickname;
   }
-
+  
   const messageUser = {
-    message,
-    nickName: name,
+    chatMessage,
+    nickname: name,
     timestamp: date.toLocaleString(),
   };
 
   await saveMessageModel(messageUser);
+  console.log(messageUser);
   return socketIo.emit('message', messageUser);
 };
 
@@ -43,8 +42,10 @@ const renderAllMessagesDb = async () => {
 
 io.on('connection', async (socket) => {
   const idRandon = socket.id.slice(0, 16);
-  socket.on('message', ({ message, nickName }) => verifyMessage(message, nickName, idRandon, io));
+  socket.on('message', 
+  ({ chatMessage, nickname }) => verifyMessage(chatMessage, nickname, idRandon, io));
   const resultMessage = await renderAllMessagesDb();
+  console.log(resultMessage);
   io.emit('html', resultMessage);
 });
 

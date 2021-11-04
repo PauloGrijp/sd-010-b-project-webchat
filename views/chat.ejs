@@ -4,12 +4,11 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script src="http://localhost:3000/socket.io/socket.io.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
   <title>Document</title>
 </head>
 <body>
   <h1>Chat</h1>
-  <ul id="online-user"></ul>
 
   <ul id="message"></ul>
   <input id="input-nick-name" data-testid="nickname-box" placeholder="Digite seu Nick Name"/>
@@ -27,8 +26,8 @@
       const inputNickName = document.querySelector('#input-nick-name');
 
       client.emit('message', {
-        message: inputMessage.value,
-        nickName: inputNickName.value
+        chatMessage: inputMessage.value,
+        nickname: inputNickName.value
       })
       inputMessage.value = "";
       inputNickName.value = "";
@@ -36,16 +35,17 @@
     
     client.on('message', (message) => {
       const li = document.createElement('li');
-      li.innerText = `${message.timestamp.toLocaleString()} - ${message.nickName}: ${message.message}`;
+      li.innerText = `${message.timestamp.toLocaleString()} - ${message.nickname}: ${message.chatMessage}`;
       li.setAttribute('data-testid', 'message');
-      messageCard.appendChild(li);
+     return messageCard.appendChild(li);
     });
 
     client.on('html', (message) => {
       message.forEach(userMessage => {
         const li = document.createElement('li');
-        li.innerText = `${userMessage.timestamp.toLocaleString()} - ${userMessage.nickName}: ${userMessage.message}`;
-        messageCard.appendChild(li);
+        li.setAttribute('data-testid', 'message');
+        li.innerText = `${userMessage.timestamp} - ${userMessage.nickname}: ${userMessage.chatMessage}`;
+       return messageCard.appendChild(li);
       })
     })
 
