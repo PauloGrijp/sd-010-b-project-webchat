@@ -32,10 +32,8 @@ const verifyMessage = async (message, nickName, idRandon, socketIo) => {
     timestamp: date.toLocaleString(),
   };
 
-  const messageFormated = `${date.toLocaleString()} - ${name}: ${message}`;
-
   await saveMessageModel(messageUser);
-  return socketIo.emit('message', messageFormated);
+  return socketIo.emit('message', messageUser);
 };
 
 const renderAllMessagesDb = async () => {
@@ -59,4 +57,4 @@ app.set('views', path.join(__dirname, 'views'));
 
 app.use(chatController);
 
-http.listen(process.env.PORT, () => console.log(`Servidor rodando na porta ${process.env.PORT}`));
+http.listen(3000, () => console.log(`Servidor rodando na porta ${3000}`));

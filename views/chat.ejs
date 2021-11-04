@@ -25,6 +25,7 @@
     button.addEventListener('click', () => {
       const inputMessage = document.querySelector('#input-message');
       const inputNickName = document.querySelector('#input-nick-name');
+
       client.emit('message', {
         message: inputMessage.value,
         nickName: inputNickName.value
@@ -35,7 +36,7 @@
     
     client.on('message', (message) => {
       const li = document.createElement('li');
-      li.innerText = message;
+      li.innerText = `${message.timestamp.toLocaleString()} - ${message.nickName}: ${message.message}`;
       li.setAttribute('data-testid', 'message');
       messageCard.appendChild(li);
     });
