@@ -8,8 +8,10 @@
   <title>Document</title>
 </head>
 <body>
+  <ul id="user-online">
+    <h1>Usuarios online</h1>
+  </ul>
   <h1>Chat</h1>
-
   <ul id="message"></ul>
   <input id="input-nick-name" data-testid="nickname-box" placeholder="Digite seu Nick Name"/>
   <input id="input-message" data-testid="message-box" placeholder="Digite sua mensagem"/>
@@ -20,6 +22,7 @@
     const client = window.io();
     const button = document.querySelector('#button');
     const messageCard = document.querySelector('#message');
+    const ulUserOnline = document.querySelector("#user-online");
     
     button.addEventListener('click', () => {
       const inputMessage = document.querySelector('#input-message');
@@ -35,7 +38,7 @@
     
     client.on('message', (message) => {
       const li = document.createElement('li');
-      li.innerText = `${message.timestamp.toLocaleString()} - ${message.nickname}: ${message.chatMessage}`;
+      li.innerText = `${message.timestamp} - ${message.nickname}: ${message.chatMessage}`;
       li.setAttribute('data-testid', 'message');
      return messageCard.appendChild(li);
     });
@@ -49,6 +52,14 @@
       })
     })
 
+    client.on('online', ( userOnline) => {
+      userOnline.forEach(user => {
+        const li = document.createElement('li');
+        li.setAttribute('data-testid', 'online-user');
+        li.innerText = user;
+        ulUserOnline.appendChild(li);
+      })
+    })
   </script>
 </body>
 </html>

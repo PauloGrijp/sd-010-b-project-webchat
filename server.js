@@ -14,6 +14,8 @@ const io = require('socket.io')(http, {
 
 const { saveMessageModel, getAllMessages } = require('./models/chatModel');
 
+const usersOnline = [];
+
 const verifyMessage = async (chatMessage, nickname, idRandon, socketIo) => {
   const date = new Date();
   let name;
@@ -23,16 +25,18 @@ const verifyMessage = async (chatMessage, nickname, idRandon, socketIo) => {
   } else {
     name = nickname;
   }
+
+  const 
+  dateFormated = `${date.toLocaleDateString().split('/').join('-')} ${date.toLocaleTimeString()}`;
   
   const messageUser = {
     chatMessage,
     nickname: name,
-    timestamp: date.toLocaleString(),
+    timestamp: dateFormated,
   };
 
   await saveMessageModel(messageUser);
-  console.log(messageUser);
-  return socketIo.emit('message', messageUser);
+  socketIo.emit('message', messageUser);
 };
 
 const renderAllMessagesDb = async () => {
@@ -45,8 +49,9 @@ io.on('connection', async (socket) => {
   socket.on('message', 
   ({ chatMessage, nickname }) => verifyMessage(chatMessage, nickname, idRandon, io));
   const resultMessage = await renderAllMessagesDb();
-  console.log(resultMessage);
+  usersOnline.unshift(idRandon);
   io.emit('html', resultMessage);
+  io.emit('online', usersOnline);
 });
 
 const { chatController } = require('./controllers/chatController');
