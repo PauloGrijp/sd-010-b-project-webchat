@@ -26,7 +26,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 require('./sockets/chat')(io);
 
 app.get('/', controller.getAllMessages);
-app.post('/', (req, res) => {});
+// app.post('/', (req, res) => {});
 
 http.listen(PORT, () => {
   console.log(`Servidor ouvindo na porta ${PORT}`);

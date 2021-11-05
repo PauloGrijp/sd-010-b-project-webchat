@@ -19,7 +19,9 @@
         </ul>
       </div>
       <ul id="messages">
-        
+        <% messages.forEach(({ chatMessage, nickname, timestamp }) => { %>
+          <li><%= `${timestamp} - ${nickname}: ${chatMessage}` %></li>
+        <% } ) %>
       </ul>
     </div>
     <form id="messageForm">
