@@ -13,7 +13,6 @@ formNickname.addEventListener('submit', (e) => {
   e.preventDefault();
   
   const nickname = inputNickname.value;
-  // sessionStorage.setItem('nickname', nickname);
 
   socket.emit('updateNickname', nickname);
 
@@ -28,8 +27,6 @@ formMessage.addEventListener('submit', (e) => {
   const nickname = socket.id.slice(0, -4);
   const chatMessage = inputMessage.value;
 
-  // console.log(nickname);
-
   socket.emit('message', {
     nickname,
     chatMessage,
@@ -40,11 +37,9 @@ formMessage.addEventListener('submit', (e) => {
 });
 
 const createMessage = (message) => {
-  // const { timestamp, nickname, chatMessage } = message;
   const messagesUl = document.querySelector('#messages');
   const li = document.createElement('li');
   li.setAttribute('data-testid', 'message');
-  // li.innerText = `${timestamp} ${nickname}: ${chatMessage}`;
   li.innerText = message;
   messagesUl.appendChild(li);
 };
@@ -63,10 +58,8 @@ const createUserList = (users) => {
   }
 
   userList.map((user) => {
-    // console.log(user);
     const userLi = document.createElement('li');
     userLi.setAttribute('data-testid', 'online-user');
-    // console.log(user);
     const { nickname } = user;
     userLi.innerText = nickname;
     usersUl.appendChild(userLi);

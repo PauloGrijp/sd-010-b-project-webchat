@@ -9,7 +9,7 @@ body {
 }
 
 div {
-  background: black;
+  background: #000000;
   bottom: 0;
   padding: 3px;
   position: fixed;
@@ -24,7 +24,7 @@ form input {
 }
 
 form button {
-  background: rgb(130, 224, 255);
+  background: rgb(134, 225, 255);
   border: none;
   cursor: pointer;
   padding: 10px;
@@ -42,5 +42,5 @@ form button {
 }
 
 .messages li:nth-child( odd ) {
-  background: #eee;
+  background: rgb(238, 238, 238);
 }

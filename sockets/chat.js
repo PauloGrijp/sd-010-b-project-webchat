@@ -4,7 +4,6 @@ const Chat = require('../models/chat');
 
 const getChatMessages = async () => {
   const getAllMessages = await Chat.getAll();
-  console.log(getAllMessages);
   return getAllMessages;
 };
 
