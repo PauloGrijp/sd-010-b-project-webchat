@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html lang="pt">
- 
-<head>
- <title> Socket IO </title>
+  
+  <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.4/socket.io.js"></script>
+    <script>const socket = io();</script>
+    <title> Socket IO </title>
 
 <style>
   body {
@@ -12,7 +14,7 @@
   }
 
   #nickname_form {
-    background: rgba(0, 0, 0, 0.15);
+    background: rgba(42, 41, 41, 0.15);
     padding: 0.25rem;
     position: fixed;
     bottom: 0;
@@ -55,38 +57,38 @@
   #messages>li {
     padding: 0.5rem 1rem;
   }
-
+  
   #messages>li:nth-child(odd) {
     background: #efefef;
   }
-</style>
+  </style>
  
 </head>
- 
+
 <body>
- 
- <ul id="messages">
- </ul>
- <section>
-  <h2>Usuários Online</h2>
-  <ul id="users">
+  
+  <section>
+    <h2>Usuários Online</h2>
+    <ul id="usersOn">
+    </ul>
+  </section>
+  
+<section>
+  <h2>Mensagens</h2>
+  <ul id="messages">
   </ul>
-</section>
+</section> 
 
  <form id="nickname_form" action="">
-   <input type="text" id="nickname_input" data-testid="nickname-box" placeholder="Qual seu nick">
+   <input type="text" id="nickname_input" data-testid="nickname-box" placeholder="Mudar nickname">
    <button data-testid="nickname-button" id="nickNameButton">Salvar</button>
 </form>
 
 <form id="message_form">
-  <input type="text" id="message_input" data-testid="message-box" placeholder="Digite sua mensagem">
+  <input type="text" id="messages" data-testid="message-box" placeholder="Digite sua mensagem">
   <button data-testid="send-button">Enviar</button>
 </form>
-  
- <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.4/socket.io.js"></script>
- <script>
-    const socket = io();
- </script>
+<script>src="./script.js"</script>  
  
 </body>
  
