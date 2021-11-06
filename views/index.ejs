@@ -42,7 +42,8 @@
     nickButton.addEventListener('click', (e) => {
       e.preventDefault();      
       if (nickBox.value) {
-        socket.emit('update', nickBox.value);       
+        nickname = nickBox.value;
+        socket.emit('update', nickname);       
         nickBox.value = '';
       }
     })

@@ -5,6 +5,7 @@ let users = [];
 
 const updateName = (socket, io) => {
   socket.on('update', (nickname) => {
+    // AJUDA DO ZÓZIMO
     const userIndex = users.findIndex((user) => user.socketId === socket.id);
     users[userIndex].nickname = nickname;
     io.emit('users', users);
@@ -14,6 +15,7 @@ const updateName = (socket, io) => {
 const webChat = (io) => {
   io.on('connection', (socket) => {
     socket.on('login', (nickname) => {
+      console.log('New user connected');
       users.push({ nickname, socketId: socket.id });
       io.emit('users', users);
     });
