@@ -6,12 +6,16 @@
   <title>Title</title>
 </head>
 <body>
-  <h1>Scafold criado</h1>
+  <div>
+    <ul id="users-online"></ul>
+  </div>
   <script src="/socket.io/socket.io.js"></script> 
   <script>
+    let nickname = Math.random()
+    .toString(16).substr(2, 8) + Math.random().toString(16).substr(2, 8);
     const socket = io();
     window.onload = function() {
-      socket.emit(`conectado`, Math.random());
+      socket.emit('login', nickname);
     }
   </script>
 </body>
