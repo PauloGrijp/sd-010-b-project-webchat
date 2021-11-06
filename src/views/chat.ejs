@@ -8,14 +8,12 @@
     <div class="main">
       <div class="usersList">
         <form id="nicknameForm">
-          <input id="nicknameInput" autocomplete="off" placeholder="Insira seu nickname"/>
-          <button>Save</button>
+          <input id="nicknameInput" data-testid="nickname-box" autocomplete="off" placeholder="Insira seu nickname"/>
+          <button id="nickname-button" data-testid="nickname-button">Save</button>
         </form>
         <h2>Usuários Logados:</h2>
         <ul class="users">
-          <li>Roger</li>
-          <li>David</li>
-          <li>Richard</li>
+          
         </ul>
       </div>
       <ul id="messages">
@@ -23,7 +21,7 @@
       </ul>
     </div>
     <form id="messageForm">
-      <input id="messageInput" autocomplete="off" /><button>Send</button>
+      <input id="messageInput" autocomplete="off" data-testid="message-box"/><button id="send-button" data-testid="send-button">Send</button>
     </form>
     <script src="/socket.io/socket.io.js"></script>
     <script src='./js/script.js'></script>
