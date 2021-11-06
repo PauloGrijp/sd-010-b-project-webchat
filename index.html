@@ -8,32 +8,38 @@
 </head>
 <body>
     <head>The Amazing Super Chat</head>
-    <div>
-        <span>Current Nickname: </span>
-        <span id="nickname" data-testid="online-user"></span>
-        <P></P>
-        <form action="" id="nickForm">
-            <input
-                type="text"
-                placeholder="Type your new Nickname"
-                id="change-nick-text"
-                data-testid="nickname-box"
-            >
-            <button data-testid="nickname-button" >Change Nickname</button>
-        </form>
+    <div id="chat">
+        <div>
+            <span>Current Nickname: </span>
+            <span id="nickname"></span>
+            <P></P>
+            <form action="" id="nickForm">
+                <input
+                    type="text"
+                    placeholder="Type your new Nickname"
+                    id="change-nick-text"
+                    data-testid="nickname-box"
+                >
+                <button data-testid="nickname-button" >Change Nickname</button>
+            </form>
+        </div>
+        <div>
+            <ul id="messages"></ul>
+        </div>
+        <div class="chatBox">
+            <form action="" id="messageForm">
+                <input
+                    type="text"
+                    placeholder="Type your message and click in the Send button"
+                    data-testid="message-box"
+                    id="messageBox">
+                <button data-testid="send-button">Send</button>
+            </form>
+        </div>
     </div>
-    <div>
-        <ul id="messages"></ul>
-    </div>
-    <div class="chatBox">
-        <form action="" id="messageForm">
-            <input
-                type="text"
-                placeholder="Type your message and click in the Send button"
-                data-testid="message-box"
-                id="messageBox">
-            <button data-testid="send-button">Send</button>
-        </form>
+    <div id="users">
+        <head>Users Online</head>
+        <ul id="users-online"></ul>
     </div>
     <script src="/socket.io/socket.io.js"></script>
     <script src="./js/client.js"></script>

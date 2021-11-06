@@ -4,6 +4,9 @@ const messageForm = document.querySelector('#messageForm');
 const nickForm = document.querySelector('#nickForm');
 const customAttr = 'data-testid';
 const messageBox = document.querySelector('#messageBox');
+const nickNameLabel = document.querySelector('#nickname');
+const messageList = document.querySelector('#messages');
+const userList = document.querySelector('#users-online');
 
 function createID(length) {
     // credits by https://www.ti-enxame.com/pt/javascript/gere-stringcaracteres-aleatorios-em-javascript/967048592/
@@ -13,50 +16,87 @@ function createID(length) {
         text += possible.charAt(Math.floor(Math.random() * possible.length));
     }
     return text;
-  }
+}
 
-const setUserName = (userName) => {
-    const oldUserName = localStorage.getItem('userName');
-    let newUserName = !userName ? createID(16) : userName;
-    if (oldUserName && !userName) {
-        newUserName = oldUserName;
-    }
-    localStorage.setItem('userName', newUserName);
-    if (userName) {
-        socket.emit('setup', { oldUserName, newUserName });
-    }
-    const nickNameLabel = document.querySelector('#nickname');
-    nickNameLabel.innerText = `${newUserName}`;
+const createUserName = () => {
+    // const oldUserName = localStorage.getItem('userName');
+    // if (oldUserName) {
+    //     nickNameLabel.innerText = oldUserName;
+    //     socket.emit('setUser', oldUserName);
+    //     return oldUserName;
+    // }
+    const newUserName = createID(16);
+    socket.emit('setUser', newUserName);
+    // localStorage.setItem('userName', newUserName);
+    nickNameLabel.innerText = newUserName;
     return newUserName;
 };
 
-setUserName();
+const changeUserName = (userName) => {
+    console.log(userName);
+    if (!userName) return;
+    // const oldUserName = localStorage.getItem('userName');
+    // localStorage.setItem('userName', userName);
+    const oldUserName = nickNameLabel.innerText;
+    socket.emit('changeUser', { oldUserName, userName });
+    nickNameLabel.innerText = userName;
+    return userName;
+};
+
 messageBox.focus();
 
 nickForm.addEventListener('submit', (e) => {
     e.preventDefault();
     const nicknameBox = document.querySelector('#change-nick-text');
-    setUserName(nicknameBox.value);
+    changeUserName(nicknameBox.value);
     nicknameBox.value = '';
     return false;
 });
 
 messageForm.addEventListener('submit', (e) => {
     e.preventDefault();
-    const nickname = localStorage.getItem('userName');
+    const nickname = nickNameLabel.innerText;
     const chatMessage = messageBox.value;
     socket.emit('message', { chatMessage, nickname });
     messageBox.value = '';
     return false;
 });
 
+const removeMessages = () => {
+    while (messageList.hasChildNodes()) {
+        messageList.removeChild(messageList.firstChild);
+    }
+};
+
 const createMessage = (message) => {
-    const messageList = document.querySelector('#messages');
     const messageItem = document.createElement('li');
     messageItem.setAttribute(customAttr, 'message');
     messageItem.innerText = message;
     messageList.appendChild(messageItem);
 };
 
+const removeUsers = () => {
+    while (userList.hasChildNodes()) {
+        userList.removeChild(userList.firstChild);
+    }
+};
+
+const createUser = (user) => {
+    const userItem = document.createElement('li');
+    userItem.setAttribute(customAttr, 'online-user');
+    userItem.innerText = user;
+    userList.appendChild(userItem);
+};
+
+socket.on('setUser', () => {
+    createUserName();
+});
 socket.on('message', (message) => createMessage(message));
-socket.on('messages', (messages) => messages.forEach((message) => createMessage(message.message)));
+socket.on('messages', (messages) => {
+    removeMessages();
+    messages.forEach((message) => createMessage(message.message));
+});
+socket.on('users', (users) => {
+    removeUsers();
+    users.forEach((user) => createUser(user.userName));
+});
