@@ -45,13 +45,11 @@ const setUser = async (socketId, userName) => {
 };
 
 const createUser = async (io, socket, userName) => {
-    chatMessage = `${userName} has just connected.`;
     const users = await setUser(socket.id, userName);
     socket.broadcast.emit('users', users);
     const newUser = users.pop();
     users.unshift(newUser);
     io.to(socket.id).emit('users', users);
-    socket.broadcast.emit('message', chatMessage);
 };
 
 const changeUserName = async (io, socket, oldUserName, userName) => {
@@ -73,9 +71,9 @@ const removeUser = async (socket) => {
 
 module.exports = (io) => {
     io.on('connection', async (socket) => {
-        const nickName = createID(16);
-        createUser(io, socket, nickName);
-        io.to(socket.id).emit('setNickName', nickName);
+        const nickname = createID(16);
+        createUser(io, socket, nickname);
+        io.to(socket.id).emit('setNickName', nickname);
         const messages = await getMessages();
         io.to(socket.id).emit('messages', messages);
         socket.on('message', async (message) => (manageMessage(io, message)));

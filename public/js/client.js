@@ -43,10 +43,9 @@ nickForm.addEventListener('submit', (e) => {
 
 messageForm.addEventListener('submit', (e) => {
     e.preventDefault();
-    const nickName = nickNameLabel.innerText;
+    const nickname = nickNameLabel.innerText;
     const chatMessage = messageBox.value;
-    console.log(nickName);
-    socket.emit('message', { chatMessage, nickName });
+    socket.emit('message', { chatMessage, nickname });
     messageBox.value = '';
     return false;
 });
