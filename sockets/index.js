@@ -3,10 +3,19 @@ const { sendMessage } = require('../models');
 
 let users = [];
 
+const updateName = (socket, io) => {
+  socket.on('update', (nickname) => {
+    const userIndex = users.findIndex((user) => user.socketId === socket.id);
+    users[userIndex].nickname = nickname;
+    io.emit('users', users);
+  });
+};
+
 const webChat = (io) => {
   io.on('connection', (socket) => {
     socket.on('login', (nickname) => {
-      users.push({ nickname, socketId: socket.id }); io.emit('users', users);
+      users.push({ nickname, socketId: socket.id });
+      io.emit('users', users);
     });
 
     socket.on('message', async ({ chatMessage, nickname }) => {
@@ -16,13 +25,11 @@ const webChat = (io) => {
     });
 
     socket.on('disconnect', () => {
-      users = users.filter((user) => user.socketId !== socket.id); io.emit('users', users);
-    });
-
-    socket.on('update', (nickname) => {
-      users[users.findIndex((user) => user.socketId === socket.id)].nickname = nickname;
+      users = users.filter((user) => user.socketId !== socket.id);
       io.emit('users', users);
     });
+
+    updateName(socket, io);
   });
 };
 
