@@ -72,16 +72,16 @@
         const usuario = document.getElementById('users-online');
         usuario.innerHTML = '';
         users.forEach(function({ nickname, socketId }) {
-          const apelido = document.createElement('li');
-          apelido.innerHTML = nickname;
-          apelido.setAttribute("data-testid", "online-user");
-          apelido.setAttribute("id", "online-user");        
+          const nickName = document.createElement('li');
+          nickName.innerHTML = nickname;
+          nickName.setAttribute("data-testid", "online-user");
+          nickName.setAttribute("id", "online-user");        
           
           if (socketId === socket.id) {
             // Organiza os usuários por ordem de "chegada"
-            usuario.prepend(apelido);
+            usuario.prepend(nickName);
           } else {
-            usuario.appendChild(apelido);
+            usuario.appendChild(nickName);
           }
         });
       });
