@@ -6,4 +6,9 @@ const getAllMessages = async () => {
   return messages;
 };
 
-module.exports = { getAllMessages };
+const sendMessage = async ({ nickname, message, timestamp }) => {
+  const db = await connection();
+  await db.collection('messages').insertOne({ nickname, message, timestamp });
+};
+
+module.exports = { getAllMessages, sendMessage };

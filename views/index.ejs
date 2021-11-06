@@ -60,6 +60,14 @@
       
       socket.emit('login', nickname);
 
+      socket.on('message', function(param) {
+        const messages = document.getElementById('messages');
+        const li = document.createElement('li');
+        li.innerHTML = param;
+        li.setAttribute("data-testid", "message");
+        messages.appendChild(li);
+      });
+
       socket.on('users', function(users) {
         const usuario = document.getElementById('users-online');
         usuario.innerHTML = '';
@@ -70,9 +78,10 @@
           apelido.setAttribute("id", "online-user");        
           
           if (socketId === socket.id) {
-            usuario.prepend(apelido); // JOGA PARA PRIMEIRA POSIÇÃO
+            // Organiza os usuários por ordem de "chegada"
+            usuario.prepend(apelido);
           } else {
-            usuario.appendChild(apelido); // JOGA PARA ULTIMA POSIÇÃO
+            usuario.appendChild(apelido);
           }
         });
       });
