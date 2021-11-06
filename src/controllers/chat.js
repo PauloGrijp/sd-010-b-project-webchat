@@ -1,5 +1,8 @@
+const Model = require('../models/Messages');
+
 async function getAllMessages(req, res) {
-  return res.status(200).render('chat', { });
+  const messages = await Model.getAllMessages();
+  return res.status(200).render('chat', { messages });
 }
 
 module.exports = {
