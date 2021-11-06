@@ -7,7 +7,7 @@
   <body>
     <div class="main">
       <div class="usersList">
-        <form id="nicknameForm">
+        <form id="nicknameForm" class="nicknameForm">
           <input id="nicknameInput" data-testid="nickname-box" autocomplete="off" placeholder="Insira seu nickname"/>
           <button id="nickname-button" data-testid="nickname-button">Save</button>
         </form>
@@ -16,13 +16,13 @@
           
         </ul>
       </div>
-      <ul id="messages">
+      <ul id="messages" class="messages">
         <% messages.forEach(({ chatMessage, nickname, timestamp }) => { %>
           <li data-testid="message"><%= `${timestamp} - ${nickname}: ${chatMessage}` %></li>
         <% } ) %>
       </ul>
     </div>
-    <form id="messageForm">
+    <form id="messageForm" class="messageForm">
       <input id="messageInput" autocomplete="off" data-testid="message-box"/><button id="send-button" data-testid="send-button">Send</button>
     </form>
     <script src="/socket.io/socket.io.js"></script>

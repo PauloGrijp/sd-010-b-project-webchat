@@ -1,55 +1,61 @@
 * {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
 }
 
 body {
-  font: 13px Helvetica, Arial;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 13px;
 }
 
-#messageForm {
-  background: #000;
+.messageForm {
+  background: black;
+  bottom: 0;
   padding: 3px;
   position: fixed;
-  bottom: 0;
   width: 100%;
 }
 
-#messageForm input {
+.messageForm input {
   border: 0;
+  margin-right: 0.5%;
   padding: 10px;
   width: 90%;
-  margin-right: 0.5%;
 }
 
-#messageForm button {
-  width: 9%;
+.messageForm button {
   background: darkcyan;
   border: none;
-  padding: 10px;
   cursor: pointer;
+  padding: 10px;
+  width: 9%;
 }
 
-#messages {
-  width: 100vw;
-  height: 100vh;
+.messages {
   border: 1px solid darkgreen;
+  height: 100vh;
   list-style-type: none;
   margin: 0;
   padding: 0;
+  width: 100vw;
 }
 
-#messages li {
+.messages li {
   padding: 5px 10px;
 }
 
-#messages li:nth-child(odd) {
+.users li {
+  margin-left: 20px;
+  margin-top: 10px;
+}
+
+.messages li:nth-child( odd ) {
   background: #eee;
 }
 
 .main {
-  display:flex;
+  display: flex;
 }
 
 .usersList {
@@ -60,30 +66,25 @@ body {
   margin-left: 20px;
 }
 
-.users li {
-  margin-left: 20px;
-  margin-top: 10px;
-}
-
-#nicknameForm {
-  display:flex;
+.nicknameForm {
+  background: black;
+  display: flex;
   justify-content: space-between;
-  background: #000;
+  margin-bottom: 10px;
   padding: 3px;
   width: 100%;
-  margin-bottom: 10px;
 }
 
-#nicknameForm button {
+.nicknameForm button {
   background: darkcyan;
   border: none;
-  padding: 5px;
   cursor: pointer;
+  padding: 5px;
 }
 
-#nicknameForm input {
+.nicknameForm input {
   border: 0;
+  margin-right: 0.5%;
   padding: 5px;
   width: 100%;
-  margin-right: 0.5%;
 }
