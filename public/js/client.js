@@ -8,38 +8,25 @@ const nickNameLabel = document.querySelector('#nickname');
 const messageList = document.querySelector('#messages');
 const userList = document.querySelector('#users-online');
 
-function createID(length) {
-    // credits by https://www.ti-enxame.com/pt/javascript/gere-stringcaracteres-aleatorios-em-javascript/967048592/
-    let text = '';
-    const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    for (let i = 0; i < length; i += 1) {
-        text += possible.charAt(Math.floor(Math.random() * possible.length));
-    }
-    return text;
-}
+// function createID(length) {
+//     // credits by https://www.ti-enxame.com/pt/javascript/gere-stringcaracteres-aleatorios-em-javascript/967048592/
+//     let text = '';
+//     const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+//     for (let i = 0; i < length; i += 1) {
+//         text += possible.charAt(Math.floor(Math.random() * possible.length));
+//     }
+//     return text;
+// }
 
-const createUserName = () => {
-    // const oldUserName = localStorage.getItem('userName');
-    // if (oldUserName) {
-    //     nickNameLabel.innerText = oldUserName;
-    //     socket.emit('setUser', oldUserName);
-    //     return oldUserName;
-    // }
-    const newUserName = createID(16);
-    socket.emit('setUser', newUserName);
-    // localStorage.setItem('userName', newUserName);
-    nickNameLabel.innerText = newUserName;
-    return newUserName;
+const setNickName = (nickName) => {
+    nickNameLabel.innerText = nickName;
 };
 
 const changeUserName = (userName) => {
-    console.log(userName);
     if (!userName) return;
-    // const oldUserName = localStorage.getItem('userName');
-    // localStorage.setItem('userName', userName);
-    const oldUserName = nickNameLabel.innerText;
+    const oldUserName = userList.firstChild.innerText;
     socket.emit('changeUser', { oldUserName, userName });
-    nickNameLabel.innerText = userName;
+    setNickName(userName);
     return userName;
 };
 
@@ -47,17 +34,19 @@ messageBox.focus();
 
 nickForm.addEventListener('submit', (e) => {
     e.preventDefault();
-    const nicknameBox = document.querySelector('#change-nick-text');
-    changeUserName(nicknameBox.value);
-    nicknameBox.value = '';
+    const nickNameBox = document.querySelector('#change-nick-text');
+    changeUserName(nickNameBox.value);
+    userList.firstChild.innerText = nickNameBox.value;
+    nickNameBox.value = '';
     return false;
 });
 
 messageForm.addEventListener('submit', (e) => {
     e.preventDefault();
-    const nickname = nickNameLabel.innerText;
+    const nickName = nickNameLabel.innerText;
     const chatMessage = messageBox.value;
-    socket.emit('message', { chatMessage, nickname });
+    console.log(nickName);
+    socket.emit('message', { chatMessage, nickName });
     messageBox.value = '';
     return false;
 });
@@ -88,9 +77,6 @@ const createUser = (user) => {
     userList.appendChild(userItem);
 };
 
-socket.on('setUser', () => {
-    createUserName();
-});
 socket.on('message', (message) => createMessage(message));
 socket.on('messages', (messages) => {
     removeMessages();
@@ -100,3 +86,5 @@ socket.on('users', (users) => {
     removeUsers();
     users.forEach((user) => createUser(user.userName));
 });
+
+socket.on('setNickName', (nickName) => (setNickName(nickName)));

@@ -9,6 +9,16 @@ const getDateTime = () => {
     return fullDateTime;
 };
 
+const createID = (length) => {
+    // credits by https://www.ti-enxame.com/pt/javascript/gere-stringcaracteres-aleatorios-em-javascript/967048592/
+    let text = '';
+    const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    for (let i = 0; i < length; i += 1) {
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
+    }
+    return text;
+};
+
 const saveMessage = async (chatMessage, nickname, dateTime) => (
     messagesController.insertMessage(chatMessage, nickname, dateTime));
 const getMessages = async () => (messagesController.getMessages());
@@ -31,21 +41,27 @@ const setUser = async (socketId, userName) => {
     if (userExists || !userName) return users;
     const insertedUser = await usersController.insertUser(socketId, userName);
     users.push(insertedUser);
-    console.log(users);
     return users;
 };
 
 const createUser = async (io, socket, userName) => {
     chatMessage = `${userName} has just connected.`;
     const users = await setUser(socket.id, userName);
-    io.emit('users', users);
+    socket.broadcast.emit('users', users);
+    const newUser = users.pop();
+    users.unshift(newUser);
+    io.to(socket.id).emit('users', users);
     socket.broadcast.emit('message', chatMessage);
 };
 
 const changeUserName = async (io, socket, oldUserName, userName) => {
     chatMessage = `${oldUserName}'s nick has changed. Now it's ${userName}`;
+    const user = { socketId: socket.id, userName };
     const users = await changeUser(socket.id, oldUserName, userName);
-    io.emit('users', users);
+    socket.broadcast.emit('users', users);
+    users.splice(users.indexOf(user), 1);
+    users.unshift(user);
+    io.to(socket.id).emit('users', users);
     socket.broadcast.emit('message', chatMessage);
 };
 
@@ -57,8 +73,9 @@ const removeUser = async (socket) => {
 
 module.exports = (io) => {
     io.on('connection', async (socket) => {
-        console.log('conectei', socket.id);
-        io.to(socket.id).emit('setUser');
+        const nickName = createID(16);
+        createUser(io, socket, nickName);
+        io.to(socket.id).emit('setNickName', nickName);
         const messages = await getMessages();
         io.to(socket.id).emit('messages', messages);
         socket.on('message', async (message) => (manageMessage(io, message)));
