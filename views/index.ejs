@@ -60,10 +60,11 @@
       socket.emit('login', nickname);
 
       socket.on('message', function(param) {
+        const messages = document.getElementById('messages');
         const li = document.createElement('li');
         li.innerHTML = param;
         li.setAttribute("data-testid", "message");
-        document.getElementById('messages').appendChild(li);
+        messages.appendChild(li);
       });
 
       socket.on('users', function(users) {
