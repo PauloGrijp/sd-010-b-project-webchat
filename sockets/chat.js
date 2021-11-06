@@ -1,6 +1,6 @@
 const Model = require('../src/models/Messages');
 
-let usersList = [];
+const usersList = [];
 module.exports = (io) => io.on('connection', async (socket) => {
   const userID = `UID${Date.now()}`;
   usersList.push(userID);
@@ -19,7 +19,7 @@ module.exports = (io) => io.on('connection', async (socket) => {
   });
 
   socket.on('disconnect', () => {
-    usersList = usersList.filter((user) => user !== userID);
+    usersList.splice(usersList.indexOf(userID), 1);
     io.emit('login', usersList);
   });
 }); 
