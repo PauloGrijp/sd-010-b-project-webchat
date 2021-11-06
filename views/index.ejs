@@ -9,7 +9,7 @@
   <form>
     <input id="nickname" autocomplete="off" data-testid="nickname-box"
       placeholder="Insira seu nickname"/>
-      <button data-testid="nickname-button" id="nickname-button">Salvar</button>
+    <button data-testid="nickname-button" id="nickname-button">Salvar</button>
   </form>
   <div>
     <ul id="users-online"></ul>
@@ -42,8 +42,7 @@
     nickButton.addEventListener('click', (e) => {
       e.preventDefault();      
       if (nickBox.value) {
-        nickname = nickBox.value;
-        socket.emit('update', nickname);       
+        socket.emit('update', nickBox.value);       
         nickBox.value = '';
       }
     })
@@ -61,11 +60,10 @@
       socket.emit('login', nickname);
 
       socket.on('message', function(param) {
-        const messages = document.getElementById('messages');
         const li = document.createElement('li');
         li.innerHTML = param;
         li.setAttribute("data-testid", "message");
-        messages.appendChild(li);
+        document.getElementById('messages').appendChild(li);
       });
 
       socket.on('users', function(users) {
