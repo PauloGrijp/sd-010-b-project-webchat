@@ -3,19 +3,79 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Title</title>
+  <title>WebChat</title>
 </head>
 <body>
+  <form>
+    <input id="nickname" autocomplete="off" data-testid="nickname-box"
+      placeholder="Insira seu nickname"/>
+      <button data-testid="nickname-button" id="nickname-button">Salvar</button>
+  </form>
   <div>
     <ul id="users-online"></ul>
   </div>
+  <div> 
+    <h4>Mensagens</h4>
+    <ul id="messages">
+      <%messages.forEach(({nickname, message, timestamp}) => {%>
+        <li data-testid="message"><%= `${timestamp} - ${nickname}: ${message}` %></li>
+      <%})%>      
+    </ul>
+    <form id="form" action="">
+      <input id="input" autocomplete="off" data-testid="message-box" 
+        placeholder="Digite aqui sua mensagem"/>
+        <button data-testid="send-button">Send</button>
+    </form>
+  </div>
   <script src="/socket.io/socket.io.js"></script> 
   <script>
+    const socket = io();
+    const form = document.getElementById('form');
+    const input = document.getElementById('input');
+    const nickButton = document.getElementById('nickname-button');
+    const nickBox = document.getElementById('nickname');
+
     let nickname = Math.random()
     .toString(16).substr(2, 8) + Math.random().toString(16).substr(2, 8);
-    const socket = io();
+
+
+    nickButton.addEventListener('click', (e) => {
+      e.preventDefault();      
+      if (nickBox.value) {
+        nickname = nickBox.value;
+        socket.emit('update', nickname);       
+        nickBox.value = '';
+      }
+    })
+
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      if (input.value) {    
+        socket.emit('message', {chatMessage: input.value, nickname});
+        input.value = '';
+      }
+    });
+
     window.onload = function() {
+      
       socket.emit('login', nickname);
+
+      socket.on('users', function(users) {
+        const usuario = document.getElementById('users-online');
+        usuario.innerHTML = '';
+        users.forEach(function({ nickname, socketId }) {
+          const apelido = document.createElement('li');
+          apelido.innerHTML = nickname;
+          apelido.setAttribute("data-testid", "online-user");
+          apelido.setAttribute("id", "online-user");        
+          
+          if (socketId === socket.id) {
+            usuario.prepend(apelido); // JOGA PARA PRIMEIRA POSIÇÃO
+          } else {
+            usuario.appendChild(apelido); // JOGA PARA ULTIMA POSIÇÃO
+          }
+        });
+      });
     }
   </script>
 </body>
