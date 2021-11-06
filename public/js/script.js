@@ -1,6 +1,7 @@
 const socket = window.io();
 const messageBtn = document.querySelector('#send-button');
 const nicknameBtn = document.querySelector('#nickname-button');
+const usersUl = document.querySelector('.users');
 let nickname = '';
 
 function setUserNickname() {
@@ -18,7 +19,6 @@ function createMessage(message) {
 }
 
 function showOnlineUser(user) {
-  const usersUl = document.querySelector('.users');
   const li = document.createElement('li');
   li.setAttribute('data-testid', 'online-user');
   
@@ -41,15 +41,22 @@ messageBtn.addEventListener('click', (e) => {
 nicknameBtn.addEventListener('click', (e) => {
   e.preventDefault();
   setUserNickname();
-  showOnlineUser();
+  socket.emit('setUserNickname', nickname);
+  // showOnlineUser();
 });
 
 socket.on('message', createMessage);
 
 socket.on('login', (users) => {
-  nickname = users[users.length - 1];
-  users.forEach((user) => showOnlineUser(user));
+  usersUl.innerHTML = '';
+  
+  showOnlineUser(nickname);
+  users.forEach((user) => {
+    if (user !== nickname) showOnlineUser(user);
+  });
 });
+
+socket.on('currentUser', (user) => { nickname = user; });
 
 window.onbeforeunload = (_event) => {
   socket.disconnect();

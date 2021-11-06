@@ -1,11 +1,15 @@
 const Model = require('../src/models/Messages');
 
-const usersList = [];
+let usersList = [];
 module.exports = (io) => io.on('connection', async (socket) => {
-  // console.log(`${socket.id} conectado`);
-  const userIdD = `UID${Date.now()}`;
-  usersList.push(userIdD);
-  socket.emit('login', usersList);
+  const userID = `UID${Date.now()}`;
+  usersList.push(userID);
+  socket.emit('currentUser', userID);
+  io.emit('login', usersList);
+  socket.on('setUserNickname', (nickname) => {
+    usersList.splice(usersList.indexOf(userID), 1, nickname);
+    io.emit('login', usersList);
+  });
 
   socket.on('message', async ({ nickname, chatMessage }) => {
     const timestamp = new Date().toLocaleString().replace(/\//g, '-');
@@ -15,6 +19,7 @@ module.exports = (io) => io.on('connection', async (socket) => {
   });
 
   socket.on('disconnect', () => {
-    console.log('alguém saiu');
+    usersList = usersList.filter((user) => user !== userID);
+    io.emit('login', usersList);
   });
 }); 
