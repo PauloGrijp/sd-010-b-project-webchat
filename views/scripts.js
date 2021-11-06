@@ -2,6 +2,17 @@ const socket = window.io();
 
 let userId = '';
 
+// FONTE: https://www.ti-enxame.com/pt/javascript/gere-stringcaracteres-aleatorios-em-javascript/967048592/
+function geraNickName() {
+  const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+  let nickname = '';
+  for (let i = 0; i < 16; i += 1) {
+    const r = Math.floor(Math.random() * chars.length);
+    nickname += chars.substring(r, r + 1);
+  }
+  return nickname;
+}
+
 const nickNameInput = document.getElementById('nickname_input');
 const nickNameBtn = document.getElementById('nickname_btn');
 const messageInput = document.getElementById('messages_input');
@@ -9,7 +20,7 @@ const messageBtn = document.getElementById('messages_btn');
 
 messageBtn.addEventListener('click', (event) => {
   event.preventDefault();
-  const nickname =  userId || geraNickName() ;
+  const nickname = userId || geraNickName();
   socket.emit('message', {
     chatMessage: messageInput.value,
     nickname });
@@ -18,7 +29,7 @@ messageBtn.addEventListener('click', (event) => {
 
 const sendMessage = (message) => {
   const messageDiv = document.getElementById('messagesUsers');
-  console.log(messageDiv)
+  console.log(messageDiv);
   const messageElement = document.createElement('li');
   messageElement.innerText = message;
   messageElement.setAttribute('data-testid', 'message');
@@ -53,13 +64,3 @@ socket.on('message', (message) => {
 socket.on('users', (usersOnline) => {
   users(usersOnline);
 });
-
-function geraNickName() {
-  var chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
-  var nickname = '';
-  for (var i = 0; i < 16; i++) {
-    var r = Math.floor(Math.random() * chars.length);
-    nickname += chars.substring(r, r + 1);
-  }
-  return nickname;
-}

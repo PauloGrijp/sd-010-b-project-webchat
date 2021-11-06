@@ -1,9 +1,9 @@
 require('dotenv').config();
 const express = require('express');
+
 const app = express();
 const http = require('http').createServer(app);
 const moment = require('moment');
-const {geraNickName} = require('./utils/index');
 
 const PORT = process.env.PORT || 3000;
 
@@ -12,9 +12,11 @@ const usersOnline = {};
 const io = require('socket.io')(http, {
   cors: {
     origin: `http://localhost:${PORT}`,
-    methods: ['GET', 'POST']
-  }
+    methods: ['GET', 'POST'],
+  },
 });
+
+const { geraNickName } = require('./utils/index');
 
 app.use(express.static('views'));
 app.set('view engine', 'ejs');
@@ -40,7 +42,6 @@ io.on('connection', (socket) => {
   });
   io.emit('users', Object.values(usersOnline));
 });
-
 
 app.get('/', (_req, res) => {
   res.render('index');
