@@ -1,11 +1,16 @@
   // FONTE: https://www.ti-enxame.com/pt/javascript/gere-stringcaracteres-aleatorios-em-javascript/967048592/
-  //gera um nickname aleatório
+  
+  function geraNickName() {
+    var chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+    var nickname = '';
+    for (var i = 0; i < 16; i++) {
+      var r = Math.floor(Math.random() * chars.length);
+      nickname += chars.substring(r, r + 1);
+    }
+    return nickname;
+  }
 
-  const dec2hex = (dec) => {
-    return ('0' + dec.toString(16)).substr(-2)
+  module.exports = {
+    geraNickName
   }
-  const generateNickName = (len) => {
-    var arr = new Uint8Array((len || 40) / 2)
-    window.crypto.getRandomValues(arr)
-  return Array.from(arr, dec2hex).join('')
-  }
+  

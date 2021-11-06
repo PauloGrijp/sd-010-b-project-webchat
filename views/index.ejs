@@ -2,8 +2,10 @@
 <html lang="pt">
   
   <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.4/socket.io.js"></script>
-    <script>const socket = io();</script>
     <title> Socket IO </title>
 
 <style>
@@ -67,28 +69,27 @@
 
 <body>
   
-  <section>
-    <h2>Usuários Online</h2>
-    <ul id="usersOn">
-    </ul>
-  </section>
+<section>
+  <h2>Usuários Online</h2>
+  <ul id="usersOn"></ul>
+</section>
   
 <section>
   <h2>Mensagens</h2>
-  <ul id="messages">
-  </ul>
+  <ul id="messagesUsers"></ul>
 </section> 
 
- <form id="nickname_form" action="">
-   <input type="text" id="nickname_input" data-testid="nickname-box" placeholder="Mudar nickname">
-   <button data-testid="nickname-button" id="nickNameButton">Salvar</button>
+<form id="nickname_form" action="">
+  <input type="text" id="nickname_input" data-testid="nickname-box" placeholder="Mudar nickname">
+  <button id="nickname_btn" data-testid="nickname-button" ">Salvar</button>
 </form>
 
 <form id="message_form">
-  <input type="text" id="messages" data-testid="message-box" placeholder="Digite sua mensagem">
-  <button data-testid="send-button">Enviar</button>
+  <input type="text" id="messages_input" data-testid="message-box" placeholder="Digite sua mensagem">
+  <button id="messages_btn"data-testid="send-button">Enviar</button>
 </form>
-<script>src="./script.js"</script>  
+
+<script src="./scripts.js"></script>
  
 </body>
  
