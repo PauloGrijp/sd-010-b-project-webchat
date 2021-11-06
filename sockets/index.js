@@ -1,7 +1,10 @@
+const users = [];
+
 const webChat = (io) => {
   io.on('connection', (socket) => {
-    socket.on('conectado', (params) => {
-      console.log(`Usuário: ${params}`);
+    socket.on('login', (nickname) => {
+      users.push({ nickname, socketId: socket.id });
+      io.emit('users', users);
     });
   });
 };
