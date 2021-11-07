@@ -10,9 +10,10 @@
 <body>
   <h1> WebChat</h1>
   <div id="div-nickname">
-    <input id="input-nickname-box" data-testid="nickname-box" />
+    <input id="input-nickname" data-testid="nickname-box" />
     <button id="nickname-button" data-testid="nickname-button" type="button">Ok</button>
   </div>
+  <div id="others"></div>
   <ul id="messages"></ul>
   <form id="form" action="">
     <input id="input" data-testid="message-box" />
@@ -27,12 +28,14 @@
     nicknameButton.addEventListener('click', (e) => {
       const inputNickname = document.getElementById('input-nickname-box');
       const div = document.getElementById('div-nickname');
-      const divSpan = document.querySelector('span');
+      const divSpan = document.getElementById('online-user')
       div.removeChild(divSpan);
       const span = document.createElement('span');
       span.setAttribute("data-testid", "online-user");
+      span.setAttribute("id", "online-user");
       span.textContent = inputNickname.value;
       div.appendChild(span);
+      socket.emit('nickname', inputNickname.value);
     });
     window.onload = () => {
       let nickname = document.getElementById('nickname');
@@ -40,8 +43,10 @@
       const div = document.getElementById('div-nickname');
       const span = document.createElement('span');
       span.setAttribute("data-testid", "online-user");
+      span.setAttribute("id", "online-user");
       span.textContent = random;
       div.appendChild(span);
+      socket.emit('adduser', random);
     };
     form.addEventListener('submit', (e) => {
       e.preventDefault();
@@ -71,6 +76,21 @@
       li.textContent = message;
       ul.appendChild(li);
     })
+    socket.on('guests', (guests) => {
+            const indexAchado = guests.findIndex((item) => item.id === socket.id)
+            guests.splice(indexAchado, 1);
+            console.log(guests);
+            const div = document.getElementById('others');
+            div.innerText = ""
+            for (let i = 0; i < guests.length; i++) {
+                console.log(guests[i].nome);
+                const span = document.createElement('span');
+                span.setAttribute("data-testid","online-user");
+                span.setAttribute("id",`online-user-${guests[i].id}`);
+                span.textContent = guests[i].nome;
+                div.appendChild(span);
+            }
+        })
   </script>
 </body>
 

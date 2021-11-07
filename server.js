@@ -10,34 +10,41 @@ const http = require('http').createServer(app);
 const port = process.env.PORT || 3000;
 
 const io = require('socket.io')(http, {
-    cors: {
-        origin: 'http://localhost:3000',
-        method: ['GET', 'POST'],
-    },
+  cors: {
+    origin: 'http://localhost:3000',
+    method: ['GET', 'POST'],
+  },
 });
+
+const clientControler = require('./client/client');
+const chatController = require('./controller/chatController');
+const middlewares = require('./middlewares/middlewares');
 
 io.on('connection', (socket) => {
-    console.log('Connect', socket.id);
-    socket.on('disconnect', () => {
-        console.log('Disconnect', socket.id);
-    });
-    socket.on('message', (message) => {
-      console.log(message);
-      const { chatMessage, nickname } = message;
-      const date = new Date();
-      const currenteDate = `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`;
-      const currenteHour = `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+  console.log('Connect', socket.id);
+  socket.on('disconnect', () => {
+    clientControler.excludeChatty(socket);
+    io.emit('guests', clientControler.getChatty());
+  });
+  socket.on('adduser', (random) => {
+    clientControler.addChatty(random, socket);
+    io.emit('guests', clientControler.getChatty());
+  });
+  socket.on('nickname', (nickname) => {
+    clientControler.editChatty(nickname, socket);
+    io.emit('guests', clientControler.getChatty());
+  });
 
-      const data = `${currenteDate} ${currenteHour} - ${nickname}: ${chatMessage}`;
-      io.emit('message', data);
+  socket.on('message', (message) => {
+    const { chatMessage, nickname } = message;
+    const dados = middlewares.getDate(chatMessage, nickname);
+        io.emit('message', dados);
   });
 });
-
-const chatController = require('./controller/chatController');
 
 app.set('view engine', 'ejs');
 app.set('views', './views');
 app.get('/', chatController.getAll);
 http.listen(port, () => {
-    console.log('message', port);
+  console.log('message', port);
 });
