@@ -33,8 +33,8 @@ socket.on('message', async (message) => {
   const data = ` ${currentDate}-${message.nickname}: ${message.chatMessage}`;
   console.log(data, message);
   
-  io.emit('message', data);
-  // io.emit('refreshMessages', data);
+  // io.emit('message', data);
+  io.emit('refreshMessages', data);
 });
 
 socket.on('start', async () => {
