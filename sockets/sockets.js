@@ -1,21 +1,21 @@
-const guestControler = require('../client/client');
-const model = require('../models/messagesModel');
-const midlewares = require('../middlewares/middlewares');
+const guestControler = require('../helpers/helpers');
+const model = require('../models/messageModel');
+const midlewares = require('../midlewares/midlewares');
 
 const disconect = (socket, io) => {
     socket.on('disconnect', () => {
-        io.emit('guests', guestControler.excludeChatty(socket));
+        io.emit('guests', guestControler.excludeGuest(socket));
     });
 };
 const addUser = (socket, io) => {
     socket.on('adduser', (random) => {
-      io.emit('guests', guestControler.addChatty(random, socket));
+      io.emit('guests', guestControler.addGuest(random, socket));
     });
 };
 
 const addNickname = (socket, io) => {
     socket.on('nickname', (nickname) => {
-        io.emit('guests', guestControler.editChatty(nickname, socket));
+        io.emit('guests', guestControler.editGuest(nickname, socket));
     });
 };
 
@@ -39,4 +39,4 @@ io.on('connection', async (socket) => {
 });
 };
 
-module.exports = chat;
+module.exports = chat; 
