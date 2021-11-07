@@ -21,6 +21,7 @@
     <script src="/socket.io/socket.io.js"></script>
     <script>
       const socket = io();
+      socket.emit('messageDB');
       
       const nickname =
         Math.random().toString(16).substr(2, 8) +
@@ -80,8 +81,20 @@
         });
       };
 
+      const createMessageBD = (arrayMessage) => {
+        arrayMessage.forEach(({ message, nickname, timestamp }) => {
+          const formatMessage = `${timestamp} - ${nickname}: ${message}`
+          const ulMessage = document.querySelector('#messages');
+          const li = document.createElement('li');
+          li.setAttribute('data-testid', 'message');
+          li.innerText = formatMessage;
+          ulMessage.appendChild(li);
+        });
+      };
+
       socket.on('message', (message) => createMessage(message));
       socket.on('online', (arrayUser) => createUserOnline(arrayUser));
+      socket.on('messageDB', (arrayMessage) => createMessageBD(arrayMessage))
     </script>
   </body>
 </html>
