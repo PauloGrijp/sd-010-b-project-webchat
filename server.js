@@ -17,6 +17,8 @@ const io = require('socket.io')(http, {
   },
 });
 
+const ChatModel = require('./models/chat');
+
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
@@ -35,15 +37,23 @@ io.on('connection', (socket) => {
   const socketId = socket.id.substring(socket.id.length - 16);
   socket.emit('nickId', socketId);
 
-  socket.on('message', ({ nickname, chatMessage }) => {
-    const resp = `${moment()
-      .format('DD-MM-YYYY')} ${moment().format('LTS')} - ${nickname}: ${chatMessage}`;
+  socket.on('message', async ({ nickname, chatMessage }) => {
+    const data = `${moment().format('DD-MM-YYYY')} ${moment().format('LTS')}`;
+    const resp = `${data} - ${nickname}: ${chatMessage}`;
+    const obj = {
+      message: chatMessage,
+      nickname,
+      timestamp: data,
+    };
+    await ChatModel.addMsg(obj);
     io.emit('message', resp);
   });
 });
 
-app.get('/', (req, res) => {
-  res.status(200).render('index.ejs');
+app.get('/', async (req, res) => {
+  const arrayMessages = await ChatModel.getAll();
+
+  res.status(200).render('index.ejs', { arrayMessages });
 });
 
 http.listen(3000, () => console.log('Rodando na porta 3000'));
