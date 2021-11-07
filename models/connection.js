@@ -21,4 +21,4 @@ async function connection() {
     });
 }
 
-module.exports = connection;
+module.exports = { connection };

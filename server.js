@@ -1,47 +1,60 @@
 // Faça seu código aqui
+
 const express = require('express');
-const cors = require('cors');
+const socket = require('socket.io');
+const formatMessage = require('./views/js/utils/format');
+const newDate = require('./views/js/utils/getDate');
+const { createMessage, getAllMessages } = require('./controllers/webChatController');
 
+// App setup
+const PORT = 3000;
 const app = express();
-const http = require('http').createServer(app);
+const server = app.listen(PORT, () => {
+  console.log(`Listening on port ${PORT}`);
+  console.log(`http://localhost:${PORT}`);
+});
 
+// Static files
+app.use(express.static(`${__dirname}/views`));
 app.set('view engine', 'ejs');
 app.set('views', './views');
 
-const io = require('socket.io')(http, {
-  cors: {
-    origin: 'http://localhost:3000', // url aceita pelo cors
-    methods: ['GET', 'POST'], // Métodos aceitos pela url
-  } });
-  
-const { renderChat } = require('./controllers/clientController');
+// Socket setup
+const io = socket(server);
 
-app.use(cors());
-app.use(express.json());
+/* const activeUsers = new Set([]); */
+let activeUsers = [];
 
-const allMessage = [];
-console.log(allMessage);
+io.on('connection', async (socketClient) => {
+  socketClient.on('new user', (data) => {
+    activeUsers.push({ data, id: socket.id });
+    io.emit('new user', [...activeUsers]);
+  });
 
-const newDataHora = require('./utils/getDate');
-const chat = require('./utils/format');
+  socketClient.on('changeUser', ({ oldNickname, newNickname }) => {
+    if (activeUsers.findIndex((obj) => obj.data === oldNickname) !== -1) {
+      activeUsers[activeUsers.findIndex((obj) => obj.data === oldNickname)
+      ] = { data: newNickname, id: socket.id };
+      io.emit('changeUser', [...activeUsers]);
+    }
+  });
 
-io.on('connection', (socket) => {
-    console.log(`Usuário conectado. ID: ${socket.id} `);
+  socketClient.on('disconnect', () => {
+    const newArrayUsers = activeUsers.find((user) => user.id === socket.id);
+    const arrayFilter = activeUsers.filter((e) => e.id !== socket.id);
+    activeUsers = arrayFilter;
+    io.emit('user disconnected', newArrayUsers);
+  });
 
-    socket.on('message', ({ chatMessage, nickname }) => {
-      const date = newDataHora();
-      const message = chat(chatMessage, nickname, date);
-      allMessage.push({ chatMessage, nickname }, date);
-      io.emit('message', message);
-    });
+  socketClient.on('message', async ({ chatMessage, nickname }) => {
+    const dateHour = newDate();
+    const message = formatMessage(chatMessage, nickname, dateHour);
+    await createMessage({ dateHour, nickname, chatMessage });
+    io.emit('message', message);
+  });
 
-    socket.on('initialNick', (nickRender) => {
-      io.emit('initialNick', { nickRender, id: socket.id }); 
-    });
+  const getAllMessage = await getAllMessages();
+  socketClient.emit('allMessage', getAllMessage);
 });
 
-app.get('/', renderChat);
-
-http.listen(3000, () => {
-  console.log('Servidor ouvindo na porta 3000');
-});
+app.get('/', (req, res) => res.status(200).render('index'));
