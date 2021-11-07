@@ -1,4 +1,5 @@
-const mongoConnection = require('./connectionLocal');
+// const mongoConnection = require('./connectionLocal');
+const mongoConnection = require('./connection');
 
 const getAllModel = async () => {
   const db = await mongoConnection();
