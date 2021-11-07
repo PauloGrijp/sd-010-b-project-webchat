@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Projeto WebChat</title>
+  </head>
+  <body>
+    <div>
+      <span id="nickname" data-testid="online-user"></span>
+    </div>
+    <div>
+      <input id="inputNickname" placeholder="Your nickname" data-testid="nickname-box">
+      <button id="buttonNickname" type="button" data-testid="nickname-button">Send</button>
+    </div>
+    <ul id="messages"></ul>
+    <form >
+      <input id="messageInput" data-testid="message-box"/>
+      <button id="buttonMessage" type="button" data-testid="send-button">Send</button>
+    </form>
+    <ul id="userOline">Online</ul>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      const socket = io();
+      
+      const nickname =
+        Math.random().toString(16).substr(2, 8) +
+        Math.random().toString(16).substr(2, 8);
+
+      const form = document.querySelector('form');
+      const inputMenssage = document.querySelector('#messageInput');
+      const btnNickName = document.querySelector('#buttonNickname');
+      const inputNickname = document.querySelector('#inputNickname');
+      const buttonMessage = document.querySelector('#buttonMessage');
+      const spanNickname = document.querySelector('#nickname');
+      const ulUserOnline = document.querySelector('#userOline');
+      
+      spanNickname.innerText = nickname;
+
+      btnNickName.addEventListener('click', () => {
+        const inputNickname = document.querySelector('#inputNickname');
+        sessionStorage.setItem('nickname', inputNickname.value);
+        spanNickname.innerText = inputNickname.value;
+      });
+
+      socket.emit('usersOnline', {nickname});
+
+      buttonMessage.addEventListener('click', () => {
+        const chatMessage = inputMenssage.value;
+        const nickname = sessionStorage.getItem('nickname')
+        socket.emit('message', { chatMessage, nickname});
+        inputMenssage.value = '';
+        return false;
+      });
+
+      const createMessage = (message) => {
+        const ulMessage = document.querySelector('#messages');
+        const li = document.createElement('li');
+        li.setAttribute('data-testid', 'message');
+        li.innerText = message;
+        ulMessage.appendChild(li);
+      };
+
+      const createUserOnline = (arrayUser) => {
+        ulUserOnline.innerHTML = ''
+        const li = document.createElement('li');
+        li.setAttribute('data-testid', "online-user");
+        li.innerText = nickname;
+        ulUserOnline.appendChild(li);
+        arrayUser.forEach((user) => {
+          if (socket.id !== user.id) {
+            const li = document.createElement('li');
+            li.setAttribute('data-testid',"online-user")
+            li.innerText = user.nickname;
+            ulUserOnline.appendChild(li);
+          } 
+        });
+      };
+
+
+      socket.on('message', (message) => createMessage(message));
+      socket.on('online', (arrayUser) => createUserOnline(arrayUser));
+    </script>
+  </body>
+</html>
