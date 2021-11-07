@@ -1,6 +1,7 @@
 const socket = window.io();
 
 let userId = '';
+const DATA_TESTID = 'data-testid';
 
 // FONTE: https://www.ti-enxame.com/pt/javascript/gere-stringcaracteres-aleatorios-em-javascript/967048592/
 function geraNickName() {
@@ -29,10 +30,9 @@ messageBtn.addEventListener('click', (event) => {
 
 const sendMessage = (message) => {
   const messageDiv = document.getElementById('messagesUsers');
-  console.log(messageDiv);
   const messageElement = document.createElement('li');
   messageElement.innerText = message;
-  messageElement.setAttribute('data-testid', 'message');
+  messageElement.setAttribute(DATA_TESTID, 'message');
   messageDiv.appendChild(messageElement);
 };
 
@@ -52,10 +52,24 @@ const users = (usersOnline) => {
   usersOnline.forEach((user) => {
     const userElement = document.createElement('li');
     userElement.innerText = user;
-    userElement.setAttribute('data-testid', 'online-user');
+    userElement.setAttribute(DATA_TESTID, 'online-user');
     usersSection.appendChild(userElement);
   });
 };
+
+const messagesDataBase = (messages) => {
+  messages.forEach(({ dateNow, nickname, chatMessage }) => {
+    const messagesSection = document.getElementById('messagesUsers');
+    const messageElement = document.createElement('li');
+    messageElement.innerText = `${dateNow} - ${nickname}: ${chatMessage}`;
+    messageElement.setAttribute(DATA_TESTID, 'message');
+    messagesSection.appendChild(messageElement);
+  });
+};
+
+socket.on('chatHistory', (messages) => {
+  messagesDataBase(messages);
+});
 
 socket.on('message', (message) => {
   sendMessage(message);
