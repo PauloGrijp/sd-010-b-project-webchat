@@ -46,6 +46,7 @@ nickNameBtn.addEventListener('click', (event) => {
 });
 
 const users = (usersOnline) => {
+  const loadNickName = geraNickName();
   const usersSection = document.getElementById('usersOn');
   usersSection.innerHTML = '';
 
@@ -53,6 +54,10 @@ const users = (usersOnline) => {
     const userElement = document.createElement('li');
     userElement.innerText = user;
     userElement.setAttribute(DATA_TESTID, 'online-user');
+    usersSection.appendChild(userElement);
+    if (user === userId || user === loadNickName) {
+      return usersSection.prepend(userElement);
+    }
     usersSection.appendChild(userElement);
   });
 };
