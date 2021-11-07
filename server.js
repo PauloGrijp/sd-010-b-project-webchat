@@ -33,21 +33,28 @@ app.use(
   }),
 );
 
+let nick;
 io.on('connection', (socket) => {
   const socketId = socket.id.substring(socket.id.length - 16);
+  nick = socketId;
   socket.emit('nickId', socketId);
+  socket.broadcast.emit('otherNickId', socketId);
 
   socket.on('message', async ({ nickname, chatMessage }) => {
+    nick = nickname;
     const data = `${moment().format('DD-MM-YYYY')} ${moment().format('LTS')}`;
     const resp = `${data} - ${nickname}: ${chatMessage}`;
-    const obj = {
-      message: chatMessage,
-      nickname,
-      timestamp: data,
-    };
+    const obj = { message: chatMessage, nickname, timestamp: data };
     await ChatModel.addMsg(obj);
     io.emit('message', resp);
   });
+
+  socket.on('changeNick', ({ oldNick, newNick }) => {
+    nick = newNick;
+    io.emit('changeNick', { oldNick, newNick });
+  });
+
+  socket.on('disconnect', () => { socket.broadcast.emit('removeNick', { nick }); });
 });
 
 app.get('/', async (req, res) => {
