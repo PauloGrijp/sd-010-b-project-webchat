@@ -105,10 +105,25 @@ socket.on('message', ((data) => {
     return document.querySelector('#messages-list').appendChild(li);
 }));
 
+const createMainUser = (user) => {
+  const li = document.createElement('li');
+  li.setAttribute('id', 'userName');
+  li.setAttribute('data-testid', 'online-user');
+  
+  li.innerHTML = user;
+  
+  document.querySelector('#username-list').appendChild(li);
+
+}
+
 socket.on('refreshNick', ((data) => {
-  const filteredData = data.filter((el) => el !== document.querySelector('#userName').innerHTML);
+  const user = document.querySelector('#userName').innerHTML
+  document.querySelector('#username-list').innerHTML = ''
+  const filteredData = data.filter((el) => el !== user);
+  // const filteredData = data.filter((el) => el !== document.querySelector('#userName').innerHTML);
   console.log(filteredData, 'as informações');
-  if (filteredData.length <= 1) return;
+  createMainUser(user)
+  // if (filteredData.length <= 1) return;
   filteredData.map((el) => {
     const li = document.createElement('li');
     li.setAttribute('data-testid', 'online-user');
@@ -116,15 +131,6 @@ socket.on('refreshNick', ((data) => {
     li.innerHTML = el;
     return document.querySelector('#username-list').appendChild(li);
   });
-  // const filteredData = data.filter((el) => el !== document.querySelector('#userName').innerHTML);
-  // console.log(filteredData, 'as informações');
-  // if (filteredData.length <= 1) return;
-  // filteredData.map((el) => {
-  //   const li = document.createElement('li');
-  //   li.setAttribute('data-testid', 'online-user');
-  //   li.innerHTML = el;
-  //   return document.querySelector('#username-list').appendChild(li);
-  // });
 }));
 
 socket.on('refreshOneNick', ((data) => {

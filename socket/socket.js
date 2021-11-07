@@ -18,13 +18,13 @@ socket.on('message', async (message) => {
   .createMessageModel(message.chatMessage, message.nickname, message.timestamp);
   const data = ` ${currentDate}-${message.nickname}: ${message.chatMessage}`;
   
-  io.emit('message', data);
-  // io.emit('refreshMessages', data);
+  io.emit('refreshMessages', data);
 });
 
 socket.on('start', async () => {
   const data = await messagesModel.getAllModel();
   socket.emit('startMessages', data);
+  console.log(users);
 });
 
 socket.on('nick', async (user) => {
@@ -32,6 +32,14 @@ socket.on('nick', async (user) => {
     return oldNickHandle(user, io);
   }
   users.push(user.newNick);
+  io.emit('refreshNick', users);
+});
+
+socket.on('disconecting', async (user) => {
+  console.log('Got disconnect!', user);
+
+  const i = users.indexOf(user);
+  users.splice(i, 1);
   io.emit('refreshNick', users);
 });
 });
