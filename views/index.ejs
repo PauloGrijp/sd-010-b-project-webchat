@@ -35,11 +35,15 @@
       const ulUserOnline = document.querySelector('#userOline');
       
       spanNickname.innerText = nickname;
+      sessionStorage.setItem('nickname', nickname);
 
       btnNickName.addEventListener('click', () => {
         const inputNickname = document.querySelector('#inputNickname');
-        sessionStorage.setItem('nickname', inputNickname.value);
-        spanNickname.innerText = inputNickname.value;
+        const valueInput = inputNickname.value;
+        const oldNick = sessionStorage.getItem('nickname');
+        spanNickname.innerText = valueInput;
+        socket.emit('userUpdate', valueInput, oldNick);
+        sessionStorage.setItem('nickname', valueInput);
       });
 
       socket.emit('usersOnline', {nickname});
@@ -63,8 +67,8 @@
       const createUserOnline = (arrayUser) => {
         ulUserOnline.innerHTML = ''
         const li = document.createElement('li');
-        li.setAttribute('data-testid', "online-user");
-        li.innerText = nickname;
+        const nicknameStorage = sessionStorage.getItem('nickname')
+        li.innerText = nicknameStorage;
         ulUserOnline.appendChild(li);
         arrayUser.forEach((user) => {
           if (socket.id !== user.id) {
@@ -72,10 +76,9 @@
             li.setAttribute('data-testid',"online-user")
             li.innerText = user.nickname;
             ulUserOnline.appendChild(li);
-          } 
+          }
         });
       };
-
 
       socket.on('message', (message) => createMessage(message));
       socket.on('online', (arrayUser) => createUserOnline(arrayUser));

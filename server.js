@@ -21,11 +21,18 @@ io.on('connection', (socket) => {
     const date = (new Date()).toLocaleString().replace(/\//g, '-');
     io.emit('message', `${date} - ${nickname}: ${chatMessage}`);
  });
-
   socket.on('usersOnline', ({ nickname }) => {
-    const obj = { nickname, id: socket.id };
-    arrayUser.push(obj);
-    console.log(arrayUser);
+    arrayUser.push({ nickname, id: socket.id });
+    io.emit('online', arrayUser);
+  });
+  socket.on('userUpdate', (nickname, oldNick) => {
+    const indexOldNick = arrayUser.findIndex((user) => user.nickname === oldNick);
+    arrayUser.splice(indexOldNick, 1, { nickname, id: socket.id });
+    io.emit('online', arrayUser);
+  });
+  socket.on('disconnect', () => {
+    const indexUser = arrayUser.findIndex((user) => user.id === socket.id);
+    arrayUser.splice(indexUser, 1);
     io.emit('online', arrayUser);
   });
 });
