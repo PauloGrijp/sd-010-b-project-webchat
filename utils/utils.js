@@ -1,7 +1,9 @@
-const io = io();
+const io = window.io();
+// const io = io();
 const message = document.querySelector('#message');
 const messageBtnSend = document.querySelector('#msg-submit');
 const nicknameForm = document.querySelector('#nick-form');
+const TEST_ID = 'data-testid';
 const date = new Date();
 
 const ramdomName = () => {
@@ -20,7 +22,7 @@ window.onload = () => {
   
   const li = document.createElement('li');
   li.setAttribute('id', 'userName');
-  li.setAttribute('data-testid', 'online-user');
+  li.setAttribute(TEST_ID, 'online-user');
   
   li.innerHTML = ramdomName();
   
@@ -40,7 +42,9 @@ messageBtnSend.addEventListener('click', (event) => {
         date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
 
   io.emit('message', { 
-    nickname: document.querySelector('#userName').innerHTML, message: message.value, timestamp: currentDate });
+    nickname: document.querySelector('#userName').innerHTML, 
+    message: message.value,
+timestamp: currentDate });
 });
 
 nicknameForm.addEventListener('submit', (event) => {
@@ -64,8 +68,8 @@ io.on('startMessages', ((data) => {
 
 io.on('refreshMessages', ((data) => {
     const li = document.createElement('li');
-    li.setAttribute('data-testid', 'message');
-    li.setAttribute('data-testid', 'online-user');
+    li.setAttribute(TEST_ID, 'message');
+    // li.setAttribute(TEST_ID, 'online-user');
 
     li.innerHTML = data;
     return document.querySelector('#messages-list').appendChild(li);
@@ -77,7 +81,7 @@ io.on('refreshNick', ((data) => {
   if (filteredData.length <= 1) return;
   filteredData.map(({ nickname }) => {
     const li = document.createElement('li');
-    li.setAttribute('data-testid', 'online-user');
+    li.setAttribute(TEST_ID, 'online-user');
     li.innerHTML = nickname;
     return document.querySelector('#username-list').appendChild(li);
   });
