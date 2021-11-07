@@ -94,6 +94,7 @@ socket.on('startMessages', ((data) => {
 }));
 
 socket.on('message', ((data) => {
+// socket.on('refreshMessages', ((data) => {
   console.log(data, 'datta')
     const li = document.createElement('li');
     li.setAttribute('data-testid', 'message');
