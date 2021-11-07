@@ -88,20 +88,21 @@ socket.on('startMessages', ((data) => {
   console.log(data, 'allmessages');
   data.map((el) => {
     const li = document.createElement('li');
+    li.setAttribute('data-testid', 'message'); 
+
     li.innerHTML = ` ${el.timestamp}-${el.nickname}: ${el.message}`;
     return document.querySelector('#messages-list').appendChild(li);
   });
 }));
 
-// socket.on('message', ((data) => {
-socket.on('refreshMessages', ((data) => {
-  console.log(data, 'datta')
-    const li = document.createElement('li');
-    li.setAttribute('data-testid', 'message');
-
-    li.innerHTML = data;
-    return document.querySelector('#messages-list').appendChild(li);
-}));
+// socket.on('refreshMessages', ((data) => { 
+  socket.on('message', ((data) => { 
+    console.log(data, 'datta') 
+    const li = document.createElement('li'); 
+    li.setAttribute('data-testid', 'message'); 
+    li.innerHTML = data; 
+    return document.querySelector('#messages-list').appendChild(li); 
+  }));
 
 const createMainUser = (user) => {
   const li = document.createElement('li');
@@ -117,10 +118,8 @@ socket.on('refreshNick', ((data) => {
   const user = document.querySelector('#userName').innerHTML
   document.querySelector('#username-list').innerHTML = ''
   const filteredData = data.filter((el) => el.user !== user);
-  // const filteredData = data.filter((el) => el.user !== document.querySelector('#userName').innerHTML);
   console.log(filteredData, 'as informações');
   createMainUser(user)
-  // if (filteredData.length <= 1) return;
   filteredData.map(({ user}) => {
     const li = document.createElement('li');
     li.setAttribute('data-testid', 'online-user');
@@ -132,7 +131,6 @@ socket.on('refreshNick', ((data) => {
 
 socket.on('refreshOneNick', ((data) => {
    document.querySelector(`#${data.oldNick}`).innerHTML =  data.newNick;
-  console.log( 'filtered data', `#${data.oldNick}`)
 }))
     </script>
 
