@@ -9,14 +9,14 @@ const addChatty = (nickname, socket) => {
 };
 
 const editChatty = (nickname, socket) => {
-  const indexAchado = chatty.findIndex((item) => item.id === socket.id);
-  chatty[indexAchado].nome = nickname;
+  const index = chatty.findIndex((item) => item.id === socket.id);
+  chatty[index].nome = nickname;
 };
 const getChatty = () => chatty;
 
 const excludeChatty = (socket) => {
-  const indexAchado = chatty.findIndex((item) => item.id === socket.id);
-  chatty.splice(indexAchado, 1);
+  const index = chatty.findIndex((item) => item.id === socket.id);
+  chatty.splice(index, 1);
   console.log(chatty);
 };
 

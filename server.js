@@ -16,31 +16,11 @@ const io = require('socket.io')(http, {
   },
 });
 
-const clientControler = require('./client/client');
 const chatController = require('./controller/chatController');
-const middlewares = require('./middlewares/middlewares');
 
-io.on('connection', (socket) => {
-  console.log('Connect', socket.id);
-  socket.on('disconnect', () => {
-    clientControler.excludeChatty(socket);
-    io.emit('guests', clientControler.getChatty());
-  });
-  socket.on('adduser', (random) => {
-    clientControler.addChatty(random, socket);
-    io.emit('guests', clientControler.getChatty());
-  });
-  socket.on('nickname', (nickname) => {
-    clientControler.editChatty(nickname, socket);
-    io.emit('guests', clientControler.getChatty());
-  });
+const socket = require('./sockets/sockets');
 
-  socket.on('message', (message) => {
-    const { chatMessage, nickname } = message;
-    const dados = middlewares.getDate(chatMessage, nickname);
-        io.emit('message', dados);
-  });
-});
+socket(io);
 
 app.set('view engine', 'ejs');
 app.set('views', './views');
