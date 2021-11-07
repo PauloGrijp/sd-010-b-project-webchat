@@ -48,7 +48,6 @@ const ramdomName = () => {
   return stringAleatoria;
 };
 
-// window.onload = () => {
   socket.emit('start');
   
   const li = document.createElement('li');
@@ -61,7 +60,6 @@ const ramdomName = () => {
 
   const nickname = { newNick: document.querySelector('#userName').innerHTML };
   socket.emit('nick', nickname);
-// };
 
 messageBtnSend.addEventListener('click', (event) => {
   console.log('funfou');
@@ -95,7 +93,6 @@ socket.on('startMessages', ((data) => {
   });
 }));
 
-// socket.on('refreshMessages', ((data) => {
 socket.on('message', ((data) => {
   console.log(data, 'datta')
     const li = document.createElement('li');
@@ -113,22 +110,21 @@ const createMainUser = (user) => {
   li.innerHTML = user;
   
   document.querySelector('#username-list').appendChild(li);
-
 }
 
 socket.on('refreshNick', ((data) => {
   const user = document.querySelector('#userName').innerHTML
   document.querySelector('#username-list').innerHTML = ''
-  const filteredData = data.filter((el) => el !== user);
-  // const filteredData = data.filter((el) => el !== document.querySelector('#userName').innerHTML);
+  const filteredData = data.filter((el) => el.user !== user);
+  // const filteredData = data.filter((el) => el.user !== document.querySelector('#userName').innerHTML);
   console.log(filteredData, 'as informações');
   createMainUser(user)
   // if (filteredData.length <= 1) return;
-  filteredData.map((el) => {
+  filteredData.map(({ user}) => {
     const li = document.createElement('li');
     li.setAttribute('data-testid', 'online-user');
-    li.setAttribute('id', el);
-    li.innerHTML = el;
+    li.setAttribute('id', user);
+    li.innerHTML = user;
     return document.querySelector('#username-list').appendChild(li);
   });
 }));

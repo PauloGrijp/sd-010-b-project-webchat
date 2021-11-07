@@ -8,48 +8,60 @@ const currentDate = ` ${date.getDate()}-${date.getMonth()}-${
 const users = [];
 
 const oldNickHandle = (user, io) => {
-  users.splice(users.indexOf(user.oldNick), 1);
-  users.push(user.newNick);
+  const currentUser = users.findIndex((el) => el.user === user.oldNick);
+  users[currentUser].user = user.newNick;
   return io.emit('refreshOneNick', user);
+};
+
+const disconnectUser = (socket, io) => {
+  const i = users.findIndex((el) => el.id === socket.id);
+  users.splice(i, 1);
+ io.emit('refreshNick', users);
+};
+
+const handleNick = (user, io, socket) => {
+  if (user.oldNick) { 
+    return oldNickHandle(user, io);
+  }
+  users.push({ user: user.newNick, id: socket.id });
+  io.emit('refreshNick', users);
 };
 module.exports = (io) => io.on('connection', (socket) => {
 socket.on('message', async (message) => {
   await messagesModel
   .createMessageModel(message.chatMessage, message.nickname, message.timestamp);
   const data = ` ${currentDate}-${message.nickname}: ${message.chatMessage}`;
+  console.log(data, message);
   
-  io.emit('refreshMessages', data);
+  io.emit('message', data);
+  // io.emit('refreshMessages', data);
 });
 
 socket.on('start', async () => {
   const data = await messagesModel.getAllModel();
   socket.emit('startMessages', data);
-  console.log(users);
 });
 
 socket.on('nick', async (user) => {
-  if (user.oldNick) { 
-    return oldNickHandle(user, io);
-  }
-  users.push(user.newNick);
-  io.emit('refreshNick', users);
+  handleNick(user, io, socket);
+  // if (user.oldNick) { 
+  //   return oldNickHandle(user, io);
+  // }
+  // users.push({ user: user.newNick, id: socket.id });
+  // io.emit('refreshNick', users);
 });
 
-socket.on('disconecting', async (user) => {
-  console.log('Got disconnect!', user);
-
-  const i = users.indexOf(user);
-  users.splice(i, 1);
-  io.emit('refreshNick', users);
+socket.on('disconnect', () => {
+  //  const i = users.findIndex((el) => el.id === socket.id);
+  //  users.splice(i, 1);
+  // io.emit('refreshNick', users);
+  disconnectUser(socket, io);
 });
 });
 
-// socket.on('nick', async (user) => {
-//   const users = await messagesModel.getAllUsers();
-//   if (user.oldNick) { 
-//     return messagesModel.updateUserNick(user.newNick, user.oldNick); 
-//   }
-//    await messagesModel.createUser(user.newNick);
-  
-//   io.emit('refreshNick', users);
+// socket.on('disconnect', () => {
+//   //  const i = users.findIndex((el) => el.id === socket.id);
+//   //  users.splice(i, 1);
+//   // io.emit('refreshNick', users);
+//   disconnectUser(socket, io);
 // });
