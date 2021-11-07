@@ -39,7 +39,6 @@
         });
         window.onload = () => {
             let nickname = document.getElementById('nickname');
-            // https://gist.github.com/6174/6062387
             let random = Math.random().toString(36).substring(2, 10) + Math.random().toString(36).substring(2, 10);
             const div = document.getElementById('div-nickname');
             const span = document.createElement('span');
@@ -52,10 +51,8 @@
         form.addEventListener('submit', (e) => {
             e.preventDefault();
             const span = document.querySelector('span');
-            // console.log(span.innerText);
             if (input.value) {
                 const data = { nickname: span.innerText, chatMessage: input.value };
-                // console.log(data);
                 socket.emit('message', data);
                 input.value = '';
             }
@@ -74,7 +71,6 @@
             const div = document.getElementById('others');
             div.innerText = ""
             for (let i = 0; i < guests.length; i++) {
-                //  console.log(guests[i].nome);
                 const span = document.createElement('span');
                 span.setAttribute("data-testid", "online-user");
                 span.setAttribute("id", `online-user-${guests[i].id}`);
@@ -91,9 +87,9 @@
                 for (let i = 0; i < history.length; i++) {
                     const { message, nickname } = history[i];
                     const date = new Date();
-                    const currentDate = `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`;
-                    const currentTime = `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
-                    const dados = `${currentDate} ${currentTime} - ${nickname}: ${message}`;
+                    const dataAtual = `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`;
+                    const horaAtual = `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+                    const dados = `${dataAtual} ${horaAtual} - ${nickname}: ${message}`;
                     const li = document.createElement('li');
                     li.setAttribute("data-testid", "message");
                     li.textContent = dados;
