@@ -35,13 +35,13 @@ io.on('connection', (socket) => {
     io.emit('message', create(nickname, chatMessage));
   });
   socket.on('online', (user) => {
-    usuarios.unshift({ id: socket.id, nickname: user });
+    usuarios.push({ id: socket.id, nickname: user });
     io.emit('usuarios', usuarios);
   });
   socket.on('mudarNome', (newNickname) => {
     const index = usuarios.findIndex((element) => element.id === socket.id);
     if (index !== -1) usuarios.splice(index, 1);
-    usuarios.unshift({ id: socket.id, nickname: newNickname });
+    usuarios.push({ id: socket.id, nickname: newNickname });
     io.emit('usuarios', usuarios);
   });
   socket.on('disconnect', () => {

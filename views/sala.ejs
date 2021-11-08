@@ -29,11 +29,11 @@
   <h2>Web Chat</h2>
 
   <ul id='chatMessage'>
-    <% historico.forEach(( element ) => { %>
+    <% historico.forEach(( element )=> { %>
       <li data-testid="message">
         <%= element.time %> - <%= element.nickname %>: <%= element.message %>
       </li>
-    <% }) %>
+      <% }) %>
   </ul>
 
   <input data-testid="message-box" type="text" id="textMessage">
@@ -92,22 +92,23 @@
     socket.on('usuarios', (online) => {
       users.innerHTML = '';
 
-      online.forEach((element) => {
-        const li = document.createElement('li');
-
-        if (element.id === socket.id) {
-          sessionStorage.setItem('nickname', element.nickname);
-
+        const active = online.find((element) => element.id === socket.id);
+        const filtered = online.filter((element) => element.id !== socket.id);
+        filtered.unshift(active);
+        filtered.forEach((element) => {
+          const li = document.createElement('li');
           li.setAttribute("data-testid", "online-user");
-        }
-        li.innerText = element.nickname;
+          if (element.id === socket.id) {
+            sessionStorage.setItem('nickname', element.nickname);
+          }
+          li.innerText = element.nickname;
 
-        users.appendChild(li);
+          users.appendChild(li);
+        });
+
       });
 
-    });
-
-    socket.emit('online', randomName);
+      socket.emit('online', randomName);
 
   </script>
 
