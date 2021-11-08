@@ -1,14 +1,11 @@
 const socket = window.io();
 
-// const changeNickButton = document.getElementById('nick-button');
 const formNick = document.getElementById('form-nick');
 const changeNickInput = document.getElementById('nick-input');
 const nickList = document.getElementById('nicknameList');
 const form = document.getElementById('form');
 const input = document.getElementById('input');
 let nickname = '';
-
-// window.onload = () => socket.emit('userConected');
 
   form.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -31,41 +28,26 @@ let nickname = '';
       };
       nickname = changeNickInput.value;
       changeNickInput.value = '';
+      sessionStorage.setItem('storageNick', nickname);
       socket.emit('changeNickname', newNickObj);
     }
   });
 
-  // socket.on('newUserConected', (data) => {
-  //   console.log(data);
-  //   initialNickname = data;
-  //   const item = document.createElement('li');
-  //   item.textContent = data;
-  //   item.setAttribute('data-testid', 'online-user');
-  //   nickList.appendChild(item);
-  // });
-
-  // socket.on('allNicks', (data) => {
-  //   initialNickname = data;
-  //   const storageNick = sessionStorage.getItem('allNicks');
-  //   const connectedUsers = data.filter((user) => user !== storageNick);
-
-  //   connectedUsers.unshift(storageNick);
-  //   connectedUsers.forEach((user) => {
-  //     const item = document.createElement('li');
-  //     item.textContent = user;
-  //     item.setAttribute('data-testid', 'online-user');
-  //     nickList.appendChild(item);
-  //   });   
-  // });
-
-  socket.on('allNicks', (data) => {
-    console.log(data);
+  socket.on('nickname', (data) => {
     nickname = data;
-    data.forEach((element) => {
+    sessionStorage.setItem('storageNick', nickname);
+  });
+ 
+  socket.on('allNicks', (data) => {
+    nickList.innerHTML = '';
+    const storageNick = sessionStorage.getItem('storageNick');  
+    const newData = data.filter((user) => user !== storageNick);
+    newData.unshift(storageNick);
+    newData.forEach((element) => {    
       const item = document.createElement('li');
       item.textContent = element;
       item.setAttribute('data-testid', 'online-user');
-      nickList.appendChild(item);      
+      nickList.appendChild(item);
     });
   });
 
@@ -75,7 +57,3 @@ let nickname = '';
     div.setAttribute('data-testid', 'message');
     document.getElementById('message-container').append(div);   
   });
-
-// changeNickButton.addEventListener('click', () => {
-//   const nick = changeNickInput.value;
-// });

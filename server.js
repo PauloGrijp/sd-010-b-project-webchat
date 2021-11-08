@@ -17,29 +17,28 @@ const io = require('socket.io')(server, {
 
   // const chat = require('./models/chat');
 
-  const users = [];
+  let users = [];
 
   io.on('connection', async (socket) => {    
-    let randomNick = ramdomNickname.generate(16);
-    users.push(randomNick);
-    io.emit('allNicks', users);    
-    const timestamp = moment().format('DD-MM-yyyy HH:mm:ss A');
-    // console.log(`user conected ${socket.id} - nickName ${users}`);
-
+    let randomNick = ramdomNickname.generate(16); users.push(randomNick);
+    socket.emit('nickname', randomNick); io.emit('allNicks', users);
+    // io.emit('nickname', randomNick);  
+    const timestamp = moment().format('DD-MM-yyyy HH:mm:ss A');   
     socket.on('message', async (data) => {
       const completeMessage = `${timestamp} - ${data.nickname}: ${data.chatMessage}`;
       io.emit('message', completeMessage);
       // await chat.saveMessage({ message: data.chatMessage, nickname: data.nickname, timestamp });     
     });
-    socket.on('changeNickname', (nickObj) => {
+    socket.on('changeNickname', (nickObj) => {      
       const indexUser = users.findIndex((nick) => nick === nickObj.nickname);
-      users[indexUser] = nickObj.newNick;
-      // console.log(users)
+      users[indexUser] = nickObj.newNick;      
       randomNick = nickObj.newNick;
-      io.emit('nickname', users);
+      io.emit('allNicks', users);
+      socket.emit('nickname', randomNick);
     });
     socket.on('disconnect', () => {
-      io.emit('allNicks', 'A user has left the room');
+      users = users.filter((user) => user !== randomNick);       
+      io.emit('allNicks', users);
     });
   });
 
