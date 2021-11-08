@@ -37,7 +37,7 @@ io.on('connection', (socket) => {
   // Precisa pegar o nickname que foi gerado lá no front end
 
   socket.on('message', ({ chatMessage, nickname }) => {
-    const timeMsg = moment().local(true).format('DD-MM-yyyy hh:mm:ss A');
+    const timeMsg = moment().local(true).format('DD-MM-yyyy HH:mm:ss A');
     const userMessage = `${timeMsg} - ${nickname}: ${chatMessage}`;
 
     messages.push(userMessage);
