@@ -4,9 +4,52 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>Web Chat</title>
 </head>
 <body>
-  
+  <form>
+    <div class="chat-container">
+      <div class="chat-header">
+        <div class="chat-header-title">
+          <h1>Web Chat</h1>
+        </div>
+        <div class="chat-header-user">
+          <div class="chat-header-user-name">
+            <h2>User Name</h2>
+          </div>
+          <div class="chat-header-user-status">
+            <h2>Status</h2>
+          </div>
+        </div>
+      </div>
+      <div class="chat-body">
+        <div class="chat-body-messages">
+          <div class="chat-body-messages-list">
+            <div class="chat-body-messages-list-item">
+              <div class="chat-body-messages-list-item-user">
+                <div class="chat-body-messages-list-item-user-name">
+                  <h2>User Name</h2>
+                </div>
+                <div class="chat-body-messages-list-item-user-status">
+                  <h2>Status</h2>
+                </div>
+              </div>
+              <div class="chat-body-messages-list-item-message">
+                <h2>Message</h2>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="chat-body-input">
+          <div class="chat-body-input-text">
+            <input type="text" name="message" placeholder="Type your message here...">
+          </div>
+          <div class="chat-body-input-send">
+            <button type="submit">Send</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
 </body>
 </html>
