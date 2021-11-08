@@ -8,7 +8,7 @@ const getAll = async () => {
   return messages;
 };
 
-const saveMessage = async ({ message, nickname, timestamp }) => {
+const saveMsg = async ({ message, nickname, timestamp }) => {
   const db = await connection();
   const newMessage = await db
     .collection('messages')
@@ -19,5 +19,5 @@ const saveMessage = async ({ message, nickname, timestamp }) => {
 
 module.exports = {
   getAll,
-  saveMessage,
+  saveMsg,
 };

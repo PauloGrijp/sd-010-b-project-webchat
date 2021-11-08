@@ -5,7 +5,9 @@ const changeNickInput = document.getElementById('nick-input');
 const nickList = document.getElementById('nicknameList');
 const form = document.getElementById('form');
 const input = document.getElementById('input');
+
 let nickname = '';
+const DATA_TEST_ID = 'data-testid';
 
   form.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -46,14 +48,25 @@ let nickname = '';
     newData.forEach((element) => {    
       const item = document.createElement('li');
       item.textContent = element;
-      item.setAttribute('data-testid', 'online-user');
+      item.setAttribute(DATA_TEST_ID, 'online-user');
       nickList.appendChild(item);
     });
   });
-
+  
   socket.on('message', (data) => {
     const div = document.createElement('div');
     div.textContent = data;
     div.setAttribute('data-testid', 'message');
     document.getElementById('message-container').append(div);   
+  });
+
+  socket.on('allMessages', (dbMessages) => {
+    console.log(dbMessages);
+    dbMessages.forEach((msg) => {
+    const div = document.createElement('div');
+    const message = `${msg.timestamp} - ${msg.nickname}: ${msg.message}`;
+    div.innerText = message;
+    div.setAttribute(DATA_TEST_ID, 'message');
+    document.getElementById('message-container').append(div);  
+    });
   });
