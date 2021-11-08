@@ -149,11 +149,13 @@
     const form = document.getElementById('form');
 
     form.addEventListener('submit', (event) => {
-      const nameuser = document.getElementById('name-user').innerText;
+      const nickname = document.getElementById('name-user').innerText;
+      const chatMessage = document.getElementById('input').value;
 
       event.preventDefault();
       if (input.value) {
-        socket.emit('message', { chatMessage: input.value, nickname: nameuser });
+        socket.emit('message', { chatMessage, nickname });
+        // socket.emit('message', { chatMessage: input.value, nickname });
         input.value = '';
       }
     });
