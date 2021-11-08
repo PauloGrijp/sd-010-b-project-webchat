@@ -30,15 +30,9 @@ app.get('/', (req, res) => {
 });
 
 io.on('connection', (socket) => {
-  // console.log(`Usuário conectado, ID: ${socket.id}`);
-
   socket.emit('online', onlineUsers);
 
   onlineUsers.push(socket.id);
-
-  // requisito 4
-
-  // Precisa pegar o nickname que foi gerado lá no front end
 
   socket.on('message', ({ chatMessage, nickname }) => {
     const timeMsg = moment().local(true).format('DD-MM-yyyy HH:mm:ss A');
