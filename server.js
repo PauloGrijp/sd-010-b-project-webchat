@@ -25,20 +25,19 @@ app.set('views', './views');
 
 // função executada quando usuário se conecta
 io.on('connection', async (socket) => {
-  usersOnline[socket.id] = geraNickName();
-  
+  usersOnline[socket.id] = geraNickName();    
   socket.on('disconnect', () => {
- delete usersOnline[socket.id]; io.emit('users', Object.values(usersOnline));
+    delete usersOnline[socket.id]; io.emit('users', Object.values(usersOnline));
   });
   
   socket.on('message', async ({ chatMessage, nickname }) => {
- const dateNow = moment().format('DD-MM-YYYY HH:mm:ss');
+    const dateNow = moment().format('DD-MM-YYYY HH:mm:ss');
     io.emit('message', `${dateNow} - ${nickname}: ${chatMessage}`);
     await postMessage({ chatMessage, nickname, dateNow });
   });
 
   socket.on('newNickname', (nickname) => {
- usersOnline[socket.id] = nickname; io.emit('users', Object.values(usersOnline));
+    usersOnline[socket.id] = nickname; io.emit('users', Object.values(usersOnline));
   });
 
   const chatHistory = async () => {

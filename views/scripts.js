@@ -58,7 +58,7 @@ const users = (usersOnline) => {
     if (user === userId || user === loadNickName) {
       return usersSection.prepend(userElement);
     }
-    usersSection.appendChild(userElement);
+    return usersSection.appendChild(userElement);
   });
 };
 
