@@ -40,7 +40,7 @@ io.on('connection', (socket) => {
 
     messages.push(userMessage);
 
-    io.emit('message', { userMessage, nickname });
+    io.emit('message', { chatMessage: userMessage, nickname });
   });
 
   socket.on('disconnect', () => {});

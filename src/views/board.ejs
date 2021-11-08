@@ -167,11 +167,11 @@
       nameuser.innerText = newName;
     });
 
-    socket.on('message', ({ userMessage }) => {
+    socket.on('message', ({ chatMessage }) => {
       const item = document.createElement('li');
       item.setAttribute(testid, 'message');
 
-      item.textContent = userMessage;
+      item.textContent = chatMessage;
       messages.appendChild(item);
       window.scrollTo(0, document.body.scrollHeight);
     });
