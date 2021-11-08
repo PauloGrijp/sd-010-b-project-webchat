@@ -27,34 +27,27 @@ let activeUsers = [];
 
 io.on('connection', async (socketClient) => {
   socketClient.on('new user', (data) => {
-    activeUsers.push({ data, id: socket.id });
-    io.emit('new user', [...activeUsers]);
+    activeUsers.push({ data, id: socket.id }); io.emit('new user', [...activeUsers]);
   });
 
   socketClient.on('changeUser', ({ oldNickname, newNickname }) => {
     if (activeUsers.findIndex((obj) => obj.data === oldNickname) !== -1) {
       activeUsers[activeUsers.findIndex((obj) => obj.data === oldNickname)
-      ] = { data: newNickname, id: socket.id };
-      io.emit('changeUser', [...activeUsers]);
+      ] = { data: newNickname, id: socket.id }; io.emit('changeUser', [...activeUsers]);
     }
   });
 
   socketClient.on('disconnect', () => {
-    const newArrayUsers = activeUsers.find((user) => user.id === socket.id);
-    const arrayFilter = activeUsers.filter((e) => e.id !== socket.id);
-    activeUsers = arrayFilter;
-    io.emit('user disconnected', newArrayUsers);
+    const news = activeUsers.find((user) => user.id === socket.id);
+    activeUsers = activeUsers.filter((e) => e.id !== socket.id); io.emit('user disconnected', news);
   });
 
   socketClient.on('message', async ({ chatMessage, nickname }) => {
-    const dateHour = newDate();
-    const message = formatMessage(chatMessage, nickname, dateHour);
-    await createMessage({ dateHour, nickname, chatMessage });
-    io.emit('message', message);
+    const dateHour = newDate(); const message = formatMessage(chatMessage, nickname, dateHour);
+    await createMessage({ dateHour, nickname, chatMessage }); io.emit('message', message);
   });
 
-  const getAllMessage = await getAllMessages();
-  socketClient.emit('allMessage', getAllMessage);
+  const getAllMessage = await getAllMessages(); socketClient.emit('allMessage', getAllMessage);
 });
 
 app.get('/', (req, res) => res.status(200).render('index'));
