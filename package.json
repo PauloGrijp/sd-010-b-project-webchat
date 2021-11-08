@@ -2,11 +2,11 @@
   "name": "webchat",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "test": "jest --runInBand  --detectOpenHandles --forceExit",
     "test-coverage": "jest --coverage",
-    "start": "node server.js",
+    "start": "nodemon server.js",
     "debug": "nodemon server.js",
     "lint": "eslint --no-inline-config --ext .js,.jsx --no-error-on-unmatched-pattern -c .eslintrc.json .",
     "lint:styles": "stylelint **/*.css --config .stylelintrc.json --ignore-disables --allow-empty-input"
@@ -25,6 +25,7 @@
     "socket.io-client": "3.0.5"
   },
   "devDependencies": {
+    "@socket.io/admin-ui": "^0.1.2",
     "@testing-library/dom": "7.24.5",
     "@testing-library/jest-dom": "5.11.4",
     "@testing-library/react": "11.0.4",
