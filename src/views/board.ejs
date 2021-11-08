@@ -147,6 +147,7 @@
     const messages = document.getElementById('messages');
     const input = document.getElementById('input');
     const form = document.getElementById('form');
+    const testid = 'data-testid';
 
     form.addEventListener('submit', (event) => {
       const nickname = document.getElementById('name-user').innerText;
@@ -155,7 +156,6 @@
       event.preventDefault();
       if (input.value) {
         socket.emit('message', { chatMessage, nickname });
-        // socket.emit('message', { chatMessage: input.value, nickname });
         input.value = '';
       }
     });
@@ -169,13 +169,12 @@
 
     socket.on('message', ({ userMessage }) => {
       const item = document.createElement('li');
+      item.setAttribute(testid, 'message');
+
       item.textContent = userMessage;
       messages.appendChild(item);
       window.scrollTo(0, document.body.scrollHeight);
     });
-
-    // renderizar o nickname do usuario na lista "onlineList" com o appendChild
-    // e o conteudo deve ser o nome do usuario
 
     window.onload = () => {
 
