@@ -167,7 +167,7 @@
       nameuser.innerText = newName;
     });
 
-    socket.on('message', ({ chatMessage }) => {
+    socket.on('message', (chatMessage) => {
       const item = document.createElement('li');
       item.setAttribute(testid, 'message');
 
@@ -177,7 +177,6 @@
     });
 
     window.onload = () => {
-
       nameuser.innerHTML = nickGenerator();
     };
 
