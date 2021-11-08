@@ -2,7 +2,12 @@ require('dotenv').config();
 
 const app = require('express')();
 const http = require('http').createServer(app);
-const io = require('socket.io')(http);
+const io = require('socket.io')(http, {
+  cors: {
+      origin: ['http://localhost:3000', 'http://admin.socket.io/'],
+      methods: ['GET', 'POST'],
+  },
+});
 const path = require('path');
 const cors = require('cors');
 const moment = require('moment');
@@ -18,7 +23,6 @@ app.use(
   cors({
     origin: `http://localhost${port}`,
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: ['Authorization'],
   }),
 );
 app.get('/', (req, res) => {
