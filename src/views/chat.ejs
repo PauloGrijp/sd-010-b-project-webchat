@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Webchat </title>
+  </head>
+  <body>
+    <div class="main-div">
+      <div class="user-div">
+
+          <input id="nickname-input" autocomplete="off" placeholder="Insira seu nickname" data-testid="nickname-box" /><button data-testid="nickname-button">Salvar</button>
+
+        <ul id="users-list" class="users-list"></ul>
+      </div>
+      <ul id="messages-list" class="messages-list" data-testid="messages-list"></ul>
+    </div>
+
+      <input id="message-input" data-testid="message-box" autocomplete="off" placeholder="Digite uma nova mensagem aqui"/><button data-testid="send-button" id="send">Send</button>
+
+    <script src="/socket.io/socket.io.js"></script>
+
+    <script>
+      const socket = io();
+
+
+      const inputMessage = document.querySelector('#message-input')
+      const btnSend = document.querySelector('#send')
+      const inputname = document.querySelector('#nickname-input')
+
+
+
+
+      const sendMessage = () =>{
+         const chatMessage = inputMessage.value
+         socket.emit('message',{
+          chatMessage,
+          nickname: "Flavio",
+         })
+      }
+      btnSend.addEventListener("click",(e) => {
+        e.preventDefault();
+        sendMessage()
+      })
+
+      const addMessage = (message) => {
+        const messagesUl = document.querySelector('#messages-list');
+        const li = document.createElement('li');
+        li.innerText = message;
+        li.dataset.testid = 'message';
+        messagesUl.appendChild(li);
+      };
+      socket.on('message', (message) => addMessage(message));
+      socket.on('nickName', (nickName) => addNickName(nickName));
+
+    </script>
+  </body>
+</html>

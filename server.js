@@ -1,18 +1,28 @@
 require('dotenv').config();
 const express = require('express');
+const path = require('path');
 
-const app = express();
-const server = require('http').createServer(app);
-const io = require('socket.io')(server);
+const cors = require('cors');
 
 const { PORT } = process.env;
 
-app.use('/', (_req, res) => {
-  res.sendFile(`${__dirname}/public/index.html`);
+const app = express();
+const http = require('http').createServer(app);
+const io = require('socket.io')(http, {
+  cors: {
+    origin: `http://localhost:${PORT}`,
+    methods: ['GET', 'POST'],
+  },
 });
+const controllerChat = require('./src/controllers/webChat');
 
-require('./sockets/chat')(io);
+app.set('view engine', 'ejs');
+app.set('views', './src/views');
+app.use(cors());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, 'public')));
+require('./sockets/chatBack')(io);
 
-app.use(express.static(`${__dirname}/public`));
+app.get('/', controllerChat.getAllMessages);
 
-server.listen(PORT, () => console.log('listening na port', PORT));
+http.listen(PORT, () => console.log('listening na port', PORT));
