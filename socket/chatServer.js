@@ -14,14 +14,16 @@ const setUserName = (io, socket, nickname) => {
 };
 
 const setMessage = async (io, socket) => {
-  const { sendMessage, nickname } = socket;
-  const message = await chatModel.createMessage(sendMessage, nickname, actualDate);
+  const { chatMessage, nickname } = socket;
+  const message = await chatModel.createMessage(chatMessage, nickname, actualDate);
+  console.log(message);
   io.emit('message', JSON.stringify(message));
 };
 
 const userDisconnect = async (io, socket) => {
   const userIndex = users.findIndex((user) => user.id === socket.id);
   users.splice(userIndex, 1);
+  console.log('User disconnected');
   io.emit('listAllUsers', users);
 };
 
@@ -29,7 +31,7 @@ module.exports = (io) => {
   io.on('connection', async (socket) => {
     console.log('User connected');
 
-    actualUser = generateName.all();
+    actualUser = generateName.allRandom();
     setUserName(io, socket, actualUser);
 
     socket.emit('listAllMessages', await chatModel.getAllMessages());
