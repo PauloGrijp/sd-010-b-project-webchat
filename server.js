@@ -33,14 +33,14 @@ let activeUsers = [];
 io.on('connection', (socket) => {
   console.log(`${socket.id} usuario conectado`);
   socket.on('new user', (data) => {
-    activeUsers.push({ data, id: socket.id });
-    io.emit('new user', [...activeUsers]);
+    activeUsers.unshift({ data, id: socket.id });
+    io.emit('new user', activeUsers);
   });
 
   socket.on('edit user', ({ newNickName, oldNickName }) => {
     if (activeUsers.findIndex((obj) => obj.data === oldNickName) !== -1) { 
       activeUsers[activeUsers.findIndex((obj) => obj.data === oldNickName)] = { data: newNickName, id: socket.id };
-      io.emit('edit user', [...activeUsers]);
+      io.emit('edit user', activeUsers);
     }
   });
 
@@ -56,32 +56,6 @@ io.on('connection', (socket) => {
     io.emit('user disconnected', newArray);
   });
 });
-
-// const allcustomerMessages = [];
-// const arrayUsersOn = [];
-
-// io.on('connection', (socket) => {
-//   console.log(`${socket.id} usuario conectado`);
-  
-//   socket.on('disconnect', () => {
-//     arrayUsersOn.length = null;
-//     console.log('user  disconnected');
-//   });
-
-//   socket.on('firstLoading', (user) => {
-  //     // persistência de usuário 
-  //     arrayUsersOn.push({ nickname: user, idSocket: socket.id });
-  //     io.emit('firstLoading', arrayUsersOn, socket.id);
-  //   });
-  
-  //   socket.on('message', ({ chatMessage, nickname }) => {
-    //     const date = getTheCurrentDate();
-    //     const fullMessage = formatMessage(date, chatMessage, nickname);
-//     io.emit('message', fullMessage);
-//     // // persistência de mensagem
-//     // allcustomerMessages.push({ idSocket: socket.id, nickname, chatMessage });
-//   });
-// });
 
 app.get('/', (req, res) => {
   res.status(200).render('client', { users: activeUsers });

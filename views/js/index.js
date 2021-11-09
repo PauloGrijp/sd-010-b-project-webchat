@@ -46,7 +46,17 @@ const socket = window.io();
       sessionStorage.setItem('nickname', userName);
     };
 
-    // new user is created so we generate nickname and emit event
+/* Function that modifies the positions of the array that 
+ will be rendered, always putting the user first in the list 
+ Font used as base, modified for use in this app.
+ Link: https://www.horadecodar.com.br/2020/03/30/javascript-mudar-a-posicao-de-um-elemento-no-array/
+*/
+    const changePosition = (arr, from, to) => {
+      arr.splice(to, 0, arr.splice(from, 1)[0]);
+      return arr;
+    };
+
+// new user is created so we generate nickname and emit event
     newUserConnected();
 
     // FORM --------------------------------------------------------
@@ -70,11 +80,20 @@ const socket = window.io();
 
     socket.on('new user', (data) => {
       inboxPeople.textContent = '';
-      data.forEach((user) => addToUsersBox(user.data));
+      const userExist = data.findIndex((element) => element.data === userName);
+
+      if (userExist === -1) { console.log('desculpe problemas no array de usuario'); }
+      const newArryData = changePosition(data, userExist, 0);
+      newArryData.forEach((user) => addToUsersBox(user.data));
     });
+
     socket.on('edit user', (data) => {
       inboxPeople.textContent = '';
-      data.forEach((user) => addToUsersBox(user.data));
+      const userExist = data.findIndex((element) => element.data === userName);
+      
+      if (userExist === -1) { console.log('desculpe ocorreu alguns problemas'); }
+      const newArryData = changePosition(data, userExist, 0);
+      newArryData.forEach((user) => addToUsersBox(user.data));
     });
 
     socket.on('message', (message) => {
@@ -84,62 +103,3 @@ const socket = window.io();
     socket.on('user disconnected', ({ data }) => {
       document.getElementById(`${data}`).remove();
     });
-
-    // const socket = io();
-    // const form = document.querySelector('#form');
-    // const formNickname = document.querySelector('#form-aside');
-    // const chatMessage = document.querySelector('#input-message');
-    // const nickname = document.querySelector('#name');
-    // let idUser = '';
-    // let arrayUsers = '';
-
-    // const newNickName = () => {
-    //   const randomNickName = generateNickName(16)
-    //   const formatNickname = nickname.value ? nickname.value : randomNickName;
-    //   sessionStorage.setItem('nickname', formatNickname);
-    //   return formatNickname;
-    // }
-
-    // const renderUser = (arrayUsersOn) => {
-    //   const ul = document.querySelector('#users-online');
-    //   const allRenderedUsers = document.querySelector(`${idUser}`);
-
-    //   arrayUsersOn.forEach(({
-    //     nickname,
-    //     idSocket
-    //   }) => {
-    //     const li = document.createElement('li');
-    //     li.setAttribute('data-testid', 'online-user');
-    //     li.setAttribute('id', `${idSocket}`);
-    //     li.className = 'users'
-    //     li.innerText = nickname;
-    //     ul.appendChild(li);
-    //   });
-    // }
-
-    // const renderMessageLi = (fullMessage) => {
-    //   const ul = document.querySelector('#messages');
-    //   const li = document.createElement('li');
-    //   li.setAttribute('data-testid', 'message')
-    //   li.innerText = fullMessage;
-    //   ul.appendChild(li);
-    // };
-
-    // // FORMS -------------------------------------------------------------------------------
-    //
-
-    // // eventos ------------------------------------------------
-    // socket.emit('firstLoading', newNickName());
-
-    // // socket.on('getSocketId', (id) => {
-    // //   idUser = id;
-    // // });
-
-    // socket.on('firstLoading', (arrayUsersOn, id) => {
-    //   // console.log(id, 'OOJOKOKIOKOK')
-    //   idUser = id;
-    //   arrayUsers = arrayUsersOn;
-    //   renderUser(arrayUsers);
-    // });
-
-    // socket.on('message', (fullMessage) => renderMessageLi(fullMessage))
