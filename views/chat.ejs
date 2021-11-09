@@ -56,19 +56,18 @@
       socket.emit('nickname', { nickname: nickname });
     });
 
+    socket.on('listAllMessages', (messages) => {
+      console.log(messages);
+      return messages.map((message) => createMessage(message));
+    })
+
     socket.on('message', (message) => createMessage(JSON.parse(message)));
 
     socket.on('saveNickname', (name) => { nickname = name });
 
     socket.on('listAllUsers', (users) => {
-      console.log(users);
       users.forEach(({ nickname, id }) => createUser(nickname, id));
     });
-
-    // socket.on('listAllMessages', (msgs) => {
-    //   console.log(msgs);
-    //   return msgs.map((message) => createMessage(message));
-    // })
 
   </script>
 </body>

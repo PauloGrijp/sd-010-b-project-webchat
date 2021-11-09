@@ -36,6 +36,9 @@ module.exports = (io) => {
     actualUser = crypto.randomBytes(8).toString('hex');
     setUserName(io, socket, actualUser);
 
+    const allMessages = await chatModel.getAllMessages();
+    console.log(allMessages);
+
     socket.emit('listAllMessages', await chatModel.getAllMessages());
     socket.emit('listAllUsers', users);
     socket.on('disconnect', () => userDisconnect(io, socket));

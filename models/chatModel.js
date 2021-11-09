@@ -9,7 +9,7 @@ const createMessage = async (message, nickname, timestamp) => {
 const getAllMessages = async () => {
   const db = await connection();
   const allMessages = await db.collection('messages').find().toArray();
-  if (allMessages.length < 1) return '';
+  if (allMessages.length === 0) return allMessages;
   return allMessages.map((msg) => `${msg.timestamp} - ${msg.nickname}: ${msg.message}`);
 };
 
