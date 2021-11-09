@@ -20,6 +20,7 @@
 
     <script>
       const socket = io();
+      let nickname =''
 
 
       const inputMessage = document.querySelector('#message-input')
@@ -33,7 +34,7 @@
          const chatMessage = inputMessage.value
          socket.emit('message',{
           chatMessage,
-          nickname: "Flavio",
+          nickname:Date.now()
          })
       }
       btnSend.addEventListener("click",(e) => {

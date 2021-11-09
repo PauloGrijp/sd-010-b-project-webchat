@@ -1,5 +1,5 @@
 const moment = require('moment');
-const modelChat = require('../models/modelChat');
+// const modelChat = require('../models/modelChat');
 
 const nickGenerate = () => {
   let id = '';
@@ -11,24 +11,24 @@ const nickGenerate = () => {
   });
   return id;
 };
-const nickName = nickGenerate();
+nickGenerate();
 let listUser = [];
 
 const renderMessage = (io, socket) => {
   socket.on('message', ({ chatMessage, nickname }) => {
-    console.log(chatMessage);
-    const dateTime = moment().format('DD-MM-yyyy  HH:mm:ss');
+    const dateTime = moment().format('DD-MM-yyyy h:mm:ss A');
     const detailMessage = `${dateTime} - ${nickname}: ${chatMessage}`;
-    modelChat.addMessage({ message: chatMessage, nickname, timestamp: dateTime });
+    // modelChat.addMessage({ message: chatMessage, nickname, timestamp: dateTime });
     io.emit('message', detailMessage);
   });
 };
 
 module.exports = (io) => {
   io.on('connection', (socket) => {
+    // const userId = `brl${Date.now()}`;
     renderMessage(io, socket);
 
-    socket.emit('rendernickname', nickName);
+    socket.emit('rendernickname');
 
     socket.on('disconnect', () => {
       listUser = listUser.filter((user) => user.id !== socket.id);
