@@ -10,15 +10,59 @@
 
 </head>
 <body>
-  <form>
-    <input type="text" id="name" placeholder="Enter your name">
-    <input type="text" id="message" placeholder="Enter your message">
-    <button type="submit" id="send">Send</button>
-    <div></div>
+  <form class="form-user">
+    <input type="text" id="name" placeholder="Enter your name" data-testid="nickname-box">
+    <button type="button" id="savenick" data-testid="nickname-button">Save</button>
+    <input type="text" id="message" placeholder="Enter your message" data-testid="message-box">
+    <button type="button" id="send" data-testid="send-button">Send</button>
   </form>
+  <div class="users">
+
+  </div>
+  <div class="messages">
+
+  </div>
   <script>
     const socket = io();
     let nickname = '';
+
+    const createMessage = (message) => {
+      const messageDiv = document.querySelector('.messages');
+      const p = document.createElement('p');
+      p.innerText = message;
+      p.setAttribute("data-testid", "message");
+      p.className = 'one-listed-message';
+      messageDiv.appendChild(p);
+    };
+
+    const createUser = (nickname, id) => {
+      const userDiv = document.querySelector('.users');
+      const p = document.createElement('p');
+      p.innerText = nickname;
+      p.setAttribute("data-testid", "online-user");
+      p.className = 'one-listed-user';
+      userDiv.appendChild(p);
+    };
+  
+    const inputMessage = document.querySelector('#message');
+    document.querySelector('#send').addEventListener('click', (e) => {
+      e.preventDefault();
+      socket.emit('message', { chatMessage: inputMessage.value, nickname: nickname });
+    });
+
+    document.querySelector('#savenick').addEventListener('click', (e) => {
+      e.preventDefault();
+      nickname = document.querySelector('#name').value;
+      socket.emit('nickname', { nickname: nickname });
+    });
+
+    socket.on('message', (message) => createMessage(JSON.parse(message)));
+
+    socket.on('saveNickname', (name) => { nickname = name });
+
+    socket.on('listAllUsers', (users) => {
+      users.forEach(({ nickname, id }) => createUser(nickname, id));
+    });
 
   </script>
 </body>

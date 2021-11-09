@@ -1,4 +1,4 @@
-const generateName = require('nicknames');
+const crypto = require('crypto');
 const chatModel = require('../models/chatModel');
 
 const actualDate = new Date().toLocaleString().replace(/\//g, '-');
@@ -15,7 +15,9 @@ const setUserName = (io, socket, nickname) => {
 
 const setMessage = async (io, socket) => {
   const { chatMessage, nickname } = socket;
-  const message = await chatModel.createMessage(chatMessage, nickname, actualDate);
+  let userName = nickname;
+  if (nickname === '') userName = actualUser;
+  const message = await chatModel.createMessage(chatMessage, userName, actualDate);
   console.log(message);
   io.emit('message', JSON.stringify(message));
 };
@@ -31,7 +33,7 @@ module.exports = (io) => {
   io.on('connection', async (socket) => {
     console.log('User connected');
 
-    actualUser = generateName.allRandom();
+    actualUser = crypto.randomBytes(8).toString('hex');
     setUserName(io, socket, actualUser);
 
     socket.emit('listAllMessages', await chatModel.getAllMessages());
