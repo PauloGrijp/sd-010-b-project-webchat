@@ -1,51 +1,57 @@
-require('dotenv').config();
-
 const app = require('express')();
 const http = require('http').createServer(app);
-const io = require('socket.io')(http, {
-  cors: {
-      origin: ['http://localhost:3000', 'http://admin.socket.io/'],
-      methods: ['GET', 'POST'],
-  },
-});
-const path = require('path');
 const cors = require('cors');
 const moment = require('moment');
+const io = require('socket.io')(http, {
+  cors: {
+    origin: 'http://localhost:3000',
+    methods: ['GET', 'POST'],
+  },
+});
 
-const pathViews = path.join(__dirname, 'src/views');
 const port = process.env.PORT || 3000;
-const onlineUsers = [];
-const messages = [];
+const arrayUser = [];
+const time = moment().local(true).format('DD-MM-yyyy HH:mm:ss A');
+const controller = require('./src/controllers/messageController');
 
+app.use(cors());
 app.set('view engine', 'ejs');
-app.set('views', pathViews);
-app.use(
-  cors({
-    origin: `http://localhost${port}`,
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  }),
-);
-app.get('/', (req, res) => {
-  res.render('board', { messages, onlineUsers });
+app.set('views', './src/views');
+app.get('/', (_req, res) => {
+  res.render('index.ejs');
 });
 
 io.on('connection', (socket) => {
-  socket.emit('online', onlineUsers);
+  socket.on('message', async ({ chatMessage, nickname }) => {
+    await controller.createMessage(chatMessage, nickname, time);
+    io.emit('message', `${time} - ${nickname}: ${chatMessage}`);
+ });
 
-  onlineUsers.push(socket.id);
-
-  socket.on('message', ({ chatMessage, nickname }) => {
-    const timeMsg = moment().local(true).format('DD-MM-yyyy HH:mm:ss A');
-    const userMessage = `${timeMsg} - ${nickname}: ${chatMessage}`;
-
-    messages.push(userMessage);
-
-    io.emit('message', userMessage);
+  socket.on('usersOnline', ({ nickname }) => {
+    arrayUser.push({ nickname, id: socket.id });
+    io.emit('online', arrayUser);
   });
 
-  socket.on('disconnect', () => {});
+  socket.on('userUpdate', (nickname, oldNick) => {
+    const indexOldNick = arrayUser.findIndex((user) => user.nickname === oldNick);
+    arrayUser.splice(indexOldNick, 1, { nickname, id: socket.id });
+    io.emit('online', arrayUser);
+  });
+});
+
+io.on('connection', (socket) => {
+  socket.on('messageDB', async () => {
+    const messageDB = await controller.getAllMessages();
+    io.emit('messageDB', messageDB);
+  });
+
+  socket.on('disconnect', () => {
+    const indexUser = arrayUser.findIndex((user) => user.id === socket.id);
+    arrayUser.splice(indexUser, 1);
+    io.emit('online', arrayUser);
+  });
 });
 
 http.listen(port, () => {
-  console.log(`Server rodando na porta ${port}`);
+  console.log(`Servidor rodando na porta ${port}`);
 });

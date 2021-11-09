@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Web chat</title>
+    <style>
+
+    </style>
+  </head>
+  <body>
+    <ul>
+      <li id="nickname" data-testid="online-user"></li>
+    </ul>
+    <ul id="userOline">Usuários online</ul>
+
+    <div>
+      <input id="inputNickname" placeholder="Digite seu nick" data-testid="nickname-box">
+      <button id="buttonNickname" type="button" data-testid="nickname-button">Salvar</button>
+    </div>
+    <ul id="messages"></ul>
+    <form >
+      <input id="inputMessage" data-testid="message-box"/>
+      <button id="buttonMessage" type="button" data-testid="send-button">Enviar</button>
+    </form>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      const socket = io();
+      socket.emit('messageDB');
+
+      const nickname =
+        Math.random().toString(16).substr(2, 8) +
+        Math.random().toString(16).substr(2, 8);
+
+      const buttonNickname = document.querySelector('#buttonNickname');
+      const buttonMessage = document.querySelector('#buttonMessage');
+      const inputNickname = document.querySelector('#inputNickname');
+      const inputMenssage = document.querySelector('#inputMessage');
+      const onlineUsers = document.querySelector('#userOline');
+      const userNickname = document.querySelector('#nickname');
+      const form = document.querySelector('form');
+
+      userNickname.innerText = nickname;
+
+      sessionStorage.setItem('nickname', nickname);
+
+      buttonNickname.addEventListener('click', () => {
+        const inputNickname = document.querySelector('#inputNickname');
+        const previousNickname = sessionStorage.getItem('nickname');
+        const valueInput = inputNickname.value;
+
+        userNickname.innerText = valueInput;
+        socket.emit('userUpdate', valueInput, previousNickname);
+        sessionStorage.setItem('nickname', valueInput);
+      });
+
+      socket.emit('usersOnline', {nickname});
+
+      buttonMessage.addEventListener('click', () => {
+        const chatMessage = inputMenssage.value;
+        const nickname = sessionStorage.getItem('nickname');
+
+        socket.emit('message', { chatMessage, nickname });
+      });
+
+      const createMessage = (message) => {
+        const messagesList = document.querySelector('#messages');
+        const li = document.createElement('li');
+
+        li.setAttribute('data-testid', 'message');
+        li.innerText = message;
+        messagesList.appendChild(li);
+      };
+
+      const createUserOnline = (arrayUser) => {
+        onlineUsers.innerHTML = '';
+
+        const li = document.createElement('li');
+        const nicknameStorage = sessionStorage.getItem('nickname');
+
+        li.innerText = nicknameStorage;
+        onlineUsers.appendChild(li);
+
+        arrayUser.forEach((user) => {
+          if (socket.id !== user.id) {
+            const li = document.createElement('li');
+
+            li.setAttribute('data-testid',"online-user");
+            li.innerText = user.nickname;
+            onlineUsers.appendChild(li);
+          }
+        });
+      };
+
+      const createMessageDB = (arrayMessage) => {
+        arrayMessage.forEach(({ message, nickname, timestamp }) => {
+          const formatMessage = `${timestamp} - ${nickname}: ${message}`
+          const messagesList = document.querySelector('#messages');
+          const li = document.createElement('li');
+
+          li.setAttribute('data-testid', 'message');
+          li.innerText = formatMessage;
+          messagesList.appendChild(li);
+        });
+      };
+
+      socket.on('message', (message) => createMessage(message));
+      socket.on('online', (arrayUser) => createUserOnline(arrayUser));
+      socket.on('messageDB', (arrayMessage) => createMessageDB(arrayMessage));
+
+    </script>
+  </body>
+</html>
