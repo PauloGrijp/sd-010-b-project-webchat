@@ -8,6 +8,9 @@
         "jest": true
     },
     "extends": "trybe-backend",
-    "parserOptions": { "ecmaVersion": 11 }
+    "parserOptions": { "ecmaVersion": 11 },
+    "plugins": [
+      "html"
+      ]
   }
   
