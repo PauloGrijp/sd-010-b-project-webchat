@@ -61,8 +61,14 @@
     socket.on('saveNickname', (name) => { nickname = name });
 
     socket.on('listAllUsers', (users) => {
+      console.log(users);
       users.forEach(({ nickname, id }) => createUser(nickname, id));
     });
+
+    // socket.on('listAllMessages', (msgs) => {
+    //   console.log(msgs);
+    //   return msgs.map((message) => createMessage(message));
+    // })
 
   </script>
 </body>

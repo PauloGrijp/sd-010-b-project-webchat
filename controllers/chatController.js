@@ -1,4 +1,4 @@
-const chatModel = require('../models/chatModel');
+// const chatModel = require('../models/chatModel');
 
 const appChat = async (req, res) => {
   // const messages = await chatModel.getMessages();
