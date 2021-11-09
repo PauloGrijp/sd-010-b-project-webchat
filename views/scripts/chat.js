@@ -1,16 +1,16 @@
 const socket = window.io();
 
-const { username } = Qs.parse(location.search, {
+const { nickname } = Qs.parse(location.search, {
   ignoreQueryPrefix: true });
 
-socket.emit('joinChat', {username});
+socket.emit('joinChat', {nickname});
 
 const form = document.querySelector('form');
 const inputMessage = document.querySelector('#inputMessage');
 
 form.addEventListener('submit', (e) => {
   e.preventDefault();
-  socket.emit('message', { message: inputMessage.value, username });
+  socket.emit('message', { chatMessage: inputMessage.value, nickname });
   inputMessage.value = '';
   return false;
 });
