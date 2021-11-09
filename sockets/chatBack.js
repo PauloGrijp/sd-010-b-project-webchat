@@ -20,19 +20,19 @@ const renderMessage = (io, socket) => {
     const detailMessage = `${dateTime} - ${nickname}: ${chatMessage}`;
     // modelChat.addMessage({ message: chatMessage, nickname, timestamp: dateTime });
     io.emit('message', detailMessage);
+    // socket.emit('nickName', nickname);
   });
 };
 
 module.exports = (io) => {
   io.on('connection', (socket) => {
-    // const userId = `brl${Date.now()}`;
     renderMessage(io, socket);
-
+    const nickname = `Fla${Date.now()}`;
     socket.emit('rendernickname');
+    socket.emit('nickName', nickname);
 
     socket.on('disconnect', () => {
       listUser = listUser.filter((user) => user.id !== socket.id);
-      io.emit('renderListUser', listUser);
     });
   });
 };

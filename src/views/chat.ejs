@@ -6,8 +6,8 @@
   <body>
     <div class="main-div">
       <div class="user-div">
-
-          <input id="nickname-input" autocomplete="off" placeholder="Insira seu nickname" data-testid="nickname-box" /><button data-testid="nickname-button">Salvar</button>
+          <input id="nickname-input" autocomplete="off" placeholder="Insira seu nickname" data-testid="nickname-box" />
+          <button data-testid="nickname-button" id="nickname-btn">Salvar</button>
 
         <ul id="users-list" class="users-list"></ul>
       </div>
@@ -20,23 +20,35 @@
 
     <script>
       const socket = io();
-      let nickname =''
+      // let nickname = `Fla${Date.now()}`
 
 
       const inputMessage = document.querySelector('#message-input')
       const btnSend = document.querySelector('#send')
       const inputname = document.querySelector('#nickname-input')
+      const btnSalveName = document.querySelector('#nickname-btn')
 
+
+      btnSalveName.addEventListener('click',(e)=>{
+        e.preventDefault();
+        nickname = inputname.value
+        const t =  document.querySelector('#online-user')
+        t.innerHTML = nickname
+        console.log(nickname)
+
+      })
 
 
 
       const sendMessage = () =>{
          const chatMessage = inputMessage.value
+         const nickname =  document.querySelector('#online-user').innerText
          socket.emit('message',{
           chatMessage,
-          nickname:Date.now()
+          nickname
          })
       }
+
       btnSend.addEventListener("click",(e) => {
         e.preventDefault();
         sendMessage()
@@ -49,6 +61,16 @@
         li.dataset.testid = 'message';
         messagesUl.appendChild(li);
       };
+
+      const addNickName = (nickname) => {
+        const nicknameUl = document.querySelector('#users-list');
+        const li = document.createElement('li');
+        li.innerText = nickname
+        li.dataset.testid = 'online-user';
+        li.id='online-user'
+        nicknameUl.appendChild(li);
+      }
+
       socket.on('message', (message) => addMessage(message));
       socket.on('nickName', (nickName) => addNickName(nickName));
 
