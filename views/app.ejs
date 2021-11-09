@@ -73,21 +73,14 @@
     dom.formNickname.addEventListener('submit', (e) => {
       e.preventDefault();
 
+      socket.emit('update-nickname', { oldNickname: clientNick, newNickname: dom.inputNickname.value });
+      
       clientNick = dom.inputNickname.value;
 
-      socket.emit('update-nickname', dom.inputNickname.value);
       dom.inputNickname.value = '';
     });
 
-    socket.on('new-user', (nick) => {
-      clientNick = nick;
-
-      const spanNickname = document.createElement('span');
-      spanNickname.innerText = clientNick;
-      spanNickname.setAttribute('data-testid', 'online-user');
-
-      dom.userBox.appendChild(spanNickname);
-    });
+    socket.on('user-nickname', (nick) => clientNick = nick);
 
     socket.on('message', (msg) => {
       const span = document.createElement('span');
@@ -96,6 +89,25 @@
 
       dom.messageContainer.appendChild(span);
     });
+
+    socket.on('new-connection', (userList) => {
+      dom.userBox.innerText = '';
+      console.log(userList);
+      userList.splice(userList.indexOf(clientNick), 1);
+      userList.unshift(clientNick);
+
+      userList.forEach((user) => {
+        const spanNickname = document.createElement('span');
+        spanNickname.innerText = user;
+        spanNickname.setAttribute('data-testid', 'online-user');
+  
+        dom.userBox.appendChild(spanNickname);
+      });
+    });
+
+    window.onbeforeunload = (e) => {
+      io.emit('disconnect', clientNick);
+    };
   </script>
 </body>
 </html>
