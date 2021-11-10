@@ -1,9 +1,8 @@
 const socket = window.io();
 
-const { nickname } = Qs.parse(location.search, {
-  ignoreQueryPrefix: true });
+const nickname = 'aaa'; // Comments: Alterar para função que gera randomicamente
 
-socket.emit('joinChat', {nickname});
+socket.emit('joinChat', { nickname });
 
 const form = document.querySelector('form');
 const inputMessage = document.querySelector('#inputMessage');

@@ -9,16 +9,14 @@ module.exports = (io) => io.on('connection', (socket) => {
     socket.broadcast.emit('message', `${nickname} acabou de se conectar`);
   });
 
-
   socket.on('message', ({ chatMessage, nickname }) => {
     // console.log(`Mensagem ${message}`);
 
     // Source: https://www.geeksforgeeks.org/node-js-date-format-api/
-    const now  =  new Date();
-    
-    const value = date.format(now,'DD-MM-YYYY HH:mm:ss');
-    // const now = date.format(new Date(), "DD-MM-yyyy HH:mm:ss");
-    
+    const now = new Date();
+
+    const value = date.format(now, 'DD-MM-YYYY HH:mm:ss');
+
     // oi.emit: Emite a msg pata TODOS os sockets conectados
     io.emit('message', `${value} - ${nickname}: ${chatMessage}`);
   });

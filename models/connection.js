@@ -6,7 +6,7 @@ let schema = null;
 const OPTIONS = {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-}
+};
 
 async function connection() {
   if (schema) return Promise.resolve(schema);

@@ -17,8 +17,8 @@ const io = require('socket.io')(http, {
 app.use(express.static(`${__dirname}/views`));
 
 require('./sockets/chat')(io);
-    
-app.get('/', (req, res) => res.sendFile(`${__dirname}/views/login.html`));
+
+app.get('/', (req, res) => res.sendFile(`${__dirname}/views/chat.html`));
 
 http.listen(PORT, () => {
   console.log(`Servidor ouvindo na porta ${PORT}`);
