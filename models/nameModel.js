@@ -11,7 +11,7 @@ const deleteUserM = (nameId) => {
 const updateNameM = (data) => {
   allUsers = allUsers.map((user) => {
     if (user.nameId === data.nameId) {
-      return { nameId: data.nameId, databaseNickname: data.databaseNickname };
+      return { nameId: data.nameId, dbname: data.dbname };
     }
     return user;
   }).slice();
