@@ -1,13 +1,27 @@
 const socket = window.io();
 
-const nickname = 'aaa'; // Comments: Alterar para função que gera randomicamente
+// Source: Ajuda do Anderson Pedrosa - T10 - TB
+const nickname = Math.random().toString(16).substr(2, 8) + Math.random().toString(16).substr(2, 8);
 
 socket.emit('joinChat', { nickname });
 
-const form = document.querySelector('form');
+const inputNicknameForm = document.querySelector('#inputNicknameForm');
+const inputMessageForm = document.querySelector('#inputMessageForm');
 const inputMessage = document.querySelector('#inputMessage');
+const inputNickname = document.querySelector('#inputNickname');
+const nicknameLabel = document.querySelector('#nicknameLabel');
 
-form.addEventListener('submit', (e) => {
+nicknameLabel.innerText = nickname;
+
+inputNicknameForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+  nicknameLabel.innerText = inputNickname.value;
+  socket.emit('message', { chatMessage: '<-- Meu apelido agora é', nickname: inputNickname.value });
+  inputNickname.value = '';
+  return false;
+});
+
+inputMessageForm.addEventListener('submit', (e) => {
   e.preventDefault();
   socket.emit('message', { chatMessage: inputMessage.value, nickname });
   inputMessage.value = '';
@@ -17,6 +31,7 @@ form.addEventListener('submit', (e) => {
 const createMessage = (message) => {
   const messagesUl = document.querySelector('#messages');
   const li = document.createElement('li');
+  li.setAttribute('data-testid', 'message');
   li.innerText = message;
   messagesUl.appendChild(li);
 };
