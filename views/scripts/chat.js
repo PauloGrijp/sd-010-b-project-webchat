@@ -1,7 +1,10 @@
 const socket = window.io();
 
 // Source: Ajuda do Anderson Pedrosa - T10 - TB
-const nickname = Math.random().toString(16).substr(2, 8) + Math.random().toString(16).substr(2, 8);
+let nickname = Math.random().toString(16).substr(2, 8) + Math.random().toString(16).substr(2, 8);
+
+// Source: https://developer.mozilla.org/pt-BR/docs/Web/API/Window/sessionStorage
+sessionStorage.setItem('nickname', nickname);
 
 socket.emit('joinChat', { nickname });
 
@@ -16,13 +19,15 @@ nicknameLabel.innerText = nickname;
 inputNicknameForm.addEventListener('submit', (e) => {
   e.preventDefault();
   nicknameLabel.innerText = inputNickname.value;
-  socket.emit('message', { chatMessage: '<-- Meu apelido agora é', nickname: inputNickname.value });
+  sessionStorage.setItem('nickname', inputNickname.value);
   inputNickname.value = '';
   return false;
 });
 
 inputMessageForm.addEventListener('submit', (e) => {
   e.preventDefault();
+  // Source: https://developer.mozilla.org/pt-BR/docs/Web/API/Window/sessionStorage
+  nickname = sessionStorage.getItem('nickname');
   socket.emit('message', { chatMessage: inputMessage.value, nickname });
   inputMessage.value = '';
   return false;
