@@ -20,7 +20,8 @@
 
     <script>
       const socket = io();
-      // let nickname = `Fla${Date.now()}`
+     let geraNick = `Fla${Date.now()}`
+     let nickname = ""
 
 
       const inputMessage = document.querySelector('#message-input')
@@ -32,11 +33,14 @@
       btnSalveName.addEventListener('click',(e)=>{
         e.preventDefault();
         nickname = inputname.value
-        const t =  document.querySelector('#online-user')
-        t.innerHTML = nickname
-        console.log(nickname)
-
+        socket.emit('newNickname',nickname)
+        // const t =  document.querySelector('#online-user')
+        // t.innerHTML = nickname
+        // console.log(nickname)
+        // socket.emit('nickMailOnLine', t)
+        // addNickName(t)
       })
+
 
 
 
@@ -64,12 +68,19 @@
 
       const addNickName = (nickname) => {
         const nicknameUl = document.querySelector('#users-list');
-        const li = document.createElement('li');
-        li.innerText = nickname
-        li.dataset.testid = 'online-user';
-        li.id='online-user'
-        nicknameUl.appendChild(li);
+        nicknameUl.innerHTML = ""
+        nickname.map((user) => {
+          const li = document.createElement('li');
+          li.innerText = user.nickname
+          li.dataset.testid = 'online-user';
+          li.id='online-user'
+          socket.id === user.id
+          ? nicknameUl.prepend(li)
+          : nicknameUl.appendChild(li);
+        })
       }
+
+
        const addMessageHistory = (messages)=>{
         const messagesUl = document.querySelector('#messages-list');
         messages.forEach(({chatMessage, nickname, timestamp }) => {
@@ -80,9 +91,12 @@
         })
        }
 
+
+      socket.emit('geraNick',geraNick)
       socket.on('message', (message) => addMessage(message));
-      socket.on('nickName', (nickName) => addNickName(nickName));
+      //socket.on('nickName', (nickName) => addNickName(nickName));
       socket.on('historyMessage', (messages) => addMessageHistory(messages));
+      socket.on('rendernickname', (listUserOnLine) => addNickName(listUserOnLine));
 
     </script>
   </body>
