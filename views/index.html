@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="./styles/styles.css">
+    <title>Socket.IO WebChat</title>  
+  </head>
+  <body>
+    <main>
+      <div class="container">
+        <div class="user">
+          <form id="form-nickname" action="">
+            <input id="input-nickname" autocomplete="off" placeholder="Nickname" data-testid="nickname-box"/>
+            <button data-testid="nickname-button">Send</button>
+          </form>
+          <ul id="users"></ul>
+        </div>
+    
+        <ul id="messages" class="messages"></ul>
+      </div>
+  
+      <form id="form" class="form" action="">
+        <input id="inputMessage" autocomplete="off" data-testid="message-box" placeholder="Message"/>
+        <button data-testid="send-button">Send</button>
+      </form>
+    </main>
+    
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="./js/chat.js"></script>
+  </body>
+</html>
